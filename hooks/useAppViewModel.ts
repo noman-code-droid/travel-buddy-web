@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { AppState, UserMode, ActiveTab, SubView } from '@/types';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { signOut } from 'firebase/auth';
+import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export function useAppViewModel() {
   const [user, loading, error] = useAuthState(auth);
@@ -12,13 +13,9 @@ export function useAppViewModel() {
   const [subView, setSubView] = useState<SubView>(null);
   const [showSwitchConfirm, setShowSwitchConfirm] = useState(false);
 
-  // Trip Planner State
-  const [plannerStep, setPlannerStep] = useState(1);
-  const [plannerData, setPlannerData] = useState({
-    destination: '',
-    interests: [] as string[],
-    duration: '',
-  });
+  // Trusted Contacts State
+  const [contacts, setContacts] = useState<any[]>([]);
+  const [loadingContacts, setLoadingContacts] = useState(false);
 
   // Handle Initial App Flow
   useEffect(() => {
@@ -41,6 +38,28 @@ export function useAppViewModel() {
     }
   }, [user, loading]);
 
+  // Real-time Contacts Listener
+  useEffect(() => {
+    if (!user) return;
+
+    setLoadingContacts(true);
+    const q = query(
+      collection(db, "trusted_contacts"),
+      where("userId", "==", user.uid)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const contactList = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setContacts(contactList);
+      setLoadingContacts(false);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
   const handleAuthSuccess = () => setAppState('main');
 
   const handleLogout = async () => {
@@ -53,16 +72,20 @@ export function useAppViewModel() {
     setShowSwitchConfirm(false);
   };
 
-  const navigateToSubView = (view: SubView) => {
-    if (view === 'planner') {
-      setPlannerStep(1);
-    }
-    setSubView(view);
-  };
-
+  const navigateToSubView = (view: SubView) => setSubView(view);
   const closeSubView = () => setSubView(null);
   const requestSwitchMode = () => setShowSwitchConfirm(true);
   const cancelSwitchMode = () => setShowSwitchConfirm(false);
+
+  const addContact = async (name: string, phone: string) => {
+    if (!user) return;
+    await addDoc(collection(db, "trusted_contacts"), {
+      userId: user.uid,
+      name,
+      phone,
+      createdAt: serverTimestamp()
+    });
+  };
 
   return {
     user,
@@ -80,10 +103,9 @@ export function useAppViewModel() {
     closeSubView,
     requestSwitchMode,
     cancelSwitchMode,
-    // Planner exports
-    plannerStep,
-    setPlannerStep,
-    plannerData,
-    setPlannerData
+    // Contacts
+    contacts,
+    loadingContacts,
+    addContact
   };
 }

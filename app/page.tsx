@@ -38,7 +38,11 @@ export default function AppContainer() {
     navigateToSubView,
     closeSubView,
     requestSwitchMode,
-    cancelSwitchMode
+    cancelSwitchMode,
+    // Real-time Contacts Data
+    contacts,
+    loadingContacts,
+    addContact
   } = useAppViewModel();
 
   return (
@@ -65,7 +69,14 @@ export default function AppContainer() {
             <AnimatePresence>
               {subView === 'find' && <FindRideView onClose={closeSubView} />}
               {subView === 'post' && <PostRideView onClose={closeSubView} />}
-              {subView === 'safety' && <SafetyView onClose={closeSubView} />}
+              {subView === 'safety' && (
+                <SafetyView
+                  onClose={closeSubView}
+                  contacts={contacts}
+                  loadingContacts={loadingContacts}
+                  onAddContact={addContact}
+                />
+              )}
               {subView === 'notifications' && <NotificationsView onClose={closeSubView} />}
               {subView === 'chat_list' && <ChatListView onClose={closeSubView} />}
               {subView === 'planner' && <PlannerView onClose={closeSubView} />}
