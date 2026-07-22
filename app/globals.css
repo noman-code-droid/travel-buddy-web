@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #000000;
+  --foreground: #FFFFFF;
+  --primary: #FFD500;
+  --primary-text: #000000;
+  --secondary: #212121;
+  --muted-foreground: #ABABAB;
+  --destructive: #E46767;
+  --border: #333333;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  /* Matches Android MaterialCardView */
+  .android-card {
+    @apply bg-[#212121] rounded-[16px] shadow-sm transition-all active:bg-[#2a2a2a];
+  }
+
+  /* Matches button_bg.xml */
+  .android-btn-primary {
+    @apply w-full h-[64px] bg-[#FFD500] text-black font-bold rounded-[24px] text-[20px] transition-transform active:scale-[0.97] flex items-center justify-center gap-2;
+  }
+
+  /* Matches secondary card button style */
+  .android-btn-secondary {
+    @apply w-full h-[64px] bg-[#212121] border border-[#333333] text-white font-bold rounded-[24px] text-[18px] active:scale-[0.97] flex items-center justify-center gap-3;
+  }
+
+  /* Matches outlined TextInputLayout */
+  .android-input-container {
+    @apply bg-[#212121] border border-[#333333] rounded-[16px] px-4 py-4 flex items-center gap-3 focus-within:border-[#FFD500] transition-all;
+  }
+
+  .android-input {
+    @apply bg-transparent outline-none text-white text-[16px] w-full placeholder:text-[#ABABAB];
+  }
+
+  /* Matches badge_bg.xml */
+  .badge-dot {
+    @apply absolute -top-1 -right-1 w-[16px] h-[16px] bg-[#FFD500] rounded-full flex items-center justify-center text-black text-[10px] font-bold border-2 border-black;
+  }
+
+  .label-android {
+    @apply text-[12px] font-bold text-[#ABABAB] uppercase mb-2 block ml-1;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
