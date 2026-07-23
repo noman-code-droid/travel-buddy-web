@@ -7,6 +7,7 @@ import { RefreshCw } from 'lucide-react';
 import SplashView from '@/components/SplashView';
 import OnboardingView from '@/components/OnboardingView';
 import AuthView from '@/components/AuthView';
+import CompleteProfileView from '@/components/CompleteProfileView';
 import HomeView from '@/components/HomeView';
 import RidesView from '@/components/RidesView';
 import ChatView from '@/components/ChatView';
@@ -19,7 +20,13 @@ import PostRideView from '@/components/PostRideView';
 import SafetyView from '@/components/SafetyView';
 import NotificationsView from '@/components/NotificationsView';
 import ChatListView from '@/components/ChatListView';
+import ChatDetailView from '@/components/ChatDetailView';
 import PlannerView from '@/components/PlannerView';
+import TrackRideView from '@/components/TrackRideView';
+import DriverRegistrationView from '@/components/DriverRegistrationView';
+import RideDetailsView from '@/components/RideDetailsView';
+import RideSummaryView from '@/components/RideSummaryView';
+import FinancialReportView from '@/components/FinancialReportView';
 
 // MVVM: ViewModel
 import { useAppViewModel } from '@/hooks/useAppViewModel';
@@ -39,10 +46,19 @@ export default function AppContainer() {
     closeSubView,
     requestSwitchMode,
     cancelSwitchMode,
-    // Real-time Contacts Data
+    // Real-time Data
+    stats,
+    activeRide,
+    unreadNotifications,
+    unreadChats,
     contacts,
     loadingContacts,
-    addContact
+    addContact,
+    onProfileComplete,
+    profileData,
+    selectedChat,
+    openChatDetail,
+    selectedRideId
   } = useAppViewModel();
 
   return (
@@ -56,6 +72,10 @@ export default function AppContainer() {
 
         {appState === 'auth' && (
           <AuthView key="auth" onAuthSuccess={handleAuthSuccess} />
+        )}
+
+        {appState === 'complete_profile' && (
+          <CompleteProfileView key="profile_gate" onComplete={onProfileComplete} />
         )}
 
         {appState === 'main' && (
@@ -78,8 +98,13 @@ export default function AppContainer() {
                 />
               )}
               {subView === 'notifications' && <NotificationsView onClose={closeSubView} />}
-              {subView === 'chat_list' && <ChatListView onClose={closeSubView} />}
+              {subView === 'chat_list' && <ChatListView onClose={closeSubView} chats={[]} onChatClick={openChatDetail} />}
+              {subView === 'chat_detail' && <ChatDetailView onClose={closeSubView} chat={selectedChat} />}
               {subView === 'planner' && <PlannerView onClose={closeSubView} />}
+              {subView === 'track_ride' && <TrackRideView onClose={closeSubView} rideInfo={activeRide} />}
+              {subView === 'driver_reg' && <DriverRegistrationView onClose={closeSubView} status={profileData?.verificationStatus || 'none'} />}
+              {subView === 'ride_details' && <RideDetailsView onClose={closeSubView} rideId={selectedRideId} />}
+              {subView === 'financial' && <FinancialReportView onClose={closeSubView} />}
             </AnimatePresence>
 
             {/* Mode Switch Confirmation Dialog */}
@@ -121,14 +146,17 @@ export default function AppContainer() {
             {/* Dynamic Content */}
             <div className="flex-1 overflow-y-auto">
               {activeTab === 'home' && (
-                <HomeView userMode={userMode} onNavigate={navigateToSubView} />
+                <HomeView
+                  userMode={userMode}
+                  onNavigate={navigateToSubView}
+                  stats={stats}
+                  activeRide={activeRide}
+                  unreadNotifications={unreadNotifications}
+                  unreadChats={unreadChats}
+                />
               )}
-              {activeTab === 'rides' && (
-                <RidesView userMode={userMode} />
-              )}
-              {activeTab === 'explore' && (
-                <ChatView />
-              )}
+              {activeTab === 'rides' && <RidesView userMode={userMode} />}
+              {activeTab === 'explore' && <ChatView />}
               {activeTab === 'profile' && (
                 <ProfileView
                   userMode={userMode}
