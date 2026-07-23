@@ -12,31 +12,36 @@ export function useAppViewModel() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [subView, setSubView] = useState<SubView>(null);
   const [showSwitchConfirm, setShowSwitchConfirm] = useState(false);
+  const [splashFinished, setSplashFinished] = useState(false);
 
   // Trusted Contacts State
   const [contacts, setContacts] = useState<any[]>([]);
   const [loadingContacts, setLoadingContacts] = useState(false);
 
-  // Handle Initial App Flow
+  // 1. Splash Timer: Ensure splash shows for exactly 2.5s
   useEffect(() => {
-    if (appState === 'splash') {
-      const timer = setTimeout(() => {
-        setAppState('onboarding');
-      }, 2500);
-      return () => clearTimeout(timer);
-    }
-  }, [appState]);
+    const timer = setTimeout(() => {
+      setSplashFinished(true);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
-  // Sync Firebase User with App State
+  // 2. Navigation Logic: Only move away from splash once timer is done AND auth status is known
   useEffect(() => {
-    if (!loading) {
+    if (splashFinished && !loading) {
       if (user) {
         setAppState('main');
-      } else if (appState === 'main') {
-        setAppState('auth');
+      } else {
+        setAppState('onboarding');
       }
     }
-  }, [user, loading]);
+  }, [splashFinished, loading, user]);
+
+  // Handle manual logout
+  const handleLogout = async () => {
+    await signOut(auth);
+    setAppState('auth');
+  };
 
   // Real-time Contacts Listener
   useEffect(() => {
@@ -61,11 +66,6 @@ export function useAppViewModel() {
   }, [user]);
 
   const handleAuthSuccess = () => setAppState('main');
-
-  const handleLogout = async () => {
-    await signOut(auth);
-    setAppState('auth');
-  };
 
   const handleSwitchMode = () => {
     setUserMode(prev => prev === 'passenger' ? 'driver' : 'passenger');

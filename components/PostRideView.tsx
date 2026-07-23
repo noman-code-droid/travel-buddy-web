@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Search, X, Compass, User, Calendar, Clock, Bot, Loader2 } from 'lucide-react';
 import Button from './ui/Button';
@@ -8,10 +8,21 @@ import Input from './ui/Input';
 import Card from './ui/Card';
 import { db, auth } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
 
 interface PostRideViewProps {
   onClose: () => void;
 }
+
+const mapContainerStyle = {
+  width: '100%',
+  height: '100%',
+};
+
+const center = {
+  lat: 31.5204, // Lahore default
+  lng: 74.3587,
+};
 
 export default function PostRideView({ onClose }: PostRideViewProps) {
   const [step, setStep] = useState<'map' | 'details'>('map');
@@ -26,6 +37,17 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
     notes: ''
   });
 
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+  });
+
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+
+  const onUnmount = useCallback(function callback() {
+    setMap(null);
+  }, []);
+
   const handlePublish = async () => {
     if (!auth.currentUser) return;
 
@@ -35,7 +57,7 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
         ...formData,
         driver: auth.currentUser.displayName || 'Anonymous Driver',
         driverId: auth.currentUser.uid,
-        rating: 5.0, // Default rating for new posts
+        rating: 5.0,
         createdAt: serverTimestamp(),
       });
       onClose();
@@ -57,13 +79,50 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
     >
       {step === 'map' ? (
         <div className="relative h-full">
-           <div className="absolute inset-0 bg-[#121212]">
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 mb-6">
-                <MapPin className="w-12 h-12 text-[#FFD500]" />
-              </div>
+           {/* Header with Back Button */}
+           <div className="absolute top-4 left-4 z-20">
+              <button
+                onClick={onClose}
+                className="w-10 h-10 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10"
+              >
+                <ArrowLeft className="text-white w-6 h-6" />
+              </button>
            </div>
 
-           <div className="absolute top-12 left-5 right-5 z-10">
+           <div className="absolute inset-0 bg-[#121212]">
+              {isLoaded ? (
+                <GoogleMap
+                  mapContainerStyle={mapContainerStyle}
+                  center={center}
+                  zoom={12}
+                  onUnmount={onUnmount}
+                  options={{
+                    disableDefaultUI: true,
+                    styles: [
+                      { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                      { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                      { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                    ], // Simple dark mode
+                  }}
+                >
+                  <MarkerF position={center} icon={{
+                    path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
+                    fillColor: "#FFD500",
+                    fillOpacity: 1,
+                    strokeWeight: 1,
+                    strokeColor: "#000",
+                    scale: 2,
+                    anchor: new google.maps.Point(12, 22),
+                  }} />
+                </GoogleMap>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Loader2 className="w-8 h-8 text-[#FFD500] animate-spin" />
+                </div>
+              )}
+           </div>
+
+           <div className="absolute top-16 left-5 right-5 z-10">
               <Card variant="flat" radius="2xl" className="p-4 flex items-center gap-3 shadow-lg bg-[#2A2A2A]">
                  <Search className="w-5 h-5 text-[#FFD500]" />
                  <input
@@ -78,11 +137,11 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
 
            <div className="absolute bottom-8 left-5 right-5 space-y-4">
               <div className="flex justify-end">
-                 <button className="w-[50px] h-[50px] bg-[#212121] rounded-full flex items-center justify-center shadow-lg">
+                 <button className="w-[50px] h-[50px] bg-[#212121] rounded-full flex items-center justify-center shadow-lg border border-[#333333]">
                     <Compass className="text-white w-6 h-6" />
                  </button>
               </div>
-              <Card variant="flat" radius="xl" className="p-4 text-center text-white text-[13px]">
+              <Card variant="flat" radius="xl" className="p-4 text-center text-white text-[13px] border border-[#333333]">
                  {formData.pickup || 'Locating address...'}
               </Card>
               <Button
@@ -95,8 +154,8 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
            </div>
         </div>
       ) : (
-        <div className="flex flex-col h-full">
-          <div className="p-4 flex items-center gap-4">
+        <div className="flex flex-col h-full bg-black">
+          <div className="p-4 flex items-center gap-4 border-b border-[#333333]">
             <button onClick={() => setStep('map')}><ArrowLeft className="text-white w-7 h-7" /></button>
             <h2 className="font-bold text-[20px]">Post a Ride</h2>
           </div>
@@ -124,7 +183,7 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
                 </div>
              </div>
 
-             <Card variant="flat" className="p-4 flex items-center gap-3">
+             <Card variant="flat" className="p-4 flex items-center gap-3 border border-[#333333]">
                 <MapPin className="text-[#FFD500] w-6 h-6" />
                 <span className="text-[14px] font-bold">Estimated Distance: 12 km</span>
              </Card>
@@ -169,7 +228,7 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
 
              <div>
                 <label className="label-android ml-1">Additional Notes</label>
-                <Card variant="flat" className="p-4 min-h-[100px]">
+                <Card variant="flat" className="p-4 min-h-[100px] border border-[#333333]">
                    <textarea
                     placeholder="Any preferences..."
                     className="bg-transparent outline-none text-white text-[15px] w-full resize-none h-full placeholder:text-[#ABABAB]"
