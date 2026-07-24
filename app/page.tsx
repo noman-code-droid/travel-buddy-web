@@ -27,6 +27,7 @@ import DriverRegistrationView from '@/components/DriverRegistrationView';
 import RideDetailsView from '@/components/RideDetailsView';
 import RideSummaryView from '@/components/RideSummaryView';
 import FinancialReportView from '@/components/FinancialReportView';
+import GlobalChatView from '@/components/GlobalChatView';
 
 // MVVM: ViewModel
 import { useAppViewModel } from '@/hooks/useAppViewModel';
@@ -60,7 +61,8 @@ export default function AppContainer() {
     selectedChat,
     openChatDetail,
     selectedRideId,
-    openRideDetails
+    openRideDetails,
+    completedRideData
   } = useAppViewModel();
 
   return (
@@ -99,7 +101,6 @@ export default function AppContainer() {
               {subView === 'post' && <PostRideView key="post" onClose={closeSubView} />}
               {subView === 'safety' && (
                 <SafetyView
-                  key="safety"
                   onClose={closeSubView}
                   contacts={contacts}
                   loadingContacts={loadingContacts}
@@ -127,6 +128,8 @@ export default function AppContainer() {
               {subView === 'driver_reg' && <DriverRegistrationView key="reg" onClose={closeSubView} status={profileData?.verificationStatus || 'none'} />}
               {subView === 'ride_details' && <RideDetailsView key="details" onClose={closeSubView} rideId={selectedRideId} />}
               {subView === 'financial' && <FinancialReportView key="finance" onClose={closeSubView} />}
+              {subView === 'summary' && <RideSummaryView key="summary" onClose={closeSubView} rideData={completedRideData} />}
+              {subView === 'global_chat' && <GlobalChatView key="global" onClose={closeSubView} />}
             </AnimatePresence>
 
             {/* Mode Switch Confirmation Dialog */}

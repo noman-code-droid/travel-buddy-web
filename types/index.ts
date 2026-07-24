@@ -1,7 +1,7 @@
 export type AppState = 'splash' | 'onboarding' | 'auth' | 'complete_profile' | 'main';
 export type UserMode = 'passenger' | 'driver';
 export type ActiveTab = 'home' | 'rides' | 'explore' | 'profile';
-export type SubView = 'find' | 'post' | 'safety' | 'notifications' | 'chat_list' | 'chat_detail' | 'planner' | 'driver_reg' | 'track_ride' | 'ride_details' | 'financial' | null;
+export type SubView = 'find' | 'post' | 'safety' | 'notifications' | 'chat_list' | 'chat_detail' | 'planner' | 'driver_reg' | 'track_ride' | 'ride_details' | 'financial' | 'summary' | 'global_chat' | null;
 
 export interface UserStats {
   trips: number;
@@ -43,6 +43,15 @@ export interface Ride {
   time: string;
   status: string;
   notes?: string;
+}
+
+export interface RideHistory {
+  id?: string;
+  from: string;
+  to: string;
+  date: string;
+  price: string;
+  status: string;
 }
 
 export interface Notification {

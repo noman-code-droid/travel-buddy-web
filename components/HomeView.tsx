@@ -1,6 +1,6 @@
 'use client';
 
-import { User, Bell, MessageSquare, Search, Plus, Compass, Bot, ClipboardList, Users, Navigation } from 'lucide-react';
+import { User, Bell, MessageSquare, Search, Plus, Compass, Bot, ClipboardList, Users, Navigation, Globe } from 'lucide-react';
 import { UserMode, SubView, UserStats, ActiveRideInfo } from '@/types';
 import Card from './ui/Card';
 import Button from './ui/Button';
@@ -60,7 +60,6 @@ export default function HomeView({
              <span className="text-[17px] font-bold text-white">{stats.trips}</span>
              <span className="text-[11px] text-[#ABABAB]">{userMode === 'passenger' ? 'Trips' : 'Driver Trips'}</span>
            </Card>
-           {/* Clicking stats opens Financial Report (activity_financial_report.xml parity) */}
            <button
              onClick={() => onNavigate('financial')}
              className="flex-1 text-center active:scale-95 transition-transform"
@@ -75,6 +74,24 @@ export default function HomeView({
              <span className="text-[11px] text-[#ABABAB]">Rating</span>
            </Card>
         </div>
+
+        {/* Global Chat CTA (activity_main.xml addition) */}
+        <Card
+          variant="active"
+          className="p-4 flex items-center justify-between cursor-pointer"
+          onClick={() => onNavigate('global_chat')}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#FFD500] rounded-full flex items-center justify-center">
+              <Globe className="text-black w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white">Global Community</p>
+              <p className="text-[10px] text-[#ABABAB]">Connect with travelers nearby</p>
+            </div>
+          </div>
+          <ChevronRight className="w-5 h-5 text-[#FFD500]" />
+        </Card>
 
         {/* Quick Actions (activity_main.xml parity) */}
         <div>

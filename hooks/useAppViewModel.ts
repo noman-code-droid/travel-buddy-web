@@ -14,16 +14,17 @@ export function useAppViewModel() {
   const [showSwitchConfirm, setShowSwitchConfirm] = useState(false);
   const [splashFinished, setSplashFinished] = useState(false);
 
-  // Selection States (Parity with Intent extras)
+  // Selection States
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [selectedRideId, setSelectedRideId] = useState<string | null>(null);
+  const [completedRideData, setCompletedRideData] = useState<any>(null);
 
-  // Replicated State from Android (MainActivity.kt parity)
+  // Stats & State (MainActivity.kt parity)
   const [stats, setStats] = useState<UserStats>({ trips: 0, savingsOrEarnings: 0, rating: '★ 5.0' });
   const [activeRide, setActiveRide] = useState<ActiveRideInfo | null>(null);
   const [profileData, setProfileData] = useState<any>(null);
 
-  // Lists for real-time updates
+  // Lists
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
   const [contacts, setContacts] = useState<any[]>([]);
@@ -43,7 +44,7 @@ export function useAppViewModel() {
     return () => clearTimeout(timer);
   }, []);
 
-  // 2. Navigation & Profile Logic
+  // 2. Navigation & Profile Logic (SplashActivity.kt parity)
   useEffect(() => {
     if (!splashFinished || loading) return;
 
@@ -143,7 +144,7 @@ export function useAppViewModel() {
     };
   }, [user, userMode, appState]);
 
-  // 4. Active Ride Listener
+  // 4. Active Ride Listener (MainActivity.kt & TrackRideActivity.kt parity)
   useEffect(() => {
     if (!user || appState !== 'main') return;
 
@@ -156,6 +157,7 @@ export function useAppViewModel() {
           const s = (doc.data().status || '').toLowerCase().replace("_", " ");
           return ["active", "started", "picked up", "picked", "arrived"].includes(s);
         });
+
         if (activeBooking) {
           const data = activeBooking.data();
           setActiveRide({
@@ -169,6 +171,12 @@ export function useAppViewModel() {
             vehicleSubtitle: data.vehicleSubtitle
           });
         } else {
+          // If no active, check if just completed (RideSummaryActivity logic)
+          const lastCompleted = snapshot.docs.find(doc => doc.data().status === 'completed');
+          if (lastCompleted && !subView && activeTab === 'home') {
+             setCompletedRideData(lastCompleted.data());
+             setSubView('summary');
+          }
           setActiveRide(null);
         }
       });
@@ -179,6 +187,7 @@ export function useAppViewModel() {
           const s = (doc.data().status || '').toLowerCase();
           return s === "active" || s === "started";
         });
+
         if (activeRideDoc) {
           const data = activeRideDoc.data();
           setActiveRide({
@@ -195,8 +204,9 @@ export function useAppViewModel() {
         }
       });
     }
+
     return () => { if (unsubActive) unsubActive(); };
-  }, [user, userMode, appState]);
+  }, [user, userMode, appState, activeTab, subView]);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -214,6 +224,7 @@ export function useAppViewModel() {
   };
 
   const navigateToSubView = (view: SubView) => {
+    // Replicating checkModeAndPost logic from MainActivity.kt
     if (view === 'post' && userMode !== 'driver') {
         setShowSwitchConfirm(true);
         return;
@@ -273,10 +284,11 @@ export function useAppViewModel() {
     addContact,
     profileData,
     onProfileComplete: () => setAppState('main'),
-    // Selections
+    // Selection
     selectedChat,
     openChatDetail,
     selectedRideId,
-    openRideDetails
+    openRideDetails,
+    completedRideData
   };
 }
