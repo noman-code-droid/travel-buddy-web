@@ -51,6 +51,7 @@ export default function AppContainer() {
     activeRide,
     unreadNotifications,
     unreadChats,
+    chats,
     contacts,
     loadingContacts,
     addContact,
@@ -58,7 +59,8 @@ export default function AppContainer() {
     profileData,
     selectedChat,
     openChatDetail,
-    selectedRideId
+    selectedRideId,
+    openRideDetails
   } = useAppViewModel();
 
   return (
@@ -87,24 +89,44 @@ export default function AppContainer() {
           >
             {/* Sub-Views (Overlays) */}
             <AnimatePresence>
-              {subView === 'find' && <FindRideView onClose={closeSubView} />}
-              {subView === 'post' && <PostRideView onClose={closeSubView} />}
+              {subView === 'find' && (
+                <FindRideView
+                  key="find"
+                  onClose={closeSubView}
+                  onRideClick={openRideDetails}
+                />
+              )}
+              {subView === 'post' && <PostRideView key="post" onClose={closeSubView} />}
               {subView === 'safety' && (
                 <SafetyView
+                  key="safety"
                   onClose={closeSubView}
                   contacts={contacts}
                   loadingContacts={loadingContacts}
                   onAddContact={addContact}
                 />
               )}
-              {subView === 'notifications' && <NotificationsView onClose={closeSubView} />}
-              {subView === 'chat_list' && <ChatListView onClose={closeSubView} chats={[]} onChatClick={openChatDetail} />}
-              {subView === 'chat_detail' && <ChatDetailView onClose={closeSubView} chat={selectedChat} />}
-              {subView === 'planner' && <PlannerView onClose={closeSubView} />}
-              {subView === 'track_ride' && <TrackRideView onClose={closeSubView} rideInfo={activeRide} />}
-              {subView === 'driver_reg' && <DriverRegistrationView onClose={closeSubView} status={profileData?.verificationStatus || 'none'} />}
-              {subView === 'ride_details' && <RideDetailsView onClose={closeSubView} rideId={selectedRideId} />}
-              {subView === 'financial' && <FinancialReportView onClose={closeSubView} />}
+              {subView === 'notifications' && <NotificationsView key="notif" onClose={closeSubView} />}
+              {subView === 'chat_list' && (
+                <ChatListView
+                  key="chat_list"
+                  onClose={closeSubView}
+                  chats={chats}
+                  onChatClick={openChatDetail}
+                />
+              )}
+              {subView === 'chat_detail' && (
+                <ChatDetailView
+                  key="chat_detail"
+                  onClose={closeSubView}
+                  chat={selectedChat}
+                />
+              )}
+              {subView === 'planner' && <PlannerView key="planner" onClose={closeSubView} />}
+              {subView === 'track_ride' && <TrackRideView key="track" onClose={closeSubView} rideInfo={activeRide} />}
+              {subView === 'driver_reg' && <DriverRegistrationView key="reg" onClose={closeSubView} status={profileData?.verificationStatus || 'none'} />}
+              {subView === 'ride_details' && <RideDetailsView key="details" onClose={closeSubView} rideId={selectedRideId} />}
+              {subView === 'financial' && <FinancialReportView key="finance" onClose={closeSubView} />}
             </AnimatePresence>
 
             {/* Mode Switch Confirmation Dialog */}

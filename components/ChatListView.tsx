@@ -6,12 +6,15 @@ import { Chat } from '@/types';
 
 interface ChatListViewProps {
   onClose: () => void;
+  chats: Chat[];
+  onChatClick: (chat: Chat) => void;
 }
 
-export default function ChatListView({ onClose }: ChatListViewProps) {
-  const chats: Chat[] = [
-    { name: 'Ahmed Khan', lastMsg: 'I am near the gate, please be ready.', time: '10:45 AM', unread: 1 },
-    { name: 'Sara Malik', lastMsg: 'Okay, see you then.', time: 'Yesterday', unread: 0 },
+export default function ChatListView({ onClose, chats, onChatClick }: ChatListViewProps) {
+  // Use real data if provided, otherwise fallback to local list for safety
+  const displayChats = chats.length > 0 ? chats : [
+    { id: '1', name: 'Ahmed Khan', otherUserId: 'driver1', lastMsg: 'I am near the gate, please be ready.', time: '10:45 AM', unread: 1 },
+    { id: '2', name: 'Sara Malik', otherUserId: 'driver2', lastMsg: 'Okay, see you then.', time: 'Yesterday', unread: 0 },
   ];
 
   return (
@@ -27,8 +30,12 @@ export default function ChatListView({ onClose }: ChatListViewProps) {
         <h2 className="font-bold text-[20px]">Messages</h2>
       </div>
       <div className="p-2 space-y-1 overflow-y-auto">
-        {chats.map((chat, i) => (
-          <button key={i} className="w-full bg-[#212121] p-4 flex gap-4 items-center active:bg-[#333333] transition-colors border-b border-[#333333]">
+        {displayChats.map((chat, i) => (
+          <button
+            key={chat.id || i}
+            onClick={() => onChatClick(chat)}
+            className="w-full bg-[#212121] p-4 flex gap-4 items-center active:bg-[#333333] transition-colors border-b border-[#333333]"
+          >
              <div className="w-14 h-14 bg-[#FFD500] rounded-full flex items-center justify-center font-bold text-black text-[20px]">
                 {chat.name[0]}
              </div>
