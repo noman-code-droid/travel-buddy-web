@@ -2,7 +2,21 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, MapPin, Search, X, Compass, User, Calendar, Clock, Bot, Loader2, Navigation, Check } from 'lucide-react';
+import {
+  ArrowLeft,
+  MapPin,
+  Search,
+  X,
+  Compass,
+  User,
+  Calendar,
+  Clock,
+  Bot,
+  Loader2,
+  Navigation,
+  Check,
+  Car
+} from 'lucide-react';
 import Button from './ui/Button';
 import Input from './ui/Input';
 import Card from './ui/Card';
@@ -206,7 +220,7 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
               )}
             </GoogleMap>
 
-            {/* FIXED CENTER PIN (Outside GoogleMap children) */}
+            {/* FIXED CENTER PIN */}
             {currentStep !== 'MAP_ROUTE_PREVIEW' && (
               <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full z-10 pointer-events-none mb-1">
                 <motion.div

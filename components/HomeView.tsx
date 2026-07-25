@@ -1,6 +1,19 @@
 'use client';
 
-import { User, Bell, MessageSquare, Search, Plus, Compass, Bot, ClipboardList, Users, Navigation, Globe } from 'lucide-react';
+import {
+  User,
+  Bell,
+  MessageSquare,
+  Search,
+  Plus,
+  Compass,
+  Bot,
+  ClipboardList,
+  Users,
+  Navigation,
+  Globe,
+  ChevronRight
+} from 'lucide-react';
 import { UserMode, SubView, UserStats, ActiveRideInfo } from '@/types';
 import Card from './ui/Card';
 import Button from './ui/Button';
@@ -24,7 +37,7 @@ export default function HomeView({
 }: HomeViewProps) {
   return (
     <div className="flex flex-col h-full">
-      {/* Sticky App Bar (activity_main.xml parity) */}
+      {/* Sticky App Bar */}
       <div className="sticky top-0 z-20 bg-black p-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#FFD500] rounded-full flex items-center justify-center overflow-hidden border-2 border-[#FFD500]">
@@ -54,7 +67,7 @@ export default function HomeView({
       </div>
 
       <div className="p-4 space-y-6">
-        {/* Quick Stats (activity_main.xml parity) */}
+        {/* Quick Stats */}
         <div className="flex gap-3">
            <Card className="flex-1 p-4 flex flex-col items-center">
              <span className="text-[17px] font-bold text-white">{stats.trips}</span>
@@ -75,7 +88,7 @@ export default function HomeView({
            </Card>
         </div>
 
-        {/* Global Chat CTA (activity_main.xml addition) */}
+        {/* Global Chat CTA */}
         <Card
           variant="active"
           className="p-4 flex items-center justify-between cursor-pointer"
@@ -93,7 +106,7 @@ export default function HomeView({
           <ChevronRight className="w-5 h-5 text-[#FFD500]" />
         </Card>
 
-        {/* Quick Actions (activity_main.xml parity) */}
+        {/* Quick Actions */}
         <div>
           <h2 className="text-[18px] font-bold text-white mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
@@ -150,7 +163,7 @@ export default function HomeView({
           </div>
         </div>
 
-        {/* Active Ride Section (activity_track_ride.xml parity) */}
+        {/* Active Ride Section */}
         {activeRide && (
           <div>
             <h2 className="text-[18px] font-bold text-white mb-4">Active Ride</h2>
