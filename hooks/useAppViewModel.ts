@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AppState, UserMode, ActiveTab, SubView, UserStats, ActiveRideInfo, Notification, Chat } from '@/types';
 import { auth, db } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -36,6 +36,20 @@ export function useAppViewModel() {
   // Loading states
   const [loadingContacts, setLoadingContacts] = useState(false);
 
+  // 0. Profile Gate Logic (Extracted to fix build error)
+  const checkProfileCompletion = useCallback(async (uid: string) => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists() && userDoc.data().phone) {
+        setAppState('main');
+      } else {
+        setAppState('complete_profile');
+      }
+    } catch (err) {
+      setAppState('main');
+    }
+  }, []);
+
   // 1. Splash Timer
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -49,19 +63,7 @@ export function useAppViewModel() {
     if (!splashFinished || loading) return;
 
     if (user) {
-      const checkProfile = async () => {
-        try {
-          const userDoc = await getDoc(doc(db, "users", user.uid));
-          if (userDoc.exists() && userDoc.data().phone) {
-            setAppState('main');
-          } else {
-            setAppState('complete_profile');
-          }
-        } catch (err) {
-          setAppState('main');
-        }
-      };
-      checkProfile();
+      checkProfileCompletion(user.uid);
     } else {
       const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
       if (hasSeenOnboarding === 'true') {
@@ -70,7 +72,7 @@ export function useAppViewModel() {
         setAppState('onboarding');
       }
     }
-  }, [splashFinished, loading, user]);
+  }, [splashFinished, loading, user, checkProfileCompletion]);
 
   // 3. Main Data Listeners (activity_main.xml parity)
   useEffect(() => {
