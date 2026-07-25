@@ -43,7 +43,14 @@ export interface Ride {
   time: string;
   status: string;
   notes?: string;
+  createdAt?: any;
+  dropOffLocation?: string;
+  pickupLocation?: string;
+  departureDate?: string;
 }
+
+// Fixed: Exporting RideHistory to resolve build error in RidesView
+export type RideHistory = Ride;
 
 export interface Notification {
   title: string;

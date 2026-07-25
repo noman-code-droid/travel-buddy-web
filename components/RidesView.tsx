@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Clock, Loader2, MapPin } from 'lucide-react';
-import { UserMode, RideHistory } from '@/types';
+import { UserMode } from '@/types';
 import Card from './ui/Card';
 import { db, auth } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
