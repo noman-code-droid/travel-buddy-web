@@ -53,11 +53,11 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
       transition={{ type: 'spring', damping: 25, stiffness: 200 }}
       className="absolute inset-0 bg-black z-[60] flex flex-col"
     >
-      <div className="p-4 flex items-center gap-4">
+      <div className="p-4 flex items-center gap-4 border-b border-[#333333] bg-black z-10">
         <button onClick={handlePrev} disabled={loading}>
           <ArrowLeft className="text-white w-7 h-7" />
         </button>
-        <h2 className="font-bold text-[20px] flex-1 text-center mr-7">
+        <h2 className="font-bold text-[20px] flex-1 text-center mr-7 text-white">
           {step === 4 ? 'Verification Status' : 'Driver Registration'}
         </h2>
       </div>
@@ -72,13 +72,13 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto p-6 bg-black">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold">Vehicle Details</h3>
-                <p className="text-[#ABABAB] text-sm font-medium">Tell us about the car you'll be driving.</p>
+                <h3 className="text-2xl font-bold text-white">Vehicle Details</h3>
+                <p className="text-[#ABABAB] text-sm">Tell us about the car you'll be driving.</p>
               </div>
               <div className="space-y-4">
                 <Input label="Vehicle Make" placeholder="e.g. Honda, Toyota" value={formData.vehicleMake} onChange={e => setFormData({...formData, vehicleMake: e.target.value})} />
@@ -94,8 +94,8 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
           {step === 2 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold">License Information</h3>
-                <p className="text-[#ABABAB] text-sm font-medium">Upload your driving license details.</p>
+                <h3 className="text-2xl font-bold text-white">License Information</h3>
+                <p className="text-[#ABABAB] text-sm">Upload your driving license details.</p>
               </div>
               <Input label="License Number" placeholder="e.g. PB-12345678" value={formData.licenseNumber} onChange={e => setFormData({...formData, licenseNumber: e.target.value})} />
 
@@ -118,8 +118,8 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
           {step === 3 && (
             <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 flex flex-col items-center text-center">
               <div className="space-y-2 w-full text-left">
-                <h3 className="text-2xl font-bold">Identity Verification</h3>
-                <p className="text-[#ABABAB] text-sm font-medium">Take a clear photo of yourself.</p>
+                <h3 className="text-2xl font-bold text-white">Identity Verification</h3>
+                <p className="text-[#ABABAB] text-sm">Take a clear photo of yourself.</p>
               </div>
 
               <div className="w-48 h-48 bg-[#212121] rounded-full border-4 border-[#333333] flex items-center justify-center relative overflow-hidden group active:border-[#FFD500] transition-colors">
@@ -155,7 +155,7 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold">
+                <h3 className="text-2xl font-bold text-white">
                   {status === 'approved' ? 'Verified Driver' : 'Application Under Review'}
                 </h3>
                 <p className="text-[#ABABAB] text-sm leading-relaxed max-w-[260px]">
