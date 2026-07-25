@@ -47,6 +47,7 @@ export default function AppContainer() {
     closeSubView,
     requestSwitchMode,
     cancelSwitchMode,
+    openAiAssistant,
     // Real-time Data
     stats,
     activeRide,
@@ -174,6 +175,7 @@ export default function AppContainer() {
                 <HomeView
                   userMode={userMode}
                   onNavigate={navigateToSubView}
+                  onOpenAiAssistant={openAiAssistant}
                   stats={stats}
                   activeRide={activeRide}
                   unreadNotifications={unreadNotifications}

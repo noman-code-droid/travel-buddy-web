@@ -14,29 +14,22 @@ export function useAppViewModel() {
   const [showSwitchConfirm, setShowSwitchConfirm] = useState(false);
   const [splashFinished, setSplashFinished] = useState(false);
 
-  // Selection States (Intent Extra parity)
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [selectedRideId, setSelectedRideId] = useState<string | null>(null);
   const [completedRideData, setCompletedRideData] = useState<any>(null);
 
-  // Stats & State (MainActivity.kt parity)
   const [stats, setStats] = useState<UserStats>({ trips: 0, savingsOrEarnings: 0, rating: '★ 5.0' });
   const [activeRide, setActiveRide] = useState<ActiveRideInfo | null>(null);
   const [profileData, setProfileData] = useState<any>(null);
 
-  // Lists
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
   const [contacts, setContacts] = useState<any[]>([]);
 
-  // Badge counts
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [unreadChats, setUnreadChats] = useState(0);
-
-  // Loading states
   const [loadingContacts, setLoadingContacts] = useState(false);
 
-  // 0. Profile Gate Logic (Extracted to fix build error)
   const checkProfileCompletion = useCallback(async (uid: string) => {
     try {
       const userDoc = await getDoc(doc(db, "users", uid));
@@ -50,40 +43,28 @@ export function useAppViewModel() {
     }
   }, []);
 
-  // 1. Splash Timer
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setSplashFinished(true);
-    }, 2500);
+    const timer = setTimeout(() => { setSplashFinished(true); }, 2500);
     return () => clearTimeout(timer);
   }, []);
 
-  // 2. Navigation & Profile Logic (SplashActivity.kt parity)
   useEffect(() => {
     if (!splashFinished || loading) return;
-
     if (user) {
       checkProfileCompletion(user.uid);
     } else {
       const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
-      if (hasSeenOnboarding === 'true') {
-        setAppState('auth');
-      } else {
-        setAppState('onboarding');
-      }
+      setAppState(hasSeenOnboarding === 'true' ? 'auth' : 'onboarding');
     }
   }, [splashFinished, loading, user, checkProfileCompletion]);
 
-  // 3. Main Data Listeners (activity_main.xml parity)
   useEffect(() => {
     if (!user || (appState !== 'main' && appState !== 'complete_profile')) return;
 
-    // A. Profile & Stats Listener
     const unsubStats = onSnapshot(doc(db, "users", user.uid), (snapshot) => {
       if (!snapshot.exists()) return;
       const data = snapshot.data();
       setProfileData(data);
-
       if (userMode === 'driver') {
         setStats({
           trips: data.driverTrips || 0,
@@ -99,27 +80,24 @@ export function useAppViewModel() {
       }
     });
 
-    // B. Notifications & Badges
     const unsubNotif = onSnapshot(
       query(collection(db, "users", user.uid, "notifications"), orderBy("timestamp", "desc"), limit(20)),
       (snapshot) => {
-        const list = snapshot.docs.map(doc => ({
+        setNotifications(snapshot.docs.map(doc => ({
           title: doc.data().title || 'Update',
           desc: doc.data().description || '',
           time: doc.data().timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || 'Just now',
           type: doc.data().type || 'info'
-        } as Notification));
-        setNotifications(list);
+        } as Notification)));
         setUnreadNotifications(snapshot.docs.filter(d => d.data().isUnread).length);
       }
     );
 
-    // C. Chats & Badges
     const unsubChats = onSnapshot(
       query(collection(db, "chats"), where("participants", "array-contains", user.uid)),
       (snapshot) => {
         let totalUnread = 0;
-        const list = snapshot.docs.map(doc => {
+        setChats(snapshot.docs.map(doc => {
             const data = doc.data();
             const unread = data[`unreadCount_${user.uid}`] || 0;
             totalUnread += unread;
@@ -131,172 +109,76 @@ export function useAppViewModel() {
                 time: data.lastMessageTime?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || '',
                 unread: unread
             } as Chat;
-        });
-        setChats(list);
+        }));
         setUnreadChats(totalUnread);
       }
     );
 
-    // D. Trusted Contacts
-    setLoadingContacts(true);
     const unsubContacts = onSnapshot(
       query(collection(db, "trusted_contacts"), where("userId", "==", user.uid)),
-      (snapshot) => {
-        setContacts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        setLoadingContacts(false);
-      }
+      (snapshot) => { setContacts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))); }
     );
 
-    return () => {
-      unsubStats(); unsubNotif(); unsubChats(); unsubContacts();
-    };
+    return () => { unsubStats(); unsubNotif(); unsubChats(); unsubContacts(); };
   }, [user, userMode, appState]);
 
-  // 4. Active Ride Listener (MainActivity.kt parity)
   useEffect(() => {
     if (!user || appState !== 'main') return;
-
     let unsubActive: (() => void) | undefined;
 
     if (userMode === 'passenger') {
-      const q = query(collection(db, "bookings"), where("passengerId", "==", user.uid));
-      unsubActive = onSnapshot(q, (snapshot) => {
-        const activeBooking = snapshot.docs.find(doc => {
-          const s = (doc.data().status || '').toLowerCase().replace("_", " ");
-          return ["active", "started", "picked up", "picked", "arrived"].includes(s);
-        });
-
+      unsubActive = onSnapshot(query(collection(db, "bookings"), where("passengerId", "==", user.uid)), (snapshot) => {
+        const activeBooking = snapshot.docs.find(doc => ["active", "started", "picked up", "picked", "arrived"].includes((doc.data().status || '').toLowerCase().replace("_", " ")));
         if (activeBooking) {
           const data = activeBooking.data();
           setActiveRide({
-            id: data.rideId,
-            driverId: data.driverId,
-            driverName: data.driverName || 'Driver',
-            status: data.status,
-            route: `${data.pickupLocation || ''} → ${data.dropOffLocation || ''}`,
-            isDriver: false,
-            driverPhoto: data.driverPhoto,
-            vehicleSubtitle: data.vehicleSubtitle
+            id: data.rideId, driverId: data.driverId, driverName: data.driverName || 'Driver', status: data.status,
+            route: `${data.pickupLocation || ''} → ${data.dropOffLocation || ''}`, isDriver: false, driverPhoto: data.driverPhoto, vehicleSubtitle: data.vehicleSubtitle
           });
         } else {
-          // Ride Completion Flow (RideSummaryActivity.kt parity)
-          const lastCompleted = snapshot.docs.find(doc => doc.data().status === 'completed');
-          if (lastCompleted && !subView && activeTab === 'home') {
-             setCompletedRideData(lastCompleted.data());
-             setSubView('summary');
-          }
+          const lastComp = snapshot.docs.find(doc => doc.data().status === 'completed');
+          if (lastComp && !subView && activeTab === 'home') { setCompletedRideData(lastComp.data()); setSubView('summary'); }
           setActiveRide(null);
         }
       });
     } else {
-      const q = query(collection(db, "rides"), where("driverId", "==", user.uid));
-      unsubActive = onSnapshot(q, (snapshot) => {
-        const activeRideDoc = snapshot.docs.find(doc => {
-          const s = (doc.data().status || '').toLowerCase();
-          return s === "active" || s === "started";
-        });
-
+      unsubActive = onSnapshot(query(collection(db, "rides"), where("driverId", "==", user.uid)), (snapshot) => {
+        const activeRideDoc = snapshot.docs.find(doc => ["active", "started"].includes((doc.data().status || '').toLowerCase()));
         if (activeRideDoc) {
           const data = activeRideDoc.data();
           setActiveRide({
-            id: activeRideDoc.id,
-            driverId: user.uid,
-            driverName: 'Me (Driver)',
-            status: data.status,
-            route: `${data.pickupLocation} → ${data.dropOffLocation}`,
-            isDriver: true,
-            vehicleSubtitle: `${data.vehicleMake} ${data.vehicleModel}`
+            id: activeRideDoc.id, driverId: user.uid, driverName: 'Me (Driver)', status: data.status,
+            route: `${data.pickupLocation} → ${data.dropOffLocation}`, isDriver: true, vehicleSubtitle: `${data.vehicleMake} ${data.vehicleModel}`
           });
-        } else {
-          setActiveRide(null);
-        }
+        } else { setActiveRide(null); }
       });
     }
-
     return () => { if (unsubActive) unsubActive(); };
   }, [user, userMode, appState, activeTab, subView]);
 
-  const handleLogout = async () => {
-    await signOut(auth);
-    setAppState('auth');
-    setActiveTab('home');
-  };
-
-  const handleAuthSuccess = () => {
-    if (appState === 'onboarding') {
-      localStorage.setItem('hasSeenOnboarding', 'true');
-      setAppState('auth');
-    } else if (user) {
-      checkProfileCompletion(user.uid);
-    }
-  };
-
-  const navigateToSubView = (view: SubView) => {
-    // Replicating checkModeAndPost logic from MainActivity.kt
-    if (view === 'post' && userMode !== 'driver') {
-        setShowSwitchConfirm(true);
-        return;
-    }
-    if (view === 'post' && profileData?.verificationStatus !== 'approved') {
-        setSubView('driver_reg');
-        return;
-    }
-    setSubView(view);
-  };
-
-  const openChatDetail = (chat: Chat) => {
-    setSelectedChat(chat);
-    setSubView('chat_detail');
-  };
-
-  const openRideDetails = (id: string) => {
-    setSelectedRideId(id);
-    setSubView('ride_details');
-  };
-
-  const addContact = async (name: string, phone: string) => {
-    if (!user) return;
-    await addDoc(collection(db, "trusted_contacts"), {
-      userId: user.uid,
-      name,
-      phone,
-      createdAt: serverTimestamp()
-    });
-  };
-
   return {
-    user,
-    loadingAuth: loading,
-    appState,
-    userMode,
-    activeTab,
-    subView,
-    showSwitchConfirm,
+    user, appState, userMode, activeTab, subView, showSwitchConfirm,
     setActiveTab,
-    handleAuthSuccess,
-    handleLogout,
+    handleAuthSuccess: () => {
+        if (appState === 'onboarding') { localStorage.setItem('hasSeenOnboarding', 'true'); setAppState('auth'); }
+        else if (user) { checkProfileCompletion(user.uid); }
+    },
+    handleLogout: async () => { await signOut(auth); setAppState('auth'); setActiveTab('home'); },
     handleSwitchMode: () => { setUserMode(prev => prev === 'passenger' ? 'driver' : 'passenger'); setShowSwitchConfirm(false); },
-    navigateToSubView,
+    navigateToSubView: (view: SubView) => {
+        if (view === 'post' && userMode !== 'driver') { setShowSwitchConfirm(true); return; }
+        if (view === 'post' && profileData?.verificationStatus !== 'approved') { setSubView('driver_reg'); return; }
+        setSubView(view);
+    },
     closeSubView: () => setSubView(null),
     requestSwitchMode: () => setShowSwitchConfirm(true),
     cancelSwitchMode: () => setShowSwitchConfirm(false),
-    // Real-time Data
-    stats,
-    activeRide,
-    notifications,
-    chats,
-    unreadNotifications,
-    unreadChats,
-    contacts,
-    loadingContacts,
-    addContact,
-    profileData,
+    openAiAssistant: () => { setSubView(null); setActiveTab('explore'); },
+    stats, activeRide, notifications, chats, unreadNotifications, unreadChats, contacts, loadingContacts, profileData,
+    addContact: async (name: string, phone: string) => { if (user) await addDoc(collection(db, "trusted_contacts"), { userId: user.uid, name, phone, createdAt: serverTimestamp() }); },
     onProfileComplete: () => setAppState('main'),
-    // Selections
-    selectedChat,
-    openChatDetail,
-    selectedRideId,
-    openRideDetails,
+    selectedChat, openChatDetail: (chat: Chat) => { setSelectedChat(chat); setSubView('chat_detail'); },
+    selectedRideId, openRideDetails: (id: string) => { setSelectedRideId(id); setSubView('ride_details'); },
     completedRideData
   };
 }
