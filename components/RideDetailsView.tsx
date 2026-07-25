@@ -15,7 +15,10 @@ import {
   ShieldCheck,
   Loader2,
   Car,
-  Users
+  Users,
+  Users2,
+  Navigation,
+  Info
 } from 'lucide-react';
 import { Ride } from '@/types';
 import Card from './ui/Card';
@@ -232,7 +235,7 @@ export default function RideDetailsView({ onClose, rideId }: RideDetailsViewProp
           <div className="flex justify-between items-center bg-[#212121] p-4 rounded-2xl border border-[#333333]">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                <Users className="w-4 h-4 text-[#FFD500]" />
+                <Users2 className="w-4 h-4 text-[#FFD500]" />
               </div>
               <span className="text-sm font-medium">Reserve all {availableSeats} seats</span>
             </div>
@@ -250,7 +253,7 @@ export default function RideDetailsView({ onClose, rideId }: RideDetailsViewProp
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-[#666666] uppercase ml-1">Notes from Driver</h4>
             <Card variant="flat" className="p-4">
-              <p className="text-sm text-[#ABABAB] leading-relaxed italic italic">"{ride.notes}"</p>
+              <p className="text-sm text-[#ABABAB] leading-relaxed italic">"{ride.notes}"</p>
             </Card>
           </div>
         )}

@@ -2,14 +2,27 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Phone, MessageSquare, AlertTriangle, Camera, Share2, Navigation, X, User, Star, Loader2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  Phone,
+  MessageSquare,
+  AlertTriangle,
+  Camera,
+  Share2,
+  Navigation,
+  X,
+  User,
+  Star,
+  Loader2,
+  Car
+} from 'lucide-react';
 import { GoogleMap, useJsApiLoader, MarkerF, DirectionsRenderer } from '@react-google-maps/api';
 import { ActiveRideInfo } from '@/types';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import { androidMapStyle } from '@/lib/map-style';
 import { db, auth } from '@/lib/firebase';
-import { doc, onSnapshot, updateDoc, increment, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 interface TrackRideViewProps {
   onClose: () => void;
@@ -31,7 +44,6 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
     libraries: ['places']
   });
 
-  // Replicating startRideLiveTracking from TrackRideActivity.kt
   useEffect(() => {
     if (!rideInfo?.id) return;
     const unsub = onSnapshot(doc(db, "rides", rideInfo.id), (snapshot) => {
@@ -42,7 +54,6 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
     return () => unsub();
   }, [rideInfo]);
 
-  // Fetch directions for the route
   useEffect(() => {
     if (!rideData || !window.google) return;
     const ds = new google.maps.DirectionsService();
@@ -55,7 +66,6 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
     });
   }, [rideData]);
 
-  // Matches sendWhatsAppSos in TrackRideActivity.kt
   const handleSos = () => {
     if (!rideData || !rideInfo) return;
     const locUrl = `https://www.google.com/maps?q=${rideData.pickupLat},${rideData.pickupLng}`;
@@ -63,7 +73,6 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
-  // Matches shareLiveLocation in TrackRideActivity.kt
   const handleShare = () => {
     if (!rideData) return;
     const msg = `I'm on a ride with ${rideInfo?.driverName}. Track me: https://www.google.com/maps?q=${rideData.pickupLat},${rideData.pickupLng}`;
@@ -105,7 +114,6 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
           )}
         </div>
 
-        {/* Overlays */}
         <div className="absolute top-4 left-4 z-20">
           <button onClick={onClose} className="w-12 h-12 bg-[#1A1A1A] rounded-full flex items-center justify-center shadow-lg border border-white/5"><ArrowLeft className="text-white w-6 h-6" /></button>
         </div>
@@ -139,7 +147,12 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
 
         <div className="mt-auto bg-black rounded-t-[32px] p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] border-t border-white/5 z-30">
           <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-white mb-1">{rideData?.status ? rideData.status.replace("_", " ").toUpperCase() : 'In Progress'}</h2>
+          <h2 className="text-2xl font-bold text-white mb-1">
+            <span className="flex items-center gap-2">
+               <Car className="w-6 h-6 text-[#FFD500]" />
+               {rideData?.status ? rideData.status.replace("_", " ").toUpperCase() : 'In Progress'}
+            </span>
+          </h2>
           <p className="text-[#80FFFFFF] text-base mb-6">{rideData?.vehicleMake} {rideData?.vehicleModel} • {rideData?.registrationNumber}</p>
           <Button variant="ghost" className="w-full text-[#FF5252] border border-white/10 !h-14 font-bold">Cancel Ride</Button>
         </div>
