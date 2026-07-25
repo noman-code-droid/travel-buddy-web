@@ -14,7 +14,7 @@ export function useAppViewModel() {
   const [showSwitchConfirm, setShowSwitchConfirm] = useState(false);
   const [splashFinished, setSplashFinished] = useState(false);
 
-  // Selection States
+  // Selection States (Intent Extra parity)
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [selectedRideId, setSelectedRideId] = useState<string | null>(null);
   const [completedRideData, setCompletedRideData] = useState<any>(null);
@@ -72,10 +72,11 @@ export function useAppViewModel() {
     }
   }, [splashFinished, loading, user]);
 
-  // 3. Main Data Listeners
+  // 3. Main Data Listeners (activity_main.xml parity)
   useEffect(() => {
     if (!user || (appState !== 'main' && appState !== 'complete_profile')) return;
 
+    // A. Profile & Stats Listener
     const unsubStats = onSnapshot(doc(db, "users", user.uid), (snapshot) => {
       if (!snapshot.exists()) return;
       const data = snapshot.data();
@@ -96,6 +97,7 @@ export function useAppViewModel() {
       }
     });
 
+    // B. Notifications & Badges
     const unsubNotif = onSnapshot(
       query(collection(db, "users", user.uid, "notifications"), orderBy("timestamp", "desc"), limit(20)),
       (snapshot) => {
@@ -110,6 +112,7 @@ export function useAppViewModel() {
       }
     );
 
+    // C. Chats & Badges
     const unsubChats = onSnapshot(
       query(collection(db, "chats"), where("participants", "array-contains", user.uid)),
       (snapshot) => {
@@ -132,10 +135,13 @@ export function useAppViewModel() {
       }
     );
 
+    // D. Trusted Contacts
+    setLoadingContacts(true);
     const unsubContacts = onSnapshot(
       query(collection(db, "trusted_contacts"), where("userId", "==", user.uid)),
       (snapshot) => {
         setContacts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setLoadingContacts(false);
       }
     );
 
@@ -144,7 +150,7 @@ export function useAppViewModel() {
     };
   }, [user, userMode, appState]);
 
-  // 4. Active Ride Listener (MainActivity.kt & TrackRideActivity.kt parity)
+  // 4. Active Ride Listener (MainActivity.kt parity)
   useEffect(() => {
     if (!user || appState !== 'main') return;
 
@@ -171,7 +177,7 @@ export function useAppViewModel() {
             vehicleSubtitle: data.vehicleSubtitle
           });
         } else {
-          // If no active, check if just completed (RideSummaryActivity logic)
+          // Ride Completion Flow (RideSummaryActivity.kt parity)
           const lastCompleted = snapshot.docs.find(doc => doc.data().status === 'completed');
           if (lastCompleted && !subView && activeTab === 'home') {
              setCompletedRideData(lastCompleted.data());
@@ -284,7 +290,7 @@ export function useAppViewModel() {
     addContact,
     profileData,
     onProfileComplete: () => setAppState('main'),
-    // Selection
+    // Selections
     selectedChat,
     openChatDetail,
     selectedRideId,
