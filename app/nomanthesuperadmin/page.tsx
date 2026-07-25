@@ -26,7 +26,8 @@ import {
   Loader2,
   Lock,
   ArrowLeft,
-  Trash2
+  Trash2,
+  ChevronRight
 } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -38,7 +39,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
-  const [actionLoading, setActionActionLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -146,6 +147,7 @@ export default function AdminDashboard() {
                       {user.verificationStatus}
                     </p>
                   </div>
+                  <ChevronRight className="w-4 h-4 text-[#222222]" />
                 </Card>
               </button>
             ))
