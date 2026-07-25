@@ -2,7 +2,16 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, User, FileText, Camera, ShieldCheck, CheckCircle2, ChevronRight, Upload, Clock } from 'lucide-react';
+import {
+  ArrowLeft,
+  User,
+  Camera,
+  ShieldCheck,
+  CheckCircle2,
+  ChevronRight,
+  Upload,
+  Clock
+} from 'lucide-react';
 import Button from './ui/Button';
 import Input from './ui/Input';
 import Card from './ui/Card';
