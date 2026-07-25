@@ -2,7 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, User, Star, MapPin, Calendar, Clock, MessageSquare, ChevronRight, CheckCircle2, ShieldCheck, Loader2, Car, Users } from 'lucide-react';
+import {
+  ArrowLeft,
+  User,
+  Star,
+  MapPin,
+  Calendar,
+  Clock,
+  MessageSquare,
+  ChevronRight,
+  CheckCircle2,
+  ShieldCheck,
+  Loader2,
+  Car,
+  Users
+} from 'lucide-react';
 import { Ride } from '@/types';
 import Card from './ui/Card';
 import Button from './ui/Button';

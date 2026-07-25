@@ -37,7 +37,7 @@ export default function HomeView({
 }: HomeViewProps) {
   return (
     <div className="flex flex-col h-full">
-      {/* Sticky App Bar */}
+      {/* Sticky App Bar (activity_main.xml parity) */}
       <div className="sticky top-0 z-20 bg-black p-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#FFD500] rounded-full flex items-center justify-center overflow-hidden border-2 border-[#FFD500]">
@@ -67,7 +67,7 @@ export default function HomeView({
       </div>
 
       <div className="p-4 space-y-6">
-        {/* Quick Stats */}
+        {/* Quick Stats (activity_main.xml parity) */}
         <div className="flex gap-3">
            <Card className="flex-1 p-4 flex flex-col items-center">
              <span className="text-[17px] font-bold text-white">{stats.trips}</span>
@@ -88,7 +88,7 @@ export default function HomeView({
            </Card>
         </div>
 
-        {/* Global Chat CTA */}
+        {/* Global Chat CTA (activity_main.xml addition) */}
         <Card
           variant="active"
           className="p-4 flex items-center justify-between cursor-pointer"
@@ -106,7 +106,7 @@ export default function HomeView({
           <ChevronRight className="w-5 h-5 text-[#FFD500]" />
         </Card>
 
-        {/* Quick Actions */}
+        {/* Quick Actions (activity_main.xml parity) */}
         <div>
           <h2 className="text-[18px] font-bold text-white mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
@@ -135,7 +135,7 @@ export default function HomeView({
               className="bg-[#212121] rounded-[24px] p-5 flex flex-col items-center gap-3 transition-all active:bg-[#333333] border border-transparent active:border-[#FFD500]/30"
             >
               <div className="w-12 h-12 bg-[#FFD50010] rounded-full flex items-center justify-center">
-                <Compass className="w-7 h-7 text-[#FFD500]" />
+                <Compass className="text-white w-7 h-7" />
               </div>
               <span className="text-[14px] font-medium text-white">AI Planner</span>
             </button>
@@ -163,7 +163,7 @@ export default function HomeView({
           </div>
         </div>
 
-        {/* Active Ride Section */}
+        {/* Active Ride Section (activity_track_ride.xml parity) */}
         {activeRide && (
           <div>
             <h2 className="text-[18px] font-bold text-white mb-4">Active Ride</h2>

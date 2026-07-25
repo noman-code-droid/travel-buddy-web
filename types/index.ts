@@ -45,15 +45,6 @@ export interface Ride {
   notes?: string;
 }
 
-export interface RideHistory {
-  id?: string;
-  from: string;
-  to: string;
-  date: string;
-  price: string;
-  status: string;
-}
-
 export interface Notification {
   title: string;
   desc: string;
