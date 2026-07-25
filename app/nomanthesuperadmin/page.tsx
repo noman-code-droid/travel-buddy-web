@@ -10,9 +10,7 @@ import {
   doc,
   updateDoc,
   getDoc,
-  deleteDoc,
-  serverTimestamp,
-  getDocs
+  serverTimestamp
 } from 'firebase/firestore';
 import { UserProfile } from '@/types';
 import {
@@ -22,7 +20,6 @@ import {
   FileText,
   ExternalLink,
   ShieldCheck,
-  AlertCircle,
   Loader2,
   Lock,
   ArrowLeft,
@@ -76,8 +73,12 @@ export default function AdminDashboard() {
         userType: status === 'approved' ? 'driver' : 'passenger'
       });
       setSelectedUser(null);
-    } catch (error) { alert("Action failed."); }
-    finally { setActionLoading(false); }
+      alert(`User ${status} successfully!`);
+    } catch (error) {
+      alert("Action failed.");
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const handleDeleteApplication = async (uid: string) => {
@@ -91,15 +92,18 @@ export default function AdminDashboard() {
         cnicUrl: null
       });
       setSelectedUser(null);
-      alert("Application deleted (CRUD: Delete)");
-    } catch (error) { alert("Delete failed."); }
-    finally { setActionLoading(false); }
+      alert("Application deleted successfully.");
+    } catch (error) {
+      alert("Delete failed.");
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   if (isAdmin === null || loading) return (
-    <div className="h-screen bg-black flex flex-col items-center justify-center">
+    <div className="h-screen bg-black flex flex-col items-center justify-center gap-4">
       <Loader2 className="w-10 h-10 text-[#FFD500] animate-spin" />
-      <p className="text-[#666666] font-bold uppercase tracking-widest text-[10px] mt-4">Security Check Active</p>
+      <p className="text-[#666666] font-bold uppercase tracking-widest text-[10px]">Verifying Credentials</p>
     </div>
   );
 
