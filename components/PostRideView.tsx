@@ -197,10 +197,10 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
           <div className="relative w-full h-full">
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
-              defaultCenter={lahore}
+              center={lahore}
               zoom={13}
               onLoad={map => { mapRef.current = map; }}
-              onCameraIdle={onCameraIdle}
+              onIdle={onCameraIdle}
               onDragStart={() => setIsPanning(true)}
               options={{
                 disableDefaultUI: false,
