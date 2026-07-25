@@ -24,7 +24,6 @@ import { db, auth } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { GoogleMap, useJsApiLoader, DirectionsRenderer, Autocomplete } from '@react-google-maps/api';
 import { CarpoolFinanceManager } from '@/lib/finance';
-import { androidMapStyle } from '@/lib/map-style';
 
 interface PostRideViewProps {
   onClose: () => void;
@@ -200,12 +199,11 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
               mapContainerStyle={mapContainerStyle}
               defaultCenter={lahore}
               zoom={13}
-              onLoad={map => mapRef.current = map}
+              onLoad={map => { mapRef.current = map; }}
               onCameraIdle={onCameraIdle}
               onDragStart={() => setIsPanning(true)}
               options={{
-                disableDefaultUI: true,
-                styles: androidMapStyle,
+                disableDefaultUI: false,
                 gestureHandling: 'greedy'
               }}
             >
@@ -247,7 +245,7 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
             {currentStep !== 'MAP_ROUTE_PREVIEW' && (
               <div className="absolute top-4 left-4 right-4 z-20">
                 <Autocomplete
-                  onLoad={autocomplete => autocompleteRef.current = autocomplete}
+                  onLoad={autocomplete => { autocompleteRef.current = autocomplete; }}
                   onPlaceChanged={onPlaceSelected}
                   options={{ componentRestrictions: { country: 'pk' } }}
                 >
