@@ -1,33 +1,31 @@
 export const travelKnowledge = `
-# Travel Buddy Safety & Local Guide (Pakistan)
+# Travel Buddy Official Knowledge Base (Pakistan Edition)
 
-## Emergency Procedures
-- In case of an emergency, press the SOS button in the app.
-- Local Emergency Number: 15 (Police), 1122 (Ambulance).
-- Always share your live ride location with at least one "Trusted Contact."
+## 1. Our Unique Business Model: Cost-Sharing
+- Travel Buddy is NOT a taxi service or Uber clone. It is a carpooling network.
+- Purpose: To solve the fuel crisis and high travel costs in Pakistan.
+- Pricing Logic: We use a "Zero-Profit" model.
+  * Small Cars (1000cc or less): 38 PKR/km
+  * Large Cars/SUVs: 54 PKR/km
+- Total trip cost is divided by (Number of Passengers + 1 Driver). The driver only offsets their own fuel cost.
 
-## Ride Sharing & Pricing Policies
-- **Driver Verification:** Drivers must verify their license and CNIC before approval.
-- **Safety Check:** Passengers should verify the car's plate number matches the app details.
-- **Vehicle Categories:**
-  - Small Car: 1-3 passenger seats (e.g., Hatchbacks, Sedans).
-  - Large Car/SUV: 4-6 passenger seats.
-- **Fair Pricing Logic:**
-  - Travel Buddy uses a cost-sharing model, not a for-profit taxi model.
-  - Suggested price is calculated based on distance and vehicle type (Small vs. Large).
-  - For Small Cars, the estimated operational cost is 38 PKR/km.
-  - For Large Cars, the estimated operational cost is 54 PKR/km.
-  - The total cost is shared between the driver and all passengers. Prices are rounded to the nearest 10 PKR for convenience.
-- **Savings:** Travel Buddy is significantly cheaper than market rates (like InDrive or Yango) because it focuses on cost-offsetting for the driver.
+## 2. Safety & Emergency (Pakistan)
+- SOS Button: Immediately shares your live location with Trusted Contacts via WhatsApp/SMS.
+- Emergency Numbers:
+  * Police: 15
+  * Ambulance (Edhi/1122): 1122
+  * Motorway Police (NH&MP): 130
+- Verification: Every driver has been manually verified via CNIC and Driving License in our Admin Ops portal.
 
-## Local Travel Tips
-- Best time to travel in Northern Areas: May to September.
-- Carry physical cash as many remote areas do not accept digital payments.
-- Respect local customs and dress modestly in rural areas.
+## 3. Motorway & Route Expert Info
+- M2 (Lahore-Islamabad):
+  * Rest areas: Bhera (North/South), Kalar Kahar (Salt Range).
+  * Warning: Kalar Kahar descent is steep; suggest drivers check brakes.
+- M3/M4 (Lahore-Multan/Faisalabad): Efficient routes for inter-city travel.
+- Northern Areas: Suggest travel only in daylight for Swat, Hunza, and Gilgit.
 
-## AI Assistant Guidelines
-- The AI can help plan itineraries for cities like Lahore, Islamabad, and Karachi.
-- It provides real-time route optimization suggestions.
-- If a user asks about safety, always prioritize the emergency numbers and SOS features.
-- If a user asks "Why is the price so low?", explain the cost-sharing carpooling model.
+## 4. User FAQ
+- "Why is the price low?" -> Because the driver is going to the same destination and just sharing the fuel cost.
+- "How do I become a driver?" -> Go to Profile > Vehicle Documents and upload your CNIC and License.
+- "Is it safe for women?" -> Yes, we suggest sharing your live trip with a "Trusted Contact" using our in-app Safety Dashboard.
 `;

@@ -9,6 +9,39 @@ export interface UserStats {
   rating: string;
 }
 
+export interface UserProfile {
+  uid: string;
+  name: string;
+  email: string;
+  phone: string;
+  gender?: string;
+  dob?: string;
+  photoUrl?: string;
+  userType: UserMode;
+  verificationStatus: 'none' | 'pending' | 'approved' | 'rejected';
+  rejectionReason?: string;
+  licenseUrl?: string;
+  licenseBackUrl?: string;
+  cnicUrl?: string;
+  cnicBackUrl?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
+  vehicleColor?: string;
+  registrationNumber?: string;
+  hasAc?: boolean;
+  isAdmin?: boolean;
+  isDriverApplied?: boolean;
+  appliedAt?: any;
+  verifiedAt?: any;
+}
+
+export interface TrustedContact {
+  id: string;
+  name: string;
+  phone: string;
+  userId: string;
+}
+
 export interface ActiveRideInfo {
   id: string;
   driverId: string;
@@ -49,7 +82,6 @@ export interface Ride {
   departureDate?: string;
 }
 
-// Fixed: Exporting RideHistory to resolve build error in RidesView
 export type RideHistory = Ride;
 
 export interface Notification {

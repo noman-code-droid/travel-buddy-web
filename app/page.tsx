@@ -187,6 +187,7 @@ export default function AppContainer() {
               {activeTab === 'profile' && (
                 <ProfileView
                   userMode={userMode}
+                  profileData={profileData}
                   onLogout={handleLogout}
                   onNavigate={navigateToSubView}
                   onSwitchRequest={requestSwitchMode}

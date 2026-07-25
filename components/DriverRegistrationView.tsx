@@ -1,22 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
-  User,
-  Camera,
   ShieldCheck,
   CheckCircle2,
   ChevronRight,
   Upload,
-  Clock
+  Clock,
+  FileCheck,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import Button from './ui/Button';
 import Input from './ui/Input';
 import Card from './ui/Card';
 import { db, auth } from '@/lib/firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 interface DriverRegistrationViewProps {
   onClose: () => void;
@@ -26,6 +27,13 @@ interface DriverRegistrationViewProps {
 export default function DriverRegistrationView({ onClose, status }: DriverRegistrationViewProps) {
   const [step, setStep] = useState(status === 'none' || status === 'rejected' ? 1 : 4);
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
+
+  // Real File states for Vercel Blob
+  const [licenseFrontFile, setLicenseFrontFile] = useState<File | null>(null);
+  const [licenseBackFile, setLicenseBackFile] = useState<File | null>(null);
+  const [cnicFile, setCnicFile] = useState<File | null>(null);
+
   const [formData, setFormData] = useState({
     vehicleMake: '',
     vehicleModel: '',
@@ -33,24 +41,53 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
     licenseNumber: '',
   });
 
+  const uploadFile = async (file: File, label: string) => {
+    setUploadProgress(`Uploading ${label}...`);
+    const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+      method: 'POST',
+      body: file,
+    });
+
+    if (!response.ok) throw new Error(`Failed to upload ${label}`);
+    const blob = await response.json();
+    return blob.url;
+  };
+
   const handleNext = () => setStep(prev => prev + 1);
   const handlePrev = () => step > 1 ? setStep(prev => prev - 1) : onClose();
 
   const handleSubmit = async () => {
-    if (!auth.currentUser) return;
+    if (!auth.currentUser || !licenseFrontFile || !licenseBackFile || !cnicFile) return;
+
     setLoading(true);
     try {
-      await setDoc(doc(db, "users", auth.currentUser.uid), {
+      // 1. Concurrent Upload to Vercel Blob
+      const [licenseUrl, licenseBackUrl, cnicUrl] = await Promise.all([
+        uploadFile(licenseFrontFile, 'License Front'),
+        uploadFile(licenseBackFile, 'License Back'),
+        uploadFile(cnicFile, 'Identity Card')
+      ]);
+
+      setUploadProgress('Finalizing profile...');
+
+      // 2. Update Firestore with high-speed URLs
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
         ...formData,
+        licenseUrl,
+        licenseBackUrl,
+        cnicUrl,
         verificationStatus: 'pending',
         isDriverApplied: true,
-        updatedAt: serverTimestamp()
-      }, { merge: true });
+        appliedAt: serverTimestamp()
+      });
+
       setStep(4);
     } catch (error) {
-      alert("Registration failed. Please try again.");
+      console.error(error);
+      alert("Registration failed. Please check your connection and try again.");
     } finally {
       setLoading(false);
+      setUploadProgress('');
     }
   };
 
@@ -71,23 +108,13 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
         </h2>
       </div>
 
-      {step < 4 && (
-        <div className="w-full h-1 bg-[#212121]">
-          <motion.div
-            className="h-full bg-[#FFD500]"
-            initial={{ width: 0 }}
-            animate={{ width: `${(step / 3) * 100}%` }}
-          />
-        </div>
-      )}
-
       <div className="flex-1 overflow-y-auto p-6 bg-black">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <div className="space-y-2">
                 <h3 className="text-2xl font-bold text-white">Vehicle Details</h3>
-                <p className="text-[#ABABAB] text-sm">Tell us about the car you'll be driving.</p>
+                <p className="text-[#666666] text-sm">Step 1 of 3: Provide car information.</p>
               </div>
               <div className="space-y-4">
                 <Input label="Vehicle Make" placeholder="e.g. Honda, Toyota" value={formData.vehicleMake} onChange={e => setFormData({...formData, vehicleMake: e.target.value})} />
@@ -103,51 +130,94 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
           {step === 2 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-white">License Information</h3>
-                <p className="text-[#ABABAB] text-sm">Upload your driving license details.</p>
+                <h3 className="text-2xl font-bold text-white">Identity & License</h3>
+                <p className="text-[#666666] text-sm">Step 2 of 3: Secure document upload.</p>
               </div>
-              <Input label="License Number" placeholder="e.g. PB-12345678" value={formData.licenseNumber} onChange={e => setFormData({...formData, licenseNumber: e.target.value})} />
 
-              <div className="grid grid-cols-1 gap-4 pt-4">
-                <Card variant="flat" className="p-8 border-dashed flex flex-col items-center justify-center gap-3 cursor-pointer active:bg-white/5">
-                  <Upload className="w-8 h-8 text-[#FFD500]" />
-                  <span className="text-xs font-bold text-[#ABABAB] uppercase">Upload License Front</span>
-                </Card>
-                <Card variant="flat" className="p-8 border-dashed flex flex-col items-center justify-center gap-3 cursor-pointer active:bg-white/5">
-                  <Upload className="w-8 h-8 text-[#FFD500]" />
-                  <span className="text-xs font-bold text-[#ABABAB] uppercase">Upload License Back</span>
-                </Card>
+              <div className="space-y-4">
+                {/* CNIC UPLOAD */}
+                <div className="relative">
+                   <input type="file" className="hidden" id="cnic-upload" onChange={(e) => setCnicFile(e.target.files?.[0] || null)} accept="image/*" />
+                   <label htmlFor="cnic-upload">
+                      <Card variant={cnicFile ? 'active' : 'flat'} className="p-5 border-dashed flex items-center justify-between cursor-pointer">
+                        <div className="flex items-center gap-3">
+                           {cnicFile ? <FileCheck className="text-[#22C55E]" /> : <Upload className="text-[#FFD500]" />}
+                           <span className="text-[12px] font-bold uppercase tracking-tight">{cnicFile ? 'CNIC Added' : 'Upload CNIC Front'}</span>
+                        </div>
+                        {cnicFile && <span className="text-[10px] text-[#666666]">{ (cnicFile.size / 1024).toFixed(0) } KB</span>}
+                      </Card>
+                   </label>
+                </div>
+
+                {/* LICENSE FRONT */}
+                <div className="relative">
+                   <input type="file" className="hidden" id="lic-front" onChange={(e) => setLicenseFrontFile(e.target.files?.[0] || null)} accept="image/*" />
+                   <label htmlFor="lic-front">
+                      <Card variant={licenseFrontFile ? 'active' : 'flat'} className="p-5 border-dashed flex items-center justify-between cursor-pointer">
+                        <div className="flex items-center gap-3">
+                           {licenseFrontFile ? <FileCheck className="text-[#22C55E]" /> : <Upload className="text-[#FFD500]" />}
+                           <span className="text-[12px] font-bold uppercase tracking-tight">License Front</span>
+                        </div>
+                      </Card>
+                   </label>
+                </div>
+
+                {/* LICENSE BACK */}
+                <div className="relative">
+                   <input type="file" className="hidden" id="lic-back" onChange={(e) => setLicenseBackFile(e.target.files?.[0] || null)} accept="image/*" />
+                   <label htmlFor="lic-back">
+                      <Card variant={licenseBackFile ? 'active' : 'flat'} className="p-5 border-dashed flex items-center justify-between cursor-pointer">
+                        <div className="flex items-center gap-3">
+                           {licenseBackFile ? <FileCheck className="text-[#22C55E]" /> : <Upload className="text-[#FFD500]" />}
+                           <span className="text-[12px] font-bold uppercase tracking-tight">License Back</span>
+                        </div>
+                      </Card>
+                   </label>
+                </div>
               </div>
-              <Button onClick={handleNext} disabled={!formData.licenseNumber} className="mt-8">
+
+              <Button onClick={handleNext} disabled={!licenseFrontFile || !licenseBackFile || !cnicFile} className="mt-8">
                 Next <ChevronRight className="w-5 h-5" />
               </Button>
             </motion.div>
           )}
 
           {step === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 flex flex-col items-center text-center">
+            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
               <div className="space-y-2 w-full text-left">
-                <h3 className="text-2xl font-bold text-white">Identity Verification</h3>
-                <p className="text-[#ABABAB] text-sm">Take a clear photo of yourself.</p>
+                <h3 className="text-2xl font-bold text-white">Review & Submit</h3>
+                <p className="text-[#666666] text-sm">Step 3 of 3: Verification guidelines.</p>
               </div>
 
-              <div className="w-48 h-48 bg-[#212121] rounded-full border-4 border-[#333333] flex items-center justify-center relative overflow-hidden group active:border-[#FFD500] transition-colors">
-                <Camera className="w-12 h-12 text-[#333333] group-active:text-[#FFD500]" />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-white text-xs font-bold">Open Camera</span>
-                </div>
-              </div>
+              <Card variant="flat" className="w-full p-5 space-y-4 border-white/5">
+                 <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                    <span className="text-[10px] font-bold text-[#666666] uppercase">Vehicle Details</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+                 </div>
+                 <p className="text-sm font-medium text-white/90">{formData.vehicleMake} {formData.vehicleModel} • {formData.registrationNumber}</p>
+
+                 <div className="flex justify-between items-center border-b border-white/5 pb-3 pt-2">
+                    <span className="text-[10px] font-bold text-[#666666] uppercase">Documents</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+                 </div>
+                 <p className="text-xs text-[#ABABAB]">3 Images selected for secure upload.</p>
+              </Card>
 
               <div className="bg-[#FFD50010] p-4 rounded-2xl border border-[#FFD50030] flex gap-3 text-left">
                 <ShieldCheck className="w-5 h-5 text-[#FFD500] shrink-0 mt-0.5" />
                 <p className="text-[11px] text-[#FFD500] leading-relaxed">
-                  Your photo will be used for verification and shown to passengers once a ride is booked. Ensure your face is clearly visible.
+                  Your data is encrypted. Verification usually takes **24 hours**. You will receive an in-app notification once approved.
                 </p>
               </div>
 
-              <Button onClick={handleSubmit} loading={loading} className="mt-4 w-full">
-                Submit Application
-              </Button>
+              <div className="space-y-3">
+                <Button onClick={handleSubmit} loading={loading} className="w-full">
+                  {loading ? uploadProgress : 'Submit Application'}
+                </Button>
+                {loading && (
+                    <p className="text-center text-[10px] font-bold text-[#666666] uppercase animate-pulse">Encryption in progress...</p>
+                )}
+              </div>
             </motion.div>
           )}
 
@@ -165,20 +235,16 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
 
               <div className="space-y-2">
                 <h3 className="text-2xl font-bold text-white">
-                  {status === 'approved' ? 'Verified Driver' : 'Application Under Review'}
+                  {status === 'approved' ? 'Verified Driver' : 'Under Review'}
                 </h3>
                 <p className="text-[#ABABAB] text-sm leading-relaxed max-w-[260px]">
                   {status === 'approved'
                     ? 'Congratulations! You are now a verified Travel Buddy driver. You can start posting rides.'
-                    : 'Our team is reviewing your documents. This usually takes 24-48 hours. We will notify you once approved.'}
+                    : 'Our team is reviewing your documents. We will notify you once approved.'}
                 </p>
               </div>
 
-              <div className="w-full pt-8">
-                <Button onClick={onClose} variant={status === 'approved' ? 'primary' : 'secondary'}>
-                  {status === 'approved' ? 'Start Driving' : 'Back to Dashboard'}
-                </Button>
-              </div>
+              <Button onClick={onClose} className="mt-8 !rounded-[24px]">Back to Dashboard</Button>
             </motion.div>
           )}
         </AnimatePresence>
