@@ -21,13 +21,10 @@ export default function SafetyView({ onClose, contacts, loadingContacts, onAddCo
   const [newPhone, setNewPhone] = useState('');
   const [adding, setAdding] = useState(false);
   const [sosLoading, setSosLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  /**
-   * Senior Audit Note: WhatsApp API requires numbers in international format
-   * without the leading zero or '+' symbol. For Pakistan, 03xx becomes 923xx.
-   */
   const formatWhatsAppNumber = (phone: string) => {
-    let cleaned = phone.replace(/\D/g, ''); // Remove all non-numeric characters
+    let cleaned = phone.replace(/\D/g, '');
     if (cleaned.startsWith('03')) {
       return '92' + cleaned.substring(1);
     }
@@ -45,14 +42,12 @@ export default function SafetyView({ onClose, contacts, loadingContacts, onAddCo
       return;
     }
 
-    // Senior Engineering Check: Geolocation can hang. Adding a 10s timeout.
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         const mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
         const message = `🚨 *EMERGENCY SOS - TRAVEL BUDDY* 🚨\n\nI am in danger and need immediate assistance!\n\n📍 *My Live Location:* ${mapsUrl}\n\n📞 Please call 15 (Police) or 1122 (Ambulance) for me immediately!`;
 
-        // Send to first contact or open general WhatsApp if empty
         const targetPhone = contacts.length > 0 ? formatWhatsAppNumber(contacts[0].phone) : '';
         const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(message)}`;
 
@@ -78,11 +73,25 @@ export default function SafetyView({ onClose, contacts, loadingContacts, onAddCo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newName.trim() || !newPhone.trim()) return;
+    setError('');
+
+    // Pakistani Mobile Validation
+    const cleanedPhone = newPhone.replace(/[\s-]/g, '');
+    const pkPhoneRegex = /^((\+92)|(92)|(0))3\d{9}$/;
+
+    if (!pkPhoneRegex.test(cleanedPhone)) {
+      setError('Enter a valid Pakistani mobile number');
+      return;
+    }
+
+    if (!newName.trim()) {
+      setError('Please enter a name');
+      return;
+    }
 
     setAdding(true);
     try {
-      await onAddContact(newName, newPhone);
+      await onAddContact(newName, cleanedPhone);
       setNewName('');
       setNewPhone('');
       setShowAddModal(false);
@@ -192,7 +201,10 @@ export default function SafetyView({ onClose, contacts, loadingContacts, onAddCo
               className="bg-[#111111] rounded-[40px] p-8 w-full border border-white/10 relative shadow-2xl"
             >
               <button
-                onClick={() => setShowAddModal(false)}
+                onClick={() => {
+                  setShowAddModal(false);
+                  setError('');
+                }}
                 className="absolute right-8 top-8 text-[#444444] hover:text-white transition-colors p-1"
               >
                 <X className="w-6 h-6" />
@@ -216,6 +228,7 @@ export default function SafetyView({ onClose, contacts, loadingContacts, onAddCo
                   onChange={e => setNewPhone(e.target.value)}
                   required
                   type="tel"
+                  error={error}
                   className="!bg-black border-white/5"
                 />
                 <Button type="submit" loading={adding} className="!rounded-[20px] !h-16 mt-6 font-black uppercase tracking-widest text-xs shadow-lg">
