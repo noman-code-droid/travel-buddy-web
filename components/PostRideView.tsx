@@ -6,16 +6,15 @@ import {
   ArrowLeft,
   MapPin,
   Search,
-  X,
   Compass,
   User,
   Calendar,
   Clock,
   Bot,
   Loader2,
-  Navigation,
-  Check,
-  Car
+  ChevronRight,
+  Edit2,
+  Navigation
 } from 'lucide-react';
 import Button from './ui/Button';
 import Input from './ui/Input';
@@ -128,16 +127,6 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
     if (currentStep === 'MAP_ROUTE_PREVIEW') calculateRoute();
   }, [currentStep, calculateRoute]);
 
-  const onPlaceSelected = () => {
-    if (autocompleteRef.current !== null) {
-      const place = autocompleteRef.current.getPlace();
-      if (place.geometry && place.geometry.location) {
-        mapRef.current?.panTo(place.geometry.location);
-        mapRef.current?.setZoom(16);
-      }
-    }
-  };
-
   const handleMyLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -175,16 +164,16 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
 
   return (
     <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} className="absolute inset-0 bg-black z-[60] flex flex-col">
-      <div className="p-4 flex items-center gap-4 z-20 bg-black/50 backdrop-blur-md">
+      <div className="p-4 flex items-center gap-4 z-20 bg-black/50 backdrop-blur-md border-b border-white/5">
         <button onClick={() => {
           if (currentStep === 'MAP_PICKUP') onClose();
           else if (currentStep === 'MAP_DROPOFF') setCurrentStep('MAP_PICKUP');
           else if (currentStep === 'MAP_ROUTE_PREVIEW') setCurrentStep('MAP_DROPOFF');
           else setCurrentStep('MAP_ROUTE_PREVIEW');
-        }}>
+        }} className="p-2 -ml-2 active:scale-90 transition-transform">
           <ArrowLeft className="text-white w-7 h-7" />
         </button>
-        <h2 className="font-bold text-[18px]">
+        <h2 className="text-[20px] font-black text-white italic uppercase tracking-tighter">
           {currentStep === 'MAP_PICKUP' && 'Select Pickup'}
           {currentStep === 'MAP_DROPOFF' && 'Select Drop-off'}
           {currentStep === 'MAP_ROUTE_PREVIEW' && 'Route Preview'}
@@ -246,14 +235,20 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
               <div className="absolute top-4 left-4 right-4 z-20">
                 <Autocomplete
                   onLoad={autocomplete => { autocompleteRef.current = autocomplete; }}
-                  onPlaceChanged={onPlaceSelected}
+                  onPlaceChanged={() => {
+                    const place = autocompleteRef.current?.getPlace();
+                    if (place?.geometry?.location) {
+                        mapRef.current?.panTo(place.geometry.location);
+                        mapRef.current?.setZoom(16);
+                    }
+                  }}
                   options={{ componentRestrictions: { country: 'pk' } }}
                 >
-                  <Card variant="flat" radius="2xl" className="p-4 flex items-center gap-3 shadow-2xl bg-[#1A1A1A] border-white/5">
+                  <Card variant="flat" radius="2xl" className="p-5 flex items-center gap-3 shadow-2xl bg-black/90 backdrop-blur-xl border-white/10">
                     <Search className="w-5 h-5 text-[#FFD500]" />
                     <input
                       placeholder={currentStep === 'MAP_PICKUP' ? "Search pickup point..." : "Search destination..."}
-                      className="bg-transparent outline-none text-[16px] w-full text-white placeholder:text-[#666666]"
+                      className="bg-transparent outline-none text-[15px] w-full text-white placeholder:text-[#666666] font-medium"
                     />
                   </Card>
                 </Autocomplete>
@@ -261,72 +256,99 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
             )}
 
             {/* Address Pill */}
-            <div className="absolute bottom-24 left-4 right-4 z-10">
-              <Card variant="flat" radius="xl" className="p-4 text-center text-sm font-bold shadow-2xl border border-white/10 flex items-center justify-center gap-3 bg-[#1A1A1A]">
-                {isResolvingAddress && <Loader2 className="w-4 h-4 animate-spin text-[#FFD500]" />}
-                <span className={isResolvingAddress ? 'opacity-50' : 'text-white'}>{tempAddress}</span>
+            <div className="absolute bottom-28 left-4 right-4 z-10">
+              <Card variant="flat" radius="xl" className="p-5 text-center shadow-2xl border border-[#FFD50030] flex items-center justify-center gap-3 bg-black/90 backdrop-blur-xl">
+                {isResolvingAddress ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-[#FFD500]" />
+                ) : (
+                    <div className="p-1 bg-[#FFD500] rounded-md">
+                        <MapPin className="w-3 h-3 text-black" />
+                    </div>
+                )}
+                <span className={`text-[12px] font-bold uppercase tracking-tight ${isResolvingAddress ? 'text-[#666666]' : 'text-white'}`}>
+                    {tempAddress}
+                </span>
               </Card>
             </div>
 
             {/* My Location Button */}
-            <div className="absolute bottom-40 right-4 z-10">
+            <div className="absolute bottom-48 right-4 z-10">
               <button
                 onClick={handleMyLocation}
-                className="w-12 h-12 bg-[#1A1A1A] rounded-full flex items-center justify-center shadow-lg border border-white/10 active:scale-90 transition-transform"
+                className="w-14 h-14 bg-black rounded-full flex items-center justify-center shadow-2xl border border-white/10 active:scale-90 transition-transform backdrop-blur-md"
               >
-                <Compass className="text-white w-6 h-6" />
+                <Compass className="text-[#FFD500] w-7 h-7" />
               </button>
             </div>
 
-            <div className="absolute bottom-6 left-4 right-4 z-10">
-              <Button onClick={handleConfirmLocation} disabled={isResolvingAddress}>
+            <div className="absolute bottom-8 left-4 right-4 z-10">
+              <Button onClick={handleConfirmLocation} disabled={isResolvingAddress} className="!h-[64px] !rounded-[24px] font-black uppercase tracking-widest text-[15px]">
                 {currentStep === 'MAP_PICKUP' ? 'Confirm Pickup Point' :
-                 currentStep === 'MAP_DROPOFF' ? 'Confirm Drop-off' : 'Set Ride Details'}
+                 currentStep === 'MAP_DROPOFF' ? 'Confirm Drop-off' : 'Continue to Details'}
               </Button>
             </div>
           </div>
         ) : (
-          <div className="p-6 space-y-6 overflow-y-auto h-full pb-32">
-             <Card variant="flat" className="p-5 space-y-4 border border-white/5 bg-[#1A1A1A]">
-                <div className="flex gap-4">
-                   <div className="flex flex-col items-center py-1">
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#FFD500]" />
-                      <div className="w-px flex-1 bg-[#333333] my-1" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#E46767]" />
-                   </div>
-                   <div className="flex-1 text-sm space-y-4">
-                      <div>
-                        <p className="text-[10px] font-bold text-[#666666] uppercase">Pickup</p>
-                        <p className="text-white font-medium truncate">{pickup?.address}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-[#666666] uppercase">Destination</p>
-                        <p className="text-white font-medium truncate">{dropoff?.address}</p>
-                      </div>
-                   </div>
-                </div>
-                <div className="pt-4 border-t border-white/5 flex justify-between items-center">
-                   <span className="text-xs font-black text-[#FFD500] tracking-widest uppercase">Distance: {distance.toFixed(1)} km</span>
-                </div>
-             </Card>
+          <div className="p-6 space-y-8 overflow-y-auto h-full pb-32">
+             <div className="space-y-4">
+                <h3 className="text-[11px] font-black text-[#444444] uppercase tracking-[0.2em] ml-1">Journey Overview</h3>
+                <Card variant="flat" className="p-6 space-y-6 border border-white/5 bg-[#0A0A0A] rounded-[32px] shadow-xl">
+                    <div className="flex gap-5">
+                    <div className="flex flex-col items-center py-1">
+                        <div className="w-3 h-3 rounded-full bg-[#FFD500] shadow-[0_0_10px_rgba(255,213,0,0.5)]" />
+                        <div className="w-px flex-1 bg-gradient-to-b from-[#FFD500] to-[#E46767] my-2 opacity-20" />
+                        <div className="w-3 h-3 rounded-full bg-[#E46767] shadow-[0_0_10px_rgba(228,103,103,0.5)]" />
+                    </div>
+                    <div className="flex-1 text-sm space-y-6">
+                        <button onClick={() => setCurrentStep('MAP_PICKUP')} className="w-full text-left group">
+                            <p className="text-[9px] font-black text-[#444444] uppercase tracking-widest flex justify-between items-center mb-1">
+                                Pickup Point <Edit2 className="w-3 h-3 opacity-30 group-hover:text-[#FFD500] group-hover:opacity-100 transition-all" />
+                            </p>
+                            <p className="text-white font-bold truncate group-hover:text-[#FFD500] transition-colors text-[14px]">{pickup?.address}</p>
+                        </button>
+                        <button onClick={() => setCurrentStep('MAP_DROPOFF')} className="w-full text-left group">
+                            <p className="text-[9px] font-black text-[#444444] uppercase tracking-widest flex justify-between items-center mb-1">
+                                Final Destination <Edit2 className="w-3 h-3 opacity-30 group-hover:text-[#FFD500] group-hover:opacity-100 transition-all" />
+                            </p>
+                            <p className="text-white font-bold truncate group-hover:text-[#FFD500] transition-colors text-[14px]">{dropoff?.address}</p>
+                        </button>
+                    </div>
+                    </div>
+                    <div className="pt-5 border-t border-white/5 flex justify-between items-center">
+                       <div className="flex items-center gap-2">
+                           <div className="px-2 py-1 bg-[#FFD50015] rounded-md border border-[#FFD50020]">
+                               <span className="text-[10px] font-black text-[#FFD500] uppercase tracking-tight">Est. Distance</span>
+                           </div>
+                           <span className="text-sm font-black text-white">{distance.toFixed(1)} KM</span>
+                       </div>
+                    </div>
+                </Card>
+             </div>
 
              <div className="grid grid-cols-2 gap-4">
-                <Input label="Seats" type="number" value={formData.seats} onChange={e => setFormData({...formData, seats: parseInt(e.target.value)})} icon={<User className="w-4 h-4" />} />
-                <Input label="Price (RS)" type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} icon={<span className="text-xs font-bold">PKR</span>} />
+                <Input label="Total Seats" type="number" value={formData.seats} onChange={e => setFormData({...formData, seats: parseInt(e.target.value)})} icon={<User className="w-4 h-4" />} className="!bg-[#0A0A0A] border-white/5" />
+                <Input label="Price (PKR)" type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} icon={<span className="text-[10px] font-black">RS</span>} className="!bg-[#0A0A0A] border-white/5" />
              </div>
+
              <div className="grid grid-cols-2 gap-4">
-                <Input label="Date" type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="invert opacity-60" icon={<Calendar className="w-4 h-4" />} />
-                <Input label="Time" type="time" value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})} className="invert opacity-60" icon={<Clock className="w-4 h-4" />} />
+                <Input label="Departure Date" type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="invert opacity-60 !bg-[#0A0A0A] border-white/5" icon={<Calendar className="w-4 h-4" />} />
+                <Input label="Departure Time" type="time" value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})} className="invert opacity-60 !bg-[#0A0A0A] border-white/5" icon={<Clock className="w-4 h-4" />} />
              </div>
-             <Card variant="flat" className="p-4 bg-[#FFD50010] border-[#FFD50030]">
-                <div className="flex gap-3">
-                   <Bot className="text-[#FFD500] w-5 h-5 shrink-0" />
-                   <p className="text-[11px] text-[#FFD500] leading-relaxed">
-                     AI Estimate: Based on vehicle distance ({distance.toFixed(1)}km), we suggest **PKR {CarpoolFinanceManager.calculateSuggestedPrice(distance, formData.seats)}**.
+
+             <Card variant="flat" radius="2xl" className="p-5 bg-[#FFD50008] border-[#FFD50020] shadow-inner">
+                <div className="flex gap-4">
+                   <div className="w-10 h-10 bg-[#FFD500] rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+                       <Bot className="text-black w-6 h-6" />
+                   </div>
+                   <p className="text-[11px] text-[#FFD500] leading-relaxed font-bold italic tracking-tight">
+                     "Based on fuel benchmarks ({distance.toFixed(1)}km), we suggest a fair price of **PKR {CarpoolFinanceManager.calculateSuggestedPrice(distance, formData.seats)}** to share costs fairly."
                    </p>
                 </div>
              </Card>
-             <Button onClick={handlePublish} loading={loading}>Publish Ride</Button>
+
+             <Button onClick={handlePublish} loading={loading} className="!h-[72px] !rounded-[24px] font-black text-[18px] uppercase tracking-[0.2em] shadow-xl shadow-yellow-500/10">
+                Post Ride Now
+             </Button>
           </div>
         )}
       </div>
