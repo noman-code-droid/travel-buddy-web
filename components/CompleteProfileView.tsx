@@ -74,34 +74,41 @@ export default function CompleteProfileView({ onComplete }: CompleteProfileViewP
       className="absolute inset-0 bg-black flex flex-col p-8 z-[80] overflow-y-auto"
     >
       <div className="flex flex-col items-center mt-12 mb-10">
-        <div className="w-[85px] h-[85px] bg-[#FFD500] rounded-[28px] flex items-center justify-center mb-8">
-          <User className="text-black w-[44px] h-[44px]" />
+        {/* Yellow Icon - Exact Squircle */}
+        <div className="w-[90px] h-[90px] bg-[#FFD500] rounded-[24px] flex items-center justify-center mb-10 shadow-[0_10px_30px_rgba(255,213,0,0.15)]">
+          <User className="text-black w-[48px] h-[48px]" />
         </div>
 
-        <h2 className="text-[28px] font-black text-white italic uppercase tracking-tighter text-center leading-tight">
+        {/* Title - Bold Italic Uppercase Tighter */}
+        <h2 className="text-[32px] font-black text-white italic uppercase tracking-tighter text-center leading-[0.9] mb-4">
           COMPLETE PROFILE
         </h2>
 
-        <p className="text-[#ABABAB] text-[14px] mt-4 text-center leading-relaxed max-w-[280px]">
+        {/* Description - Focused Width */}
+        <p className="text-[#888888] text-[15px] text-center leading-[1.4] max-w-[280px]">
           Almost there! Please enter your phone number to continue. This is required for ride coordination.
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-6">
-        <div className="space-y-2">
-          <label className="text-[12px] font-bold text-[#ABABAB] uppercase ml-1 tracking-tight">Phone Number</label>
-          <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-[20px] px-5 py-5 flex items-center gap-4 focus-within:border-[#FFD500] transition-all">
-            <Phone className="w-6 h-6 text-[#ABABAB]" />
+      <form onSubmit={handleSave} className="space-y-8">
+        <div className="space-y-3">
+          {/* Input Label - Grey Caps */}
+          <label className="text-[12px] font-bold text-[#666666] uppercase ml-1 tracking-widest">PHONE NUMBER</label>
+
+          {/* Input Box - Dark Grey, Deep Rounded */}
+          <div className="bg-[#151515] border border-[#222222] rounded-[24px] px-6 py-6 flex items-center gap-4 focus-within:border-[#FFD500] transition-all">
+            <Phone className="w-6 h-6 text-[#666666]" />
             <input
               type="tel"
               placeholder="0300 1234567"
               value={phone}
               onChange={handlePhoneChange}
-              className="bg-transparent outline-none text-white text-[18px] w-full placeholder:text-[#333333] font-medium"
+              className="bg-transparent outline-none text-white text-[18px] w-full placeholder:text-[#333333] font-bold"
               required
             />
           </div>
-          <p className="text-[10px] text-[#666666] font-bold uppercase tracking-[0.05em] ml-1">
+
+          <p className="text-[10px] text-[#444444] font-black uppercase tracking-[0.1em] ml-1">
             FORMAT: 03XX-XXXXXXX OR +923XX-XXXXXXX
           </p>
         </div>
@@ -120,24 +127,24 @@ export default function CompleteProfileView({ onComplete }: CompleteProfileViewP
           )}
         </AnimatePresence>
 
-        <div className="bg-[#1A1A1A] p-6 rounded-[32px] border border-white/[0.03] flex gap-5 items-center">
+        {/* Security Card - Pixel Perfect to Screenshot */}
+        <div className="bg-[#151515] p-7 rounded-[32px] border border-white/[0.03] flex gap-5 items-center">
           <div className="w-12 h-12 bg-[#22C55E10] rounded-2xl flex items-center justify-center shrink-0 border border-[#22C55E15]">
-            <div className="w-6 h-6 rounded-full bg-[#22C55E20] flex items-center justify-center">
-                <CheckCircle2 className="text-[#22C55E] w-4 h-4" />
-            </div>
+            <CheckCircle2 className="text-[#22C55E] w-6 h-6" />
           </div>
           <div className="space-y-0.5">
             <p className="text-[14px] text-white font-black uppercase tracking-tight">SECURITY CHECK</p>
-            <p className="text-[11px] text-[#888888] leading-snug font-medium">
+            <p className="text-[11px] text-[#777777] leading-tight font-medium">
               Your contact details are encrypted and only shared with verified partners after a ride is confirmed.
             </p>
           </div>
         </div>
 
+        {/* Action Button - Large Yellow Pill */}
         <Button
           type="submit"
           loading={loading}
-          className="mt-8 !h-[76px] !rounded-full font-black text-[20px] uppercase tracking-[0.15em] shadow-2xl active:scale-[0.98]"
+          className="mt-6 !h-[80px] !rounded-full font-black text-[22px] uppercase tracking-[0.1em] shadow-[0_20px_40px_rgba(255,213,0,0.15)] active:scale-[0.98]"
         >
           SAVE & CONTINUE
         </Button>
