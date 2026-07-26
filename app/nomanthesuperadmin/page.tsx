@@ -32,7 +32,8 @@ import {
   LogIn,
   UserCheck,
   BadgeCheck,
-  Terminal
+  Terminal,
+  Activity
 } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -53,10 +54,11 @@ export default function SuperAdminDashboard() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [debugInfo, setDebugInfo] = useState('');
 
   const router = useRouter();
 
-  // 1. Secure Authentication Gate (Firebase Layer)
+  // 1. Secure Authentication Gate
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -74,7 +76,6 @@ export default function SuperAdminDashboard() {
           setAuthStatus('authenticated');
         }
       } catch (err) {
-        console.error("Critical Auth Error:", err);
         setAuthStatus('unauthenticated');
       }
     });
@@ -82,7 +83,7 @@ export default function SuperAdminDashboard() {
     return () => unsubAuth();
   }, []);
 
-  // 2. Real-time Data Sync (Locked behind both security layers)
+  // 2. Real-time Data Sync
   useEffect(() => {
     if (!isAdmin || !isCredentialVerified) return;
 
@@ -108,19 +109,33 @@ export default function SuperAdminDashboard() {
 
   const handleManualLogin = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // FETCHING FROM ENVIRONMENT VARIABLES
     const envUser = process.env.NEXT_PUBLIC_SUPER_ADMIN_USERNAME;
     const envPass = process.env.NEXT_PUBLIC_SUPER_ADMIN_PASSWORD;
 
+    // DIAGNOSTIC CHECK 1: Missing Config
     if (!envUser || !envPass) {
-        setLoginError('Server configuration missing. Check Vercel Env Vars.');
+        setLoginError('CRITICAL: Server environment variables not detected.');
+        setDebugInfo(`U: ${typeof envUser}, P: ${typeof envPass}`);
         return;
     }
 
-    if (username === envUser && password === envPass) {
+    // DIAGNOSTIC CHECK 2: Input Verification
+    const typedUser = username.trim();
+    const typedPass = password.trim();
+
+    if (typedUser === envUser && typedPass === envPass) {
       setIsCredentialVerified(true);
       setLoginError('');
     } else {
-      setLoginError('Access Denied: Invalid System Credentials.');
+      // Logic to help identify which one is wrong without leaking data
+      if (typedUser !== envUser) {
+        setLoginError('AUTH FAILURE: Invalid System ID.');
+      } else {
+        setLoginError('AUTH FAILURE: Invalid Access Key.');
+      }
+      setDebugInfo('Hint: Ensure no caps-lock or extra spaces are active.');
     }
   };
 
@@ -143,7 +158,7 @@ export default function SuperAdminDashboard() {
   };
 
   const handleDeleteApplication = async (uid: string) => {
-    if (!confirm("Are you sure? This will reset the driver's application record.")) return;
+    if (!confirm("Reset driver application?")) return;
     try {
       await updateDoc(doc(db, "users", uid), {
         isDriverApplied: false,
@@ -153,11 +168,10 @@ export default function SuperAdminDashboard() {
         cnicUrl: null
       });
       setSelectedUser(null);
-      alert("Application deleted.");
-    } catch (error) { alert("Delete operation failed."); }
+    } catch (error) { alert("Action failed."); }
   };
 
-  // UI STATE: 1. AUTH LOADING
+  // UI: 1. AUTH LOADING
   if (authStatus === 'loading') return (
     <div className="h-screen bg-black flex flex-col items-center justify-center gap-6 text-white">
       <Loader2 className="w-12 h-12 text-[#FFD500] animate-spin" />
@@ -165,7 +179,7 @@ export default function SuperAdminDashboard() {
     </div>
   );
 
-  // UI STATE: 2. UNAUTHORIZED
+  // UI: 2. UNAUTHORIZED
   if (authStatus === 'unauthenticated' || isAdmin === false) return (
     <div className="h-screen bg-black flex flex-col items-center justify-center p-6 text-center text-white">
        <Card variant="flat" radius="3xl" className="p-12 border-white/5 bg-[#0A0A0A] max-w-[450px] shadow-2xl">
@@ -173,15 +187,15 @@ export default function SuperAdminDashboard() {
           <h2 className="text-3xl font-black uppercase italic mb-4 tracking-tighter">Security Block</h2>
           <p className="text-[#666666] text-sm mb-12 leading-relaxed">
             {isAdmin === false
-              ? "Your account exists but is missing 'isAdmin' authorization in Firestore."
-              : "No active Firebase session detected. Log in through the app first."}
+              ? "Your UID was detected but lacks 'isAdmin: true' in Firestore."
+              : "No active Firebase session. Log in to the Travel Buddy app first."}
           </p>
           <Button onClick={() => router.push('/')} className="w-full !h-16 !rounded-[24px] font-black uppercase tracking-widest text-xs">Return to Dashboard</Button>
        </Card>
     </div>
   );
 
-  // UI STATE: 3. MANUAL CREDENTIAL GATE
+  // UI: 3. MANUAL CREDENTIAL GATE
   if (!isCredentialVerified) return (
     <div className="h-screen bg-[#050505] flex flex-col items-center justify-center p-6 text-white">
       <Card variant="flat" radius="3xl" className="w-full max-w-[440px] p-12 border-white/5 shadow-[0_0_80px_rgba(0,0,0,0.8)] bg-[#080808]">
@@ -191,21 +205,35 @@ export default function SuperAdminDashboard() {
            </div>
            <div>
               <h2 className="text-3xl font-black italic tracking-tighter uppercase mb-1">Secondary Gate</h2>
-              <p className="text-[#444444] text-[10px] font-black uppercase tracking-[0.2em]">Enter Admin Access Key</p>
+              <p className="text-[#444444] text-[10px] font-black uppercase tracking-[0.2em]">Manual Clearance Required</p>
            </div>
         </div>
 
         <form onSubmit={handleManualLogin} className="space-y-5">
-          <Input label="System ID" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <Input label="Access Key" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {loginError && <p className="text-[#E46767] text-[10px] font-black uppercase text-center">{loginError}</p>}
-          <Button type="submit" className="w-full !h-16 !rounded-[20px] mt-4 font-black uppercase tracking-widest text-xs">Unlock Console</Button>
+          <Input label="System ID" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="!bg-black border-white/5" />
+          <Input label="Access Key" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="!bg-black border-white/5" />
+
+          <AnimatePresence>
+            {loginError && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="space-y-1">
+                <p className="text-[#E46767] text-[10px] font-black uppercase text-center">{loginError}</p>
+                <p className="text-[#444444] text-[8px] font-bold uppercase text-center">{debugInfo}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <Button type="submit" className="w-full !h-16 !rounded-[24px] mt-6 font-black uppercase tracking-widest text-xs shadow-xl shadow-yellow-500/5">Open Command Center</Button>
         </form>
+
+        <div className="mt-10 pt-6 border-t border-white/5 flex items-center justify-center gap-2 opacity-30">
+           <Activity className="w-3 h-3 text-[#22C55E]" />
+           <span className="text-[8px] font-black uppercase tracking-widest">Logic Build: 2026.07.25.V2</span>
+        </div>
       </Card>
     </div>
   );
 
-  // UI STATE: 4. DATA LOADING
+  // UI: 4. DATA LOADING
   if (dataLoading) return (
     <div className="h-screen bg-black flex flex-col items-center justify-center text-white">
       <div className="w-16 h-1 bg-[#111111] rounded-full overflow-hidden mb-6">
@@ -215,7 +243,7 @@ export default function SuperAdminDashboard() {
     </div>
   );
 
-  // UI STATE: 5. MAIN DASHBOARD
+  // UI: 5. MAIN DASHBOARD
   return (
     <div className="min-h-screen bg-[#050505] text-white p-6 md:p-12 max-w-[1600px] mx-auto">
       <header className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8 border-b border-white/5 pb-12">
@@ -234,7 +262,7 @@ export default function SuperAdminDashboard() {
           </div>
         </div>
 
-        <Card variant="flat" className="px-10 py-6 border-white/5 bg-black/40 backdrop-blur-xl text-center shadow-xl">
+        <Card variant="flat" className="px-10 py-6 border-white/5 bg-black/40 backdrop-blur-3xl text-center shadow-xl">
             <span className="text-[10px] font-black text-[#444444] uppercase mb-1 tracking-[0.2em]">Queue Volume</span>
             <span className="text-4xl font-black text-[#FFD500] block">{users.length}</span>
         </Card>
@@ -251,7 +279,7 @@ export default function SuperAdminDashboard() {
             users.map(u => (
               <button key={u.uid} onClick={() => setSelectedUser(u)} className="w-full text-left transition-all hover:translate-x-2 group">
                 <Card variant={selectedUser?.uid === u.uid ? 'active' : 'flat'} className="p-6 flex items-center justify-between border-white/5 bg-[#080808] group-hover:border-[#FFD500]/20">
-                  <div className="flex items-center gap-5">
+                  <div className="flex items-center gap-6">
                     <div className={`w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center shrink-0 font-black text-lg ${u.verificationStatus === 'approved' ? 'bg-[#22C55E10] text-[#22C55E]' : 'bg-[#111111] text-[#FFD500]'}`}>
                       {u.name?.[0] || 'U'}
                     </div>
@@ -269,11 +297,10 @@ export default function SuperAdminDashboard() {
           )}
         </div>
 
-        {/* Right Details Area */}
         <div className="lg:col-span-8">
           {selectedUser ? (
             <Card variant="flat" radius="3xl" className="p-16 sticky top-12 border-white/5 shadow-2xl bg-[#080808] overflow-hidden">
-              <div className="flex justify-between items-start mb-16 relative">
+              <div className="flex justify-between items-start mb-20 relative">
                 <div className="flex gap-10">
                   <div className="w-32 h-32 bg-[#111111] rounded-[60px] flex items-center justify-center overflow-hidden border-4 border-black shadow-2xl shrink-0">
                     {selectedUser.photoUrl ? (
@@ -283,9 +310,12 @@ export default function SuperAdminDashboard() {
                     )}
                   </div>
                   <div className="pt-4">
-                    <h3 className="text-6xl font-black tracking-tighter uppercase italic">{selectedUser.name}</h3>
+                    <div className="flex items-center gap-4 mb-2">
+                        <h3 className="text-6xl font-black tracking-tighter uppercase italic">{selectedUser.name}</h3>
+                        {selectedUser.isAdmin && <BadgeCheck className="text-blue-500 w-8 h-8" />}
+                    </div>
                     <p className="text-[#FFD500] font-black text-2xl tracking-tight">{selectedUser.phone}</p>
-                    <div className="flex gap-3 mt-6">
+                    <div className="flex gap-3 mt-8">
                        <span className="bg-[#22C55E10] text-[#22C55E] text-[11px] font-black px-5 py-2 rounded-full border border-[#22C55E20] uppercase tracking-widest">ID AUTHENTICATED</span>
                        <span className="bg-white/5 text-white/30 text-[10px] font-black px-5 py-2 rounded-full border border-white/5 font-mono uppercase italic">Ref: {selectedUser.uid.substring(0, 10)}</span>
                     </div>
