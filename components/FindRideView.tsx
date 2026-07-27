@@ -29,9 +29,10 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 interface FindRideViewProps {
   onClose: () => void;
   onRideClick: (id: string) => void;
+  onViewDriverProfile: (id: string) => void;
 }
 
-export default function FindRideView({ onClose, onRideClick }: FindRideViewProps) {
+export default function FindRideView({ onClose, onRideClick, onViewDriverProfile }: FindRideViewProps) {
   const [rides, setRides] = useState<Ride[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState({ from: '', to: '', date: '' });
@@ -142,16 +143,24 @@ export default function FindRideView({ onClose, onRideClick }: FindRideViewProps
                 <div className="bg-[#1E1E1E] rounded-[24px] p-6 shadow-xl border border-white/[0.03]">
                   <div className="flex justify-between items-start mb-6">
                     <div className="flex gap-4">
-                      <div className="w-14 h-14 bg-[#2A2A2A] rounded-[27px] flex items-center justify-center overflow-hidden border border-white/5">
+                      <button
+                        onClick={() => onViewDriverProfile(ride.driverId)}
+                        className="w-14 h-14 bg-[#2A2A2A] rounded-[27px] flex items-center justify-center overflow-hidden border border-white/5 active:scale-95 transition-transform shrink-0"
+                      >
                         {ride.driverPhoto ? (
                           <img src={ride.driverPhoto} alt={ride.driver} className="w-full h-full object-cover" />
                         ) : (
                           <User className="text-[#666666] w-7 h-7" />
                         )}
-                      </div>
+                      </button>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-[17px] text-white">{ride.driver}</h4>
+                          <h4
+                            className="font-bold text-[17px] text-white active:opacity-70 cursor-pointer"
+                            onClick={() => onViewDriverProfile(ride.driverId)}
+                          >
+                            {ride.driver}
+                          </h4>
                           <Shield className="w-4 h-4 text-[#FFD500]" fill="currentColor" />
                         </div>
                         <div className="flex items-center gap-1 text-[12px] font-bold text-[#FFD500]">
