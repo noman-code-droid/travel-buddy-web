@@ -288,6 +288,7 @@ export default function AppContainer() {
                 <ProfileView
                   userMode={userMode}
                   profileData={profileData}
+                  stats={stats}
                   onLogout={requestLogout}
                   onNavigate={navigateToSubView}
                   onSwitchRequest={requestSwitchMode}

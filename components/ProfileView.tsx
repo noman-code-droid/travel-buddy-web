@@ -17,7 +17,7 @@ import {
   HelpCircle,
   Check
 } from 'lucide-react';
-import { UserMode, SubView, UserProfile } from '@/types';
+import { UserMode, SubView, UserProfile, UserStats } from '@/types';
 import Button from './ui/Button';
 import Card from './ui/Card';
 import Link from 'next/link';
@@ -25,6 +25,7 @@ import Link from 'next/link';
 interface ProfileViewProps {
   userMode: UserMode;
   profileData: UserProfile | null;
+  stats: UserStats;
   onLogout: () => void;
   onNavigate: (view: SubView) => void;
   onSwitchRequest: () => void;
@@ -34,6 +35,7 @@ interface ProfileViewProps {
 export default function ProfileView({
   userMode,
   profileData,
+  stats,
   onLogout,
   onNavigate,
   onSwitchRequest,
