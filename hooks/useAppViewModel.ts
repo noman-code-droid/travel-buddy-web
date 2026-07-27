@@ -173,8 +173,7 @@ export function useAppViewModel() {
   return {
     user, appState, userMode, activeTab, subView,
     showSwitchConfirm, showLogoutConfirm, showConsent, showRateDialog,
-    showMediaPicker, showTimePicker, showPhotoConfirm, showAppealDialog,
-    showChatMenu, showPostOptionsMenu, showProfilePicViewer,
+    showMediaPicker, showPhotoConfirm, showAppealDialog, showChatMenu, showPostOptionsMenu, showProfilePicViewer,
     setShowMediaPicker, setShowPhotoConfirm, setShowAppealDialog, setShowChatMenu, setShowPostOptionsMenu, setShowProfilePicViewer,
     setActiveTab,
     handleAuthSuccess: () => {
@@ -201,7 +200,7 @@ export function useAppViewModel() {
     addContact: async (name: string, phone: string) => { if (user) await addDoc(collection(db, "trusted_contacts"), { userId: user.uid, name, phone, createdAt: serverTimestamp() }); },
     onProfileComplete: () => setAppState('main'),
     selectedChat, openChatDetail: (chat: Chat) => { setSelectedChat(chat); setSubView('chat_detail'); },
-    selectedRideId, openRideDetails: (id: string) => { setSelectedRideId(id); setSubView('ride_details'); },
+    selectedRideId, setSelectedRideId, openRideDetails: (id: string) => { setSelectedRideId(id); setSubView('ride_details'); },
     selectedDriverId, openDriverProfile: (id: string) => { setSelectedDriverId(id); setSubView('driver_profile'); },
     completedRideData,
     ratingTarget,
