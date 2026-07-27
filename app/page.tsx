@@ -154,6 +154,9 @@ export default function AppContainer() {
                   key="details"
                   onClose={closeSubView}
                   rideId={selectedRideId}
+                  onSelectPickupOnMap={openPickupSelector}
+                  selectedPickup={selectedPickupLocation}
+                  onViewDriverProfile={openDriverProfile}
                 />
               )}
               {subView === 'financial' && <FinancialReportView key="finance" onClose={closeSubView} />}
@@ -250,7 +253,7 @@ export default function AppContainer() {
                     </p>
                     <div className="flex w-full gap-4">
                       <button onClick={cancelSwitchMode} className="flex-1 h-14 text-white font-bold">Cancel</button>
-                      <button onClick={handleSwitchMode} className="flex-1 h-14 bg-[#FFD500] text-black font-bold rounded-[16px]">Switch</button>
+                      <button onClick={handleSwitchMode} className="flex-1 h-14 bg-[#FFD500] text-black font-bold rounded-[16px] uppercase tracking-tighter">Switch</button>
                     </div>
                   </motion.div>
                 </div>
