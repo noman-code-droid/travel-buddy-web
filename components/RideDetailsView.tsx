@@ -16,31 +16,40 @@ import {
   Loader2,
   Car,
   Users2,
-  Navigation,
-  Info,
   Plus,
   Minus,
-  HandCoins
+  HandCoins,
+  Map as MapIcon
 } from 'lucide-react';
 import { Ride } from '@/types';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import MakeOfferDialog from './ui/MakeOfferDialog';
 import { db, auth } from '@/lib/firebase';
-import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, increment, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, increment } from 'firebase/firestore';
 
 interface RideDetailsViewProps {
   onClose: () => void;
   rideId: string | null;
+  onSelectPickupOnMap: (directions: any) => void;
+  selectedPickup: { lat: number; lng: number; address: string; } | null;
+  onViewDriverProfile: (id: string) => void;
 }
 
-export default function RideDetailsView({ onClose, rideId }: RideDetailsViewProps) {
+export default function RideDetailsView({
+  onClose,
+  rideId,
+  onSelectPickupOnMap,
+  selectedPickup,
+  onViewDriverProfile
+}: RideDetailsViewProps) {
   const [ride, setRide] = useState<Ride | null>(null);
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
   const [seatCount, setSeatCount] = useState(1);
   const [isFullRide, setIsFullRide] = useState(false);
   const [showOfferDialog, setShowOfferDialog] = useState(false);
+  const [directions, setDirections] = useState<any>(null);
 
   useEffect(() => {
     if (!rideId) return;
@@ -51,7 +60,25 @@ export default function RideDetailsView({ onClose, rideId }: RideDetailsViewProp
         const docRef = doc(db, "rides", rideId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setRide({ id: docSnap.id, ...docSnap.data() } as Ride);
+          const data = { id: docSnap.id, ...docSnap.data() } as Ride;
+          setRide(data);
+
+          // Calculate directions for the pickup selector
+          if (window.google) {
+            const directionsService = new google.maps.DirectionsService();
+            directionsService.route(
+              {
+                origin: { lat: data.pickupLat, lng: data.pickupLng },
+                destination: { lat: data.dropOffLat, lng: data.dropOffLng },
+                travelMode: google.maps.TravelMode.DRIVING,
+              },
+              (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                  setDirections(result);
+                }
+              }
+            );
+          }
         }
       } catch (error) {
         console.error("Error fetching ride details:", error);
@@ -76,7 +103,7 @@ export default function RideDetailsView({ onClose, rideId }: RideDetailsViewProp
         passengerName: auth.currentUser.displayName || 'User',
         seatsBooked: seatCount,
         totalPrice: Number(ride.price) * seatCount,
-        pickupLocation: ride.pickup,
+        pickupLocation: selectedPickup?.address || ride.pickup,
         dropOffLocation: ride.dropoff,
         status: 'confirmed',
         timestamp: serverTimestamp()
@@ -160,13 +187,16 @@ export default function RideDetailsView({ onClose, rideId }: RideDetailsViewProp
       <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-32 no-scrollbar">
         {/* Driver Card */}
         <div className="bg-[#1A1A1A] rounded-[32px] p-6 flex items-center gap-4 border border-white/5">
-          <div className="w-16 h-16 bg-[#333333] rounded-full flex items-center justify-center overflow-hidden shrink-0 border-2 border-black">
+          <button
+            onClick={() => onViewDriverProfile(ride.driverId)}
+            className="w-16 h-16 bg-[#333333] rounded-full flex items-center justify-center overflow-hidden shrink-0 border-2 border-black active:scale-95 transition-transform"
+          >
             {ride.driverPhoto ? (
               <img src={ride.driverPhoto} alt={ride.driver} className="w-full h-full object-cover" />
             ) : (
               <User className="text-[#666666] w-8 h-8" />
             )}
-          </div>
+          </button>
           <div className="flex-1">
             <h3 className="text-[18px] font-bold text-white leading-tight">{ride.driver}</h3>
             <div className="flex items-center gap-1.5 mt-1 text-[#FFD500]">
@@ -190,10 +220,23 @@ export default function RideDetailsView({ onClose, rideId }: RideDetailsViewProp
         {/* Route Details */}
         <div className="space-y-3">
           <label className="label-android ml-2">Pickup Point</label>
-          <div className="bg-[#1A1A1A] rounded-[24px] p-6 flex items-center gap-4 border border-white/[0.03]">
-            <MapPin className="text-[#FFD500] w-6 h-6 shrink-0" />
-            <p className="text-[14px] font-bold text-white leading-snug">{ride.pickup}</p>
-          </div>
+          <button
+            onClick={() => directions && onSelectPickupOnMap(directions)}
+            className="w-full bg-[#1A1A1A] rounded-[24px] p-6 flex items-center gap-4 border border-white/[0.03] active:bg-[#252525] transition-colors text-left"
+          >
+            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+              <MapIcon className="text-[#FFD500] w-5 h-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-white leading-snug truncate">
+                {selectedPickup?.address || ride.pickup}
+              </p>
+              <p className="text-[11px] text-[#666666] font-medium">
+                {selectedPickup ? "Custom pickup point selected" : "Tap to select pickup point on route"}
+              </p>
+            </div>
+            <ChevronRight className="text-[#444444] w-5 h-5" />
+          </button>
         </div>
 
         {/* Booking Options Section */}

@@ -207,14 +207,13 @@ export default function FindRideView({ onClose, onRideClick, onViewDriverProfile
                   </div>
 
                   <div className="mt-6 flex gap-3">
-                    <Button
-                      variant="secondary"
+                    <button
                       onClick={() => setPreviewRide(ride)}
-                      className="!h-[48px] !rounded-[24px] !text-[12px] border-white/10 !text-[#ABABAB] font-black uppercase tracking-widest flex-1 gap-2"
+                      className="android-btn-secondary !h-[48px] !rounded-[24px] !text-[12px] border-white/10 !text-[#ABABAB] font-black uppercase tracking-widest flex-1 gap-2 flex items-center justify-center"
                     >
                       <Compass className="w-4 h-4" />
                       View Route
-                    </Button>
+                    </button>
                     <Button
                       onClick={() => onRideClick(ride.id)}
                       className="!h-[48px] !rounded-[24px] !text-[12px] font-black uppercase tracking-widest flex-1"

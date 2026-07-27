@@ -154,9 +154,6 @@ export default function AppContainer() {
                   key="details"
                   onClose={closeSubView}
                   rideId={selectedRideId}
-                  onSelectPickupOnMap={openPickupSelector}
-                  selectedPickup={selectedPickupLocation}
-                  onViewDriverProfile={openDriverProfile}
                 />
               )}
               {subView === 'financial' && <FinancialReportView key="finance" onClose={closeSubView} />}
