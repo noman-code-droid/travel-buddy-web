@@ -21,23 +21,22 @@ body {
 }
 
 @layer components {
-  /* Matches Android MaterialCardView styling */
+  /* Matches Android MaterialCardView styling - Clean & Flat */
   .android-card {
-    @apply bg-[#212121] rounded-[24px] shadow-sm transition-all active:bg-[#2a2a2a];
+    @apply bg-[#212121] rounded-[24px] transition-all active:bg-[#2a2a2a];
   }
 
   .android-card-elevated {
-    @apply bg-[#212121] rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/[0.03];
+    @apply bg-[#212121] rounded-[32px] border border-white/[0.03];
   }
 
-  /* Matches button_bg.xml (64dp height, 24dp radius) */
+  /* Matches button_bg.xml - Removed uppercase and tracking */
   .android-btn-primary {
-    @apply w-full h-[64px] bg-[#FFD500] text-black font-bold rounded-[24px] text-[18px] transition-transform active:scale-[0.98] flex items-center justify-center gap-2 uppercase tracking-tight;
+    @apply w-full h-[64px] bg-[#FFD500] text-black font-bold rounded-[24px] text-[18px] transition-transform active:scale-[0.98] flex items-center justify-center gap-2;
   }
 
-  /* Matches secondary button / card action style */
   .android-btn-secondary {
-    @apply w-full h-[64px] bg-[#212121] border border-[#333333] text-white font-bold rounded-[24px] text-[16px] active:scale-[0.98] flex items-center justify-center gap-3 uppercase tracking-tight;
+    @apply w-full h-[64px] bg-[#212121] border border-[#333333] text-white font-bold rounded-[24px] text-[16px] active:scale-[0.98] flex items-center justify-center gap-3;
   }
 
   /* Matches outlined TextInputLayout (16dp radius) */
@@ -49,24 +48,16 @@ body {
     @apply bg-transparent outline-none text-white text-[16px] w-full placeholder:text-[#666666] font-medium;
   }
 
-  /* Matches badge_bg.xml */
   .badge-dot {
-    @apply absolute -top-1 -right-1 w-[16px] h-[16px] bg-[#FFD500] rounded-full flex items-center justify-center text-black text-[10px] font-black border-2 border-black;
+    @apply absolute -top-1 -right-1 w-[16px] h-[16px] bg-[#FFD500] rounded-full flex items-center justify-center text-black text-[10px] font-bold border-2 border-black;
   }
 
-  /* Standard Android Label (Caps, bold, muted) */
   .label-android {
-    @apply text-[11px] font-black text-[#666666] uppercase mb-2 block ml-1 tracking-[0.1em];
+    @apply text-[11px] font-bold text-[#666666] uppercase mb-2 block ml-1;
   }
 
-  /* Android Title Style (activity headers) */
   .android-title {
     @apply text-[20px] font-bold text-white;
-  }
-
-  /* Premium Heading (activity_post_ride.xml final step) */
-  .android-heading-premium {
-    @apply text-[32px] font-black text-white italic uppercase tracking-tighter leading-[0.9];
   }
 }
 
