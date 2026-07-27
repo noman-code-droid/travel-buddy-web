@@ -69,7 +69,7 @@ export default function RideDetailsView({
             directionsService.route(
               {
                 origin: { lat: data.pickupLat, lng: data.pickupLng },
-                destination: { lat: data.dropOffLat, lng: data.dropOffLng },
+                destination: { lat: data.dropoffLat, lng: data.dropoffLng },
                 travelMode: google.maps.TravelMode.DRIVING,
               },
               (result, status) => {
