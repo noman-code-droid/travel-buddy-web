@@ -266,6 +266,7 @@ export default function AppContainer() {
                 <HomeView
                   userMode={userMode}
                   onNavigate={navigateToSubView}
+                  onTabChange={setActiveTab as any}
                   onOpenAiAssistant={openAiAssistant}
                   stats={stats}
                   activeRide={activeRide}

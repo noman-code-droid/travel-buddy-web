@@ -14,13 +14,14 @@ import {
   ChevronRight,
   Star
 } from 'lucide-react';
-import { UserMode, SubView, UserStats, ActiveRideInfo } from '@/types';
+import { UserMode, SubView, UserStats, ActiveRideInfo, ActiveTab } from '@/types';
 import Card from './ui/Card';
 import Button from './ui/Button';
 
 interface HomeViewProps {
   userMode: UserMode;
   onNavigate: (view: SubView) => void;
+  onTabChange: (tab: ActiveTab) => void;
   onOpenAiAssistant: () => void;
   stats: UserStats;
   activeRide: ActiveRideInfo | null;
@@ -31,6 +32,7 @@ interface HomeViewProps {
 export default function HomeView({
   userMode,
   onNavigate,
+  onTabChange,
   onOpenAiAssistant,
   stats,
   activeRide,
@@ -62,7 +64,7 @@ export default function HomeView({
 
            {/* Profile Circle */}
            <button
-             onClick={() => onNavigate('profile')}
+             onClick={() => onTabChange('profile')}
              className="w-9 h-9 bg-[#212121] rounded-full flex items-center justify-center overflow-hidden border border-white/5 active:scale-95 transition-transform"
            >
              <User className="text-[#ABABAB] w-5 h-5" />
@@ -146,7 +148,7 @@ export default function HomeView({
           {/* Premium Centered 5th Button - Matches Received Bookings LinearLayout weights */}
           <div className="flex justify-center mt-4">
             <button
-              onClick={() => onNavigate('rides')}
+              onClick={() => onTabChange('rides')}
               className="w-full bg-[#212121] rounded-[24px] p-6 flex flex-col items-center gap-3 transition-all active:bg-[#2a2a2a] border border-[#FFD500]/10"
             >
               <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center">
