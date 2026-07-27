@@ -18,8 +18,8 @@ import {
 } from 'lucide-react';
 import { GoogleMap, useJsApiLoader, MarkerF, DirectionsRenderer } from '@react-google-maps/api';
 import { ActiveRideInfo } from '@/types';
-import Card from './ui/Card';
 import Button from './ui/Button';
+import Card from './ui/Card';
 import { androidMapStyle } from '@/lib/map-style';
 import { db, auth } from '@/lib/firebase';
 import { doc, onSnapshot, updateDoc, serverTimestamp } from 'firebase/firestore';
@@ -103,6 +103,12 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
     else alert("Phone coordination is active only during trip.");
   };
 
+  const handleNavigation = () => {
+    if (!rideData?.dropOffLat) return;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${rideData.dropOffLat},${rideData.dropOffLng}&travelmode=driving`;
+    window.open(url, '_blank');
+  };
+
   if (!rideInfo) return null;
 
   const currentPos = rideData?.currentLat ? { lat: rideData.currentLat, lng: rideData.currentLng } : defaultCenter;
@@ -137,7 +143,7 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
         </div>
 
         <div className="absolute top-4 left-4 z-20">
-          <button onClick={onClose} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10 active:scale-90 transition-transform"><ArrowLeft className="text-white w-6 h-6" /></button>
+          <button onClick={onClose} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10 active:scale-90 transition-transform"><ArrowLeft className="text-white w-6 h-6 rotate-180" /></button>
         </div>
 
         <div className="absolute top-4 left-20 right-16 z-20">
@@ -162,7 +168,7 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
         <div className="absolute top-4 right-4 z-20 flex flex-col gap-3">
           <button onClick={handleSos} className="w-12 h-12 bg-[#E46767] rounded-2xl flex items-center justify-center shadow-lg active:scale-90 transition-transform"><AlertTriangle className="text-white w-6 h-6" /></button>
           <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent("Tracking my ride: " + window.location.href)}`, '_blank')} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10 active:scale-90 transition-transform"><Share2 className="text-white w-6 h-6" /></button>
-          <button className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10 active:scale-90 transition-transform"><Navigation className="text-[#FFD500] w-6 h-6" /></button>
+          <button onClick={handleNavigation} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10 active:scale-90 transition-transform"><Navigation className="text-[#FFD500] w-6 h-6" /></button>
         </div>
 
         <div className="mt-auto bg-black rounded-t-[40px] p-8 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] border-t border-white/5 z-30">

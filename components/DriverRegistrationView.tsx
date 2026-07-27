@@ -11,11 +11,15 @@ import {
   Clock,
   FileCheck,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Camera,
+  Image as ImageIcon
 } from 'lucide-react';
 import Button from './ui/Button';
 import Input from './ui/Input';
 import Card from './ui/Card';
+import MediaPickerDialog from './ui/MediaPickerDialog';
+import PhotoConfirmDialog from './ui/PhotoConfirmDialog';
 import { db, auth } from '@/lib/firebase';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -29,65 +33,73 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
 
-  // Real File states for Vercel Blob
-  const [licenseFrontFile, setLicenseFrontFile] = useState<File | null>(null);
-  const [licenseBackFile, setLicenseBackFile] = useState<File | null>(null);
-  const [cnicFile, setCnicFile] = useState<File | null>(null);
+  // Document states
+  const [licenseFront, setLicenseFront] = useState<string | null>(null);
+  const [licenseBack, setLicenseBack] = useState<string | null>(null);
+  const [cnicFront, setCnicFront] = useState<string | null>(null);
+
+  // Dialog states
+  const [activePicker, setActivePicker] = useState<'licenseFront' | 'licenseBack' | 'cnicFront' | null>(null);
+  const [pendingPhoto, setPendingPhoto] = useState<{ url: string, file: File } | null>(null);
 
   const [formData, setFormData] = useState({
     vehicleMake: '',
     vehicleModel: '',
     registrationNumber: '',
-    licenseNumber: '',
   });
-
-  const uploadFile = async (file: File, label: string) => {
-    setUploadProgress(`Uploading ${label}...`);
-    const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
-      method: 'POST',
-      body: file,
-    });
-
-    if (!response.ok) throw new Error(`Failed to upload ${label}`);
-    const blob = await response.json();
-    return blob.url;
-  };
 
   const handleNext = () => setStep(prev => prev + 1);
   const handlePrev = () => step > 1 ? setStep(prev => prev - 1) : onClose();
 
-  const handleSubmit = async () => {
-    if (!auth.currentUser || !licenseFrontFile || !licenseBackFile || !cnicFile) return;
+  // Mock upload logic (replace with real Vercel Blob/Firebase Storage)
+  const uploadFile = async (dataUrl: string) => {
+    return dataUrl; // Placeholder
+  };
 
+  const onMediaSelect = (source: 'camera' | 'gallery') => {
+    // In a real PWA/Web app, this would trigger the system camera or file picker
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    if (source === 'camera') input.setAttribute('capture', 'environment');
+
+    input.onchange = (e: any) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        setPendingPhoto({ url, file });
+      }
+    };
+    input.click();
+    setActivePicker(null);
+  };
+
+  const confirmPhoto = () => {
+    if (!pendingPhoto || !activePicker) return;
+    if (activePicker === 'licenseFront') setLicenseFront(pendingPhoto.url);
+    if (activePicker === 'licenseBack') setLicenseBack(pendingPhoto.url);
+    if (activePicker === 'cnicFront') setCnicFront(pendingPhoto.url);
+    setPendingPhoto(null);
+  };
+
+  const handleSubmit = async () => {
+    if (!auth.currentUser) return;
     setLoading(true);
     try {
-      // 1. Concurrent Upload to Vercel Blob
-      const [licenseUrl, licenseBackUrl, cnicUrl] = await Promise.all([
-        uploadFile(licenseFrontFile, 'License Front'),
-        uploadFile(licenseBackFile, 'License Back'),
-        uploadFile(cnicFile, 'Identity Card')
-      ]);
-
-      setUploadProgress('Finalizing profile...');
-
-      // 2. Update Firestore with high-speed URLs
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         ...formData,
-        licenseUrl,
-        licenseBackUrl,
-        cnicUrl,
+        licenseFront,
+        licenseBack,
+        cnicFront,
         verificationStatus: 'pending',
         isDriverApplied: true,
         appliedAt: serverTimestamp()
       });
-
       setStep(4);
     } catch (error) {
-      console.error(error);
-      alert("Registration failed. Please check your connection and try again.");
+      alert("Registration failed");
     } finally {
       setLoading(false);
-      setUploadProgress('');
     }
   };
 
@@ -104,25 +116,25 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
           <ArrowLeft className="text-white w-7 h-7" />
         </button>
         <h2 className="font-bold text-[20px] flex-1 text-center mr-7 text-white">
-          {step === 4 ? 'Verification Status' : 'Driver Registration'}
+          {step === 4 ? 'Status' : 'Driver Registration'}
         </h2>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 bg-black">
+      <div className="flex-1 overflow-y-auto p-6 bg-black no-scrollbar">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-white">Vehicle Details</h3>
-                <p className="text-[#666666] text-sm">Step 1 of 3: Provide car information.</p>
+                <h3 className="text-2xl font-bold text-white uppercase italic tracking-tighter">Vehicle Details</h3>
+                <p className="text-[#666666] text-sm font-medium">Please provide your car information.</p>
               </div>
               <div className="space-y-4">
-                <Input label="Vehicle Make" placeholder="e.g. Honda, Toyota" value={formData.vehicleMake} onChange={e => setFormData({...formData, vehicleMake: e.target.value})} />
-                <Input label="Vehicle Model" placeholder="e.g. Civic, Corolla" value={formData.vehicleModel} onChange={e => setFormData({...formData, vehicleModel: e.target.value})} />
+                <Input label="Vehicle Make" placeholder="e.g. Honda" value={formData.vehicleMake} onChange={e => setFormData({...formData, vehicleMake: e.target.value})} />
+                <Input label="Vehicle Model" placeholder="e.g. Civic" value={formData.vehicleModel} onChange={e => setFormData({...formData, vehicleModel: e.target.value})} />
                 <Input label="Registration Number" placeholder="e.g. LEA-1234" value={formData.registrationNumber} onChange={e => setFormData({...formData, registrationNumber: e.target.value})} />
               </div>
               <Button onClick={handleNext} disabled={!formData.vehicleMake || !formData.vehicleModel || !formData.registrationNumber} className="mt-8">
-                Next <ChevronRight className="w-5 h-5" />
+                Continue <ChevronRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
           )}
@@ -130,125 +142,144 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
           {step === 2 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-white">Identity & License</h3>
-                <p className="text-[#666666] text-sm">Step 2 of 3: Secure document upload.</p>
+                <h3 className="text-2xl font-bold text-white uppercase italic tracking-tighter">Document Upload</h3>
+                <p className="text-[#666666] text-sm font-medium">Upload clear photos of your official documents.</p>
               </div>
 
-              <div className="space-y-4">
-                {/* CNIC UPLOAD */}
-                <div className="relative">
-                   <input type="file" className="hidden" id="cnic-upload" onChange={(e) => setCnicFile(e.target.files?.[0] || null)} accept="image/*" />
-                   <label htmlFor="cnic-upload">
-                      <Card variant={cnicFile ? 'active' : 'flat'} className="p-5 border-dashed flex items-center justify-between cursor-pointer">
-                        <div className="flex items-center gap-3">
-                           {cnicFile ? <FileCheck className="text-[#22C55E]" /> : <Upload className="text-[#FFD500]" />}
-                           <span className="text-[12px] font-bold uppercase tracking-tight">{cnicFile ? 'CNIC Added' : 'Upload CNIC Front'}</span>
+              <div className="space-y-4 pt-2">
+                {[
+                  { id: 'licenseFront', label: 'License (Front)', value: licenseFront },
+                  { id: 'licenseBack', label: 'License (Back)', value: licenseBack },
+                  { id: 'cnicFront', label: 'CNIC (Front)', value: cnicFront },
+                ].map((doc) => (
+                  <button
+                    key={doc.id}
+                    onClick={() => setActivePicker(doc.id as any)}
+                    className="w-full text-left"
+                  >
+                    <div className={`android-card p-5 border flex items-center justify-between transition-all ${doc.value ? 'bg-[#FFD50010] border-[#FFD50030]' : 'border-white/[0.05]'}`}>
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${doc.value ? 'bg-[#FFD500] shadow-lg' : 'bg-black border border-white/5'}`}>
+                          {doc.value ? (
+                            <CheckCircle2 className="text-black w-6 h-6" />
+                          ) : (
+                            <Upload className="text-[#666666] w-6 h-6" />
+                          )}
                         </div>
-                        {cnicFile && <span className="text-[10px] text-[#666666]">{ (cnicFile.size / 1024).toFixed(0) } KB</span>}
-                      </Card>
-                   </label>
-                </div>
-
-                {/* LICENSE FRONT */}
-                <div className="relative">
-                   <input type="file" className="hidden" id="lic-front" onChange={(e) => setLicenseFrontFile(e.target.files?.[0] || null)} accept="image/*" />
-                   <label htmlFor="lic-front">
-                      <Card variant={licenseFrontFile ? 'active' : 'flat'} className="p-5 border-dashed flex items-center justify-between cursor-pointer">
-                        <div className="flex items-center gap-3">
-                           {licenseFrontFile ? <FileCheck className="text-[#22C55E]" /> : <Upload className="text-[#FFD500]" />}
-                           <span className="text-[12px] font-bold uppercase tracking-tight">License Front</span>
+                        <div className="space-y-0.5">
+                          <p className="text-[15px] font-bold text-white">{doc.label}</p>
+                          <p className={`text-[11px] font-black uppercase tracking-widest ${doc.value ? 'text-[#FFD500]' : 'text-[#444444]'}`}>
+                            {doc.value ? 'Photo Captured' : 'Upload Required'}
+                          </p>
                         </div>
-                      </Card>
-                   </label>
-                </div>
-
-                {/* LICENSE BACK */}
-                <div className="relative">
-                   <input type="file" className="hidden" id="lic-back" onChange={(e) => setLicenseBackFile(e.target.files?.[0] || null)} accept="image/*" />
-                   <label htmlFor="lic-back">
-                      <Card variant={licenseBackFile ? 'active' : 'flat'} className="p-5 border-dashed flex items-center justify-between cursor-pointer">
-                        <div className="flex items-center gap-3">
-                           {licenseBackFile ? <FileCheck className="text-[#22C55E]" /> : <Upload className="text-[#FFD500]" />}
-                           <span className="text-[12px] font-bold uppercase tracking-tight">License Back</span>
-                        </div>
-                      </Card>
-                   </label>
-                </div>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-[#333333]" />
+                    </div>
+                  </button>
+                ))}
               </div>
 
-              <Button onClick={handleNext} disabled={!licenseFrontFile || !licenseBackFile || !cnicFile} className="mt-8">
-                Next <ChevronRight className="w-5 h-5" />
+              <div className="bg-[#1A1A1A] p-5 rounded-[24px] border border-white/[0.03] flex gap-4 items-center mt-4">
+                <div className="w-10 h-10 bg-[#FFD50010] rounded-xl flex items-center justify-center shrink-0 border border-[#FFD50015]">
+                    <ShieldCheck className="text-[#FFD500] w-6 h-6" />
+                </div>
+                <p className="text-[11px] text-[#777777] leading-tight font-medium">
+                  Ensure documents are well-lit and all text is clearly readable for faster verification.
+                </p>
+              </div>
+
+              <Button
+                onClick={handleNext}
+                disabled={!licenseFront || !licenseBack || !cnicFront}
+                className="mt-6"
+              >
+                Review Application
               </Button>
             </motion.div>
           )}
 
           {step === 3 && (
             <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
-              <div className="space-y-2 w-full text-left">
-                <h3 className="text-2xl font-bold text-white">Review & Submit</h3>
-                <p className="text-[#666666] text-sm">Step 3 of 3: Verification guidelines.</p>
+              <div className="space-y-2">
+                <h3 className="text-2xl font-bold text-white uppercase italic tracking-tighter">Review & Submit</h3>
+                <p className="text-[#666666] text-sm font-medium">Final check before broadcasting to admin.</p>
               </div>
 
-              <Card variant="flat" className="w-full p-5 space-y-4 border-white/5">
-                 <div className="flex justify-between items-center border-b border-white/5 pb-3">
-                    <span className="text-[10px] font-bold text-[#666666] uppercase">Vehicle Details</span>
-                    <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+              <div className="android-card-elevated p-6 space-y-6">
+                 <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em]">Vehicle</span>
+                    <span className="text-xs font-bold text-[#FFD500]">VERIFIED</span>
                  </div>
-                 <p className="text-sm font-medium text-white/90">{formData.vehicleMake} {formData.vehicleModel} • {formData.registrationNumber}</p>
+                 <p className="text-[16px] font-bold text-white uppercase tracking-tight">{formData.vehicleMake} {formData.vehicleModel}</p>
 
-                 <div className="flex justify-between items-center border-b border-white/5 pb-3 pt-2">
-                    <span className="text-[10px] font-bold text-[#666666] uppercase">Documents</span>
-                    <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+                 <div className="h-px bg-white/5" />
+
+                 <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em]">Documents</span>
+                    <span className="text-xs font-bold text-[#FFD500]">3 FILES</span>
                  </div>
-                 <p className="text-xs text-[#ABABAB]">3 Images selected for secure upload.</p>
-              </Card>
-
-              <div className="bg-[#FFD50010] p-4 rounded-2xl border border-[#FFD50030] flex gap-3 text-left">
-                <ShieldCheck className="w-5 h-5 text-[#FFD500] shrink-0 mt-0.5" />
-                <p className="text-[11px] text-[#FFD500] leading-relaxed">
-                  Your data is encrypted. Verification usually takes **24 hours**. You will receive an in-app notification once approved.
-                </p>
+                 <div className="flex gap-2">
+                   {[1, 2, 3].map(i => (
+                     <div key={i} className="w-10 h-10 bg-black rounded-lg border border-white/5 flex items-center justify-center">
+                       <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+                     </div>
+                   ))}
+                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Button onClick={handleSubmit} loading={loading} className="w-full">
-                  {loading ? uploadProgress : 'Submit Application'}
+              <div className="pt-4 space-y-4">
+                <Button onClick={handleSubmit} loading={loading} className="android-btn-primary">
+                  Submit for Review
                 </Button>
-                {loading && (
-                    <p className="text-center text-[10px] font-bold text-[#666666] uppercase animate-pulse">Encryption in progress...</p>
-                )}
+                <p className="text-center text-[10px] font-black text-[#333333] uppercase tracking-[0.4em]">Protocol V2.1 Encryption</p>
               </div>
             </motion.div>
           )}
 
           {step === 4 && (
             <motion.div key="status" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center h-full text-center space-y-8 pt-10">
-              <div className={`w-24 h-24 rounded-full flex items-center justify-center ${
-                status === 'approved' ? 'bg-[#22C55E20] border-[#22C55E]' : 'bg-[#FFD50020] border-[#FFD500]'
-              } border-2 shadow-lg`}>
-                {status === 'approved' ? (
-                  <CheckCircle2 className="w-12 h-12 text-[#22C55E]" />
-                ) : (
-                  <Clock className="w-12 h-12 text-[#FFD500] animate-pulse" />
-                )}
+              <div className="w-[100px] h-[100px] bg-[#FFD50010] rounded-full flex items-center justify-center border-2 border-[#FFD50020] shadow-xl">
+                <Clock className="w-12 h-12 text-[#FFD500] animate-pulse" />
               </div>
 
-              <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-white">
-                  {status === 'approved' ? 'Verified Driver' : 'Under Review'}
-                </h3>
+              <div className="space-y-3">
+                <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Review in Progress</h3>
                 <p className="text-[#ABABAB] text-sm leading-relaxed max-w-[260px]">
-                  {status === 'approved'
-                    ? 'Congratulations! You are now a verified Travel Buddy driver. You can start posting rides.'
-                    : 'Our team is reviewing your documents. We will notify you once approved.'}
+                  Our security team is reviewing your documents. This usually takes up to **24 hours**.
                 </p>
               </div>
 
-              <Button onClick={onClose} className="mt-8 !rounded-[24px]">Back to Dashboard</Button>
+              <div className="android-card-elevated p-6 w-full text-left">
+                <p className="text-[11px] text-[#666666] font-bold uppercase tracking-widest mb-2">Next Steps</p>
+                <p className="text-[13px] text-[#888888] leading-tight">
+                  You will be notified once your account is approved. You can then start accepting rides!
+                </p>
+              </div>
+
+              <Button onClick={onClose} variant="secondary" className="mt-8 !rounded-full">Back to Dashboard</Button>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      {/* Media Picker Dialog */}
+      <MediaPickerDialog
+        isOpen={!!activePicker}
+        onClose={() => setActivePicker(null)}
+        onSelect={onMediaSelect}
+      />
+
+      {/* Photo Confirmation Dialog */}
+      <PhotoConfirmDialog
+        isOpen={!!pendingPhoto}
+        onClose={() => setPendingPhoto(null)}
+        photoUrl={pendingPhoto?.url || ''}
+        onConfirm={confirmPhoto}
+        onRetake={() => {
+          setPendingPhoto(null);
+          // Re-open picker if retaking
+        }}
+      />
     </motion.div>
   );
 }

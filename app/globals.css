@@ -21,37 +21,52 @@ body {
 }
 
 @layer components {
-  /* Matches Android MaterialCardView */
+  /* Matches Android MaterialCardView styling */
   .android-card {
-    @apply bg-[#212121] rounded-[16px] shadow-sm transition-all active:bg-[#2a2a2a];
+    @apply bg-[#212121] rounded-[24px] shadow-sm transition-all active:bg-[#2a2a2a];
   }
 
-  /* Matches button_bg.xml */
+  .android-card-elevated {
+    @apply bg-[#212121] rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/[0.03];
+  }
+
+  /* Matches button_bg.xml (64dp height, 24dp radius) */
   .android-btn-primary {
-    @apply w-full h-[64px] bg-[#FFD500] text-black font-bold rounded-[24px] text-[20px] transition-transform active:scale-[0.97] flex items-center justify-center gap-2;
+    @apply w-full h-[64px] bg-[#FFD500] text-black font-bold rounded-[24px] text-[18px] transition-transform active:scale-[0.98] flex items-center justify-center gap-2 uppercase tracking-tight;
   }
 
-  /* Matches secondary card button style */
+  /* Matches secondary button / card action style */
   .android-btn-secondary {
-    @apply w-full h-[64px] bg-[#212121] border border-[#333333] text-white font-bold rounded-[24px] text-[18px] active:scale-[0.97] flex items-center justify-center gap-3;
+    @apply w-full h-[64px] bg-[#212121] border border-[#333333] text-white font-bold rounded-[24px] text-[16px] active:scale-[0.98] flex items-center justify-center gap-3 uppercase tracking-tight;
   }
 
-  /* Matches outlined TextInputLayout */
+  /* Matches outlined TextInputLayout (16dp radius) */
   .android-input-container {
-    @apply bg-[#212121] border border-[#333333] rounded-[16px] px-4 py-4 flex items-center gap-3 focus-within:border-[#FFD500] transition-all;
+    @apply bg-[#121212] border border-[#333333] rounded-[16px] px-5 py-4 flex items-center gap-3 focus-within:border-[#FFD500] transition-all;
   }
 
   .android-input {
-    @apply bg-transparent outline-none text-white text-[16px] w-full placeholder:text-[#ABABAB];
+    @apply bg-transparent outline-none text-white text-[16px] w-full placeholder:text-[#666666] font-medium;
   }
 
   /* Matches badge_bg.xml */
   .badge-dot {
-    @apply absolute -top-1 -right-1 w-[16px] h-[16px] bg-[#FFD500] rounded-full flex items-center justify-center text-black text-[10px] font-bold border-2 border-black;
+    @apply absolute -top-1 -right-1 w-[16px] h-[16px] bg-[#FFD500] rounded-full flex items-center justify-center text-black text-[10px] font-black border-2 border-black;
   }
 
+  /* Standard Android Label (Caps, bold, muted) */
   .label-android {
-    @apply text-[12px] font-bold text-[#ABABAB] uppercase mb-2 block ml-1;
+    @apply text-[11px] font-black text-[#666666] uppercase mb-2 block ml-1 tracking-[0.1em];
+  }
+
+  /* Android Title Style (activity headers) */
+  .android-title {
+    @apply text-[20px] font-bold text-white;
+  }
+
+  /* Premium Heading (activity_post_ride.xml final step) */
+  .android-heading-premium {
+    @apply text-[32px] font-black text-white italic uppercase tracking-tighter leading-[0.9];
   }
 }
 

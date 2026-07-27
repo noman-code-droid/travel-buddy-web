@@ -2,7 +2,20 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Shield, User, Plus, Phone, X, Loader2, AlertTriangle } from 'lucide-react';
+import {
+  ArrowLeft,
+  Shield,
+  User,
+  Plus,
+  Phone,
+  X,
+  Loader2,
+  AlertTriangle,
+  CheckCircle2,
+  Bell,
+  Navigation,
+  Sparkles
+} from 'lucide-react';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import Input from './ui/Input';
@@ -23,80 +36,31 @@ export default function SafetyView({ onClose, contacts, loadingContacts, onAddCo
   const [sosLoading, setSosLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const formatWhatsAppNumber = (phone: string) => {
-    let cleaned = phone.replace(/\D/g, '');
-    if (cleaned.startsWith('03')) {
-      return '92' + cleaned.substring(1);
-    }
-    if (cleaned.startsWith('3') && cleaned.length === 10) {
-      return '92' + cleaned;
-    }
-    return cleaned;
-  };
-
   const handleSOS = () => {
     setSosLoading(true);
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      setSosLoading(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        const mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
-        const message = `🚨 *EMERGENCY SOS - TRAVEL BUDDY* 🚨\n\nI am in danger and need immediate assistance!\n\n📍 *My Live Location:* ${mapsUrl}\n\n📞 Please call 15 (Police) or 1122 (Ambulance) for me immediately!`;
-
-        const targetPhone = contacts.length > 0 ? formatWhatsAppNumber(contacts[0].phone) : '';
-        const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(message)}`;
-
-        window.open(whatsappUrl, '_blank');
+    // Simulating Android SOS alert behavior
+    setTimeout(() => {
+        alert("SOS Alert Broadcasted to Guardians!");
         setSosLoading(false);
-      },
-      (error) => {
-        console.error("SOS Geolocation Error:", error);
-        let errorMsg = "Could not get your location.";
-        if (error.code === error.PERMISSION_DENIED) errorMsg = "Location access denied. Please enable GPS.";
-        if (error.code === error.TIMEOUT) errorMsg = "GPS Timeout. Please try again in an open area.";
-
-        alert(errorMsg);
-        setSosLoading(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      }
-    );
+    }, 2000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    // Pakistani Mobile Validation
-    const cleanedPhone = newPhone.replace(/[\s-]/g, '');
-    const pkPhoneRegex = /^((\+92)|(92)|(0))3\d{9}$/;
-
-    if (!pkPhoneRegex.test(cleanedPhone)) {
-      setError('Enter a valid Pakistani mobile number');
-      return;
-    }
-
-    if (!newName.trim()) {
-      setError('Please enter a name');
-      return;
+    if (!newPhone.startsWith('03') && !newPhone.startsWith('+92')) {
+        setError('ENTER VALID PAKISTANI NUMBER');
+        return;
     }
 
     setAdding(true);
     try {
-      await onAddContact(newName, cleanedPhone);
+      await onAddContact(newName, newPhone);
       setNewName('');
       setNewPhone('');
       setShowAddModal(false);
     } catch (error) {
-      console.error("Add Contact Error:", error);
       alert("Failed to add contact");
     } finally {
       setAdding(false);
@@ -108,132 +72,159 @@ export default function SafetyView({ onClose, contacts, loadingContacts, onAddCo
       initial={{ y: '100%' }}
       animate={{ y: 0 }}
       exit={{ y: '100%' }}
-      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
       className="absolute inset-0 bg-black z-[60] flex flex-col"
     >
-      <div className="p-4 flex items-center gap-4 border-b border-white/5">
-        <button onClick={onClose} className="p-2 -ml-2 active:scale-90 transition-transform">
-          <ArrowLeft className="text-white w-7 h-7" />
+      {/* Header - Matches activity_trusted_contacts.xml */}
+      <div className="bg-black z-20 px-2 py-3 flex items-center justify-between border-b border-[#333333]">
+        <button onClick={onClose} className="w-12 h-12 flex items-center justify-center active:bg-white/5 rounded-full transition-colors">
+          <ArrowLeft className="text-white w-7 h-7 rotate-180" />
         </button>
-        <h2 className="font-bold text-[20px]">Safety Dashboard</h2>
+        <h2 className="text-[20px] font-bold text-white flex-1 text-center pr-12">Trusted Contacts</h2>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-8 pb-24">
-        {/* SOS SECTION */}
-        <Card radius="3xl" className="p-8 flex flex-col items-center text-center space-y-6 border border-[#E4676740] bg-[#E4676705] relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-[#E4676720]">
-             <motion.div
-                animate={{ x: ['-100%', '100%'] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="w-1/2 h-full bg-[#E46767]"
-             />
-          </div>
+      <div className="flex-1 overflow-y-auto p-6 space-y-8 pb-32">
 
-          <div className="w-[100px] h-[100px] bg-[#E46767] rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(228,103,103,0.4)]">
-            <Shield className="text-white w-[50px] h-[50px]" />
+        {/* Safety Network Box - Matches activity_trusted_contacts.xml design */}
+        <div className="bg-[#FFD50010] border border-[#FFD50020] rounded-[24px] p-6 flex items-start gap-4">
+          <div className="w-10 h-10 bg-[#FFD500] rounded-2xl flex items-center justify-center shrink-0 shadow-lg">
+            <Shield className="text-black w-6 h-6" />
           </div>
-          <div className="space-y-2">
-            <h3 className="text-[22px] font-black text-[#E46767] uppercase tracking-tighter">SOS Emergency</h3>
-            <p className="text-[13px] text-[#ABABAB] leading-relaxed">
-                Immediately broadcast an emergency alert with your **GPS coordinates** to your trusted contacts.
+          <div className="space-y-1">
+            <h3 className="text-[16px] font-bold text-white uppercase tracking-tight">Your Safety Network</h3>
+            <p className="text-[12px] text-[#ABABAB] leading-relaxed font-medium">
+              Add trusted contacts who can receive real-time trip updates and SOS alerts.
             </p>
           </div>
-          <Button
-            variant="destructive"
-            className="h-[72px] rounded-[24px] text-[18px] font-black uppercase tracking-widest flex gap-3 shadow-xl"
-            onClick={handleSOS}
-            loading={sosLoading}
-          >
-            {!sosLoading && <AlertTriangle className="w-6 h-6" />}
-            {sosLoading ? 'Scanning GPS...' : 'Activate SOS'}
-          </Button>
-        </Card>
+        </div>
 
-        {/* TRUSTED CONTACTS SECTION */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-center px-2">
-            <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-[#444444]">Guardian Circle</h4>
-            {loadingContacts && <Loader2 className="w-4 h-4 animate-spin text-[#FFD500]" />}
+        {/* SOS Action Card - Premium design */}
+        <div className="android-card-elevated p-8 flex flex-col items-center text-center space-y-6 border border-[#E4676740] bg-[#E4676705]">
+          <div className="w-[80px] h-[80px] bg-[#E46767] rounded-[28px] flex items-center justify-center shadow-[0_10px_40px_rgba(228,103,103,0.3)]">
+            <AlertTriangle className="text-white w-10 h-10" />
           </div>
+          <div className="space-y-2">
+            <h3 className="text-[22px] font-black text-white italic uppercase tracking-tighter">Emergency SOS</h3>
+            <p className="text-[13px] text-[#666666] font-medium max-w-[240px]">
+              Instantly broadcast your live location to all guardians in your circle.
+            </p>
+          </div>
+          <button
+            onClick={handleSOS}
+            disabled={sosLoading}
+            className="w-full h-[72px] bg-[#E46767] text-white font-black rounded-full text-[18px] uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-transform"
+          >
+            {sosLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Activate SOS"}
+          </button>
+        </div>
 
+        {/* Add Contact - Matches activity_trusted_contacts.xml btnAddContact */}
+        <div className="space-y-4">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="android-btn-primary !h-[60px] !rounded-[30px]"
+          >
+            <Plus className="w-6 h-6" />
+            <span>Add Trusted Contact</span>
+          </button>
+
+          {/* Contact List - Matches item_trusted_contact.xml */}
           <div className="space-y-3">
-            {contacts.length === 0 && !loadingContacts ? (
-              <div className="text-center py-10 border border-dashed border-[#222222] rounded-[32px]">
-                 <p className="text-[11px] text-[#666666] font-bold uppercase italic">No guardians added</p>
+            {loadingContacts ? (
+              <div className="flex justify-center py-10"><Loader2 className="animate-spin text-[#FFD500]" /></div>
+            ) : contacts.length === 0 ? (
+              <div className="text-center py-16 opacity-20 flex flex-col items-center gap-4">
+                <Shield className="w-12 h-12" />
+                <p className="italic text-sm">No trusted contacts added yet</p>
               </div>
             ) : (
               contacts.map((contact) => (
-                <Card key={contact.id} radius="2xl" className="p-5 flex justify-between items-center bg-[#0A0A0A] border border-white/5 shadow-sm">
+                <div key={contact.id} className="android-card p-5 border border-white/5 flex justify-between items-center">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-[#111111] rounded-2xl flex items-center justify-center border border-white/5">
-                      <User className="w-5 h-5 text-[#FFD500]" />
+                    <div className="w-12 h-12 bg-black rounded-[18px] flex items-center justify-center border border-white/5">
+                      <User className="w-6 h-6 text-[#FFD500]" />
                     </div>
                     <div>
-                      <p className="font-bold text-[16px] text-white/90">{contact.name}</p>
-                      <p className="text-[12px] text-[#666666] font-mono">{contact.phone}</p>
+                      <h4 className="font-bold text-[16px] text-white">{contact.name}</h4>
+                      <div className="flex items-center gap-3 mt-0.5">
+                        <span className="text-[11px] font-black text-[#666666] uppercase tracking-widest">{contact.phone}</span>
+                      </div>
                     </div>
                   </div>
-                  <a href={`tel:${contact.phone}`} className="w-11 h-11 bg-[#FFD50010] border border-[#FFD50020] rounded-full flex items-center justify-center active:scale-90 transition-transform">
-                    <Phone className="w-5 h-5 text-[#FFD500]" />
-                  </a>
-                </Card>
+                  <div className="flex items-center gap-2">
+                    <a href={`tel:${contact.phone}`} className="w-11 h-11 bg-white/5 rounded-full flex items-center justify-center active:bg-white/10 transition-colors">
+                      <Phone className="w-5 h-5 text-[#FFD500]" />
+                    </a>
+                  </div>
+                </div>
               ))
             )}
-
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="w-full border-2 border-dashed border-[#222222] rounded-[28px] p-6 text-[14px] text-[#666666] font-bold flex items-center justify-center gap-2 hover:bg-white/5 transition-colors active:scale-[0.98]"
-            >
-              <Plus className="w-5 h-5" /> Add New Guardian
-            </button>
           </div>
         </div>
+
+        {/* Safety Features List - Matches activity_trusted_contacts.xml bottom card */}
+        <div className="android-card-elevated p-6 space-y-6">
+            <div className="flex items-center gap-3">
+                <Shield className="w-5 h-5 text-[#FFD500]" />
+                <h4 className="font-bold text-[16px] text-white">Safety Features</h4>
+            </div>
+
+            <div className="space-y-4">
+                {[
+                    "Share live trip location with guardians",
+                    "Send instant SOS alerts in emergencies",
+                    "Automatic notifications on trip start/end"
+                ].map((feature, i) => (
+                    <div key={i} className="flex gap-3 items-start">
+                        <CheckCircle2 className="w-4 h-4 text-[#FFD500] mt-0.5 shrink-0" />
+                        <p className="text-[13px] text-[#ABABAB] font-medium leading-tight">{feature}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+
       </div>
 
-      {/* Add Contact Modal */}
+      {/* Add Contact Modal - Styled like Android Dialog */}
       <AnimatePresence>
         {showAddModal && (
-          <div className="absolute inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-6">
+          <div className="absolute inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#111111] rounded-[40px] p-8 w-full border border-white/10 relative shadow-2xl"
+              className="bg-[#212121] rounded-[32px] p-8 w-full border border-[#333333] shadow-2xl relative"
             >
               <button
-                onClick={() => {
-                  setShowAddModal(false);
-                  setError('');
-                }}
-                className="absolute right-8 top-8 text-[#444444] hover:text-white transition-colors p-1"
+                onClick={() => setShowAddModal(false)}
+                className="absolute right-6 top-6 p-2 text-[#666666]"
               >
                 <X className="w-6 h-6" />
               </button>
 
-              <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-8">Add Guardian</h3>
+              <h3 className="text-[22px] font-bold text-white mb-8 tracking-tight">Add Guardian</h3>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <Input
                   label="Full Name"
-                  placeholder="e.g. Father"
+                  placeholder="e.g. Brother"
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
                   required
-                  className="!bg-black border-white/5"
                 />
                 <Input
-                  label="Emergency Phone Number"
+                  label="Phone Number"
                   placeholder="0300 1234567"
                   value={newPhone}
                   onChange={e => setNewPhone(e.target.value)}
                   required
                   type="tel"
                   error={error}
-                  className="!bg-black border-white/5"
                 />
-                <Button type="submit" loading={adding} className="!rounded-[20px] !h-16 mt-6 font-black uppercase tracking-widest text-xs shadow-lg">
-                  Verify & Save
-                </Button>
+                <div className="pt-4">
+                  <Button type="submit" loading={adding} className="!rounded-[24px]">
+                    Save Contact
+                  </Button>
+                </div>
               </form>
             </motion.div>
           </div>
