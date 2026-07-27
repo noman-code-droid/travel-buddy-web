@@ -66,8 +66,8 @@ export interface Ride {
   bookedSeats: number;
   price: number | string;
   rating: number;
-  trips?: number; // Added to fix property not found error
-  tripsCount?: number; // Added for consistency with other views
+  trips?: number;
+  tripsCount?: number;
   pickup: string;
   pickupLat: number;
   pickupLng: number;
