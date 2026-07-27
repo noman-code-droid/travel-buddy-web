@@ -61,7 +61,7 @@ export default function AppContainer() {
     requestLogout, cancelLogout, openAiAssistant,
     stats, activeRide, notifications, chats, unreadNotifications, unreadChats,
     contacts, loadingContacts, addContact, onProfileComplete, profileData,
-    selectedChat, openChatDetail, selectedRideId, openRideDetails,
+    selectedChat, openChatDetail, selectedRideId, setSelectedRideId, openRideDetails,
     completedRideData, ratingTarget, submitRating, closeRateDialog,
     contentViewData, openContentView, closeContentView, openForgetPassword, closeAuthFlow,
     selectedDriverId, openDriverProfile, openPhotoViewer, photoViewerUrl,
