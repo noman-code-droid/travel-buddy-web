@@ -183,12 +183,12 @@ export default function FindRideView({ onClose, onRideClick, onViewDriverProfile
                       <Compass className="w-4 h-4" />
                       View Route
                     </button>
-                    <Button
+                    <button
                       onClick={() => onRideClick(ride.id)}
-                      className="flex-1 !h-[48px] !rounded-[24px] !text-[12px] font-bold uppercase"
+                      className="flex-1 h-[48px] rounded-[24px] bg-[#FFD500] text-black font-bold text-[12px] uppercase active:scale-95 transition-transform"
                     >
                       Details
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -201,7 +201,7 @@ export default function FindRideView({ onClose, onRideClick, onViewDriverProfile
         isOpen={!!previewRide}
         onClose={() => setPreviewRide(null)}
         pickup={{ lat: previewRide?.pickupLat || 0, lng: previewRide?.pickupLng || 0 }}
-        dropoff={{ lat: previewRide?.dropoffLat || previewRide?.dropOffLat || 0, lng: previewRide?.dropoffLng || previewRide?.dropOffLng || 0 }}
+        dropoff={{ lat: previewRide?.dropoffLat || 0, lng: previewRide?.dropoffLng || 0 }}
       />
     </motion.div>
   );
