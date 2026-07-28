@@ -38,7 +38,7 @@ export default function PhotoConfirmDialog({
           </button>
         </div>
 
-        {/* Photo Preview - Now Rectangular for Documents */}
+        {/* Photo Preview - Rectangular for Documents */}
         <div className="p-6 flex flex-col items-center">
           <div className="w-full aspect-[3/2] bg-[#111111] rounded-[24px] overflow-hidden border-2 border-[#FFD500]/20 shadow-2xl relative group">
             <img
