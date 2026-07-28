@@ -36,7 +36,7 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
   const [loading, setLoading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
 
-  // Local File States (Batch Upload)
+  // Local File States
   const [licenseFront, setLicenseFront] = useState<PhotoData | null>(null);
   const [licenseBack, setLicenseBack] = useState<PhotoData | null>(null);
   const [cnicFront, setCnicFront] = useState<PhotoData | null>(null);
@@ -69,15 +69,18 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
       }
     };
     input.click();
-    setActivePicker(null);
+    // Logic fix: We DON'T clear activePicker here anymore.
+    // It will be cleared in confirmPhoto.
   };
 
   const confirmPhoto = () => {
     if (!pendingPhoto || !activePicker) return;
+
     if (activePicker === 'licenseFront') setLicenseFront(pendingPhoto);
-    if (activePicker === 'licenseBack') setLicenseBack(pendingPhoto);
-    if (activePicker === 'cnicFront') setCnicFront(pendingPhoto);
-    if (activePicker === 'profilePhoto') setProfilePhoto(pendingPhoto);
+    else if (activePicker === 'licenseBack') setLicenseBack(pendingPhoto);
+    else if (activePicker === 'cnicFront') setCnicFront(pendingPhoto);
+    else if (activePicker === 'profilePhoto') setProfilePhoto(pendingPhoto);
+
     setPendingPhoto(null);
     setActivePicker(null);
   };
@@ -98,7 +101,6 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
     setUploadStatus('Uploading documents...');
 
     try {
-      // BATCH UPLOAD: Upload all files in parallel
       const [lFrontUrl, lBackUrl, cFrontUrl, pPhotoUrl] = await Promise.all([
         uploadToBlob(licenseFront.file),
         uploadToBlob(licenseBack.file),
@@ -117,7 +119,6 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
         profileImageUrl: pPhotoUrl,
         verificationStatus: 'pending',
         isDriverApplied: true,
-        userType: 'passenger', // Stay passenger until approved
         appliedAt: serverTimestamp()
       });
 
@@ -137,7 +138,6 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
       exit={{ x: '100%' }}
       className="absolute inset-0 bg-black z-[60] flex flex-col"
     >
-      {/* Header - Cleaned up */}
       <div className="p-4 flex items-center gap-4 border-b border-[#333333] bg-black z-10">
         <button onClick={handlePrev} disabled={loading} className="w-10 h-10 flex items-center justify-center active:bg-white/5 rounded-full transition-colors">
           <ArrowLeft className="text-white w-7 h-7 rotate-180" />
@@ -281,16 +281,15 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
         </AnimatePresence>
       </div>
 
-      {/* Overlays */}
       <MediaPickerDialog
-        isOpen={!!activePicker}
+        isOpen={!!activePicker && !pendingPhoto}
         onClose={() => setActivePicker(null)}
         onSelect={onMediaSelect}
       />
 
       <PhotoConfirmDialog
         isOpen={!!pendingPhoto}
-        onClose={() => setPendingPhoto(null)}
+        onClose={() => { setPendingPhoto(null); setActivePicker(null); }}
         photoUrl={pendingPhoto?.url || ''}
         onConfirm={confirmPhoto}
         onRetake={() => setPendingPhoto(null)}
