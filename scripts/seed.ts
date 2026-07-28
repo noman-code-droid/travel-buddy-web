@@ -1,4 +1,5 @@
 import { createClient } from '@vercel/postgres';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'csv-parse/sync';
@@ -7,15 +8,17 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.local' });
 
+const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || '';
+const genAI = new GoogleGenerativeAI(apiKey);
+const embedModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
+
 const pool = createClient({ connectionString: process.env.POSTGRES_URL });
 
-async function seedTable(filePath: string, type: string) {
-  if (!fs.existsSync(filePath)) {
-    console.log(`⚠️ Skipping (Not found): ${filePath}`);
-    return;
-  }
+const DELAY_MS = 1000; // 1 second delay to stay safe on free tier
 
-  console.log(`\n--- 📂 Syncing ${type.toUpperCase()}: ${path.basename(filePath)} ---`);
+async function seedTable(filePath: string, type: string) {
+  if (!fs.existsSync(filePath)) return;
+  console.log(`\n--- 🧠 Semantic Syncing ${type.toUpperCase()} ---`);
 
   let records: any[] = [];
   if (filePath.endsWith('.csv')) {
@@ -27,58 +30,50 @@ async function seedTable(filePath: string, type: string) {
   }
 
   let added = 0;
-
   for (const record of records) {
-    const name = record.Hotel_Name || record.Name || record.Event_Name || record.Route_Segment || record._key || "Unknown";
-    const city = record.City || record.district || record.Region || record.Location || "Pakistan";
-    const desc = record.Desc || record.Description || record.Notes || "";
-    const content = `${type.toUpperCase()}: ${name} in ${city}. ${desc}`;
+    const name = record.Hotel_Name || record.Name || record.Event_Name || "Info";
+    const city = record.City || record.Location || "Pakistan";
+    const content = `${type.toUpperCase()}: ${name} in ${city}. ${record.Description || record.Desc || ""}`;
 
     try {
+      // 1. Generate Embedding
+      const result = await embedModel.embedContent(content);
+      const vector = result.embedding.values;
+
+      // 2. Insert with Vector
       await pool.query(
-        `INSERT INTO travel_knowledge (content, metadata, source_type)
-         VALUES ($1, $2, $3)
-         ON CONFLICT DO NOTHING`,
-        [content, JSON.stringify(record), type]
+        `INSERT INTO travel_knowledge (content, metadata, embedding, source_type)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (content) DO UPDATE SET embedding = $3`,
+        [content, JSON.stringify(record), `[${vector.join(',')}]`, type]
       );
+
       added++;
-      process.stdout.write(`\rLoaded: ${added}/${records.length}`);
+      process.stdout.write(`\rProgress: ${added}/${records.length}`);
+
+      // Delay to avoid rate limits
+      await new Promise(r => setTimeout(r, DELAY_MS));
     } catch (err: any) {
-      // Ignore errors for rows that already exist
+      if (err.message.includes('429')) {
+        console.log("\n⚠️ Rate limit hit. Waiting 10s...");
+        await new Promise(r => setTimeout(r, 10000));
+      }
     }
   }
-
-  // Update search index
-  await pool.query("UPDATE travel_knowledge SET fts_tokens = to_tsvector('english', content) WHERE fts_tokens IS NULL");
-  console.log(`\n✨ Finished ${type}: ${added} rows.`);
 }
 
 async function main() {
+  await pool.connect();
   try {
-    // Connect ONCE at the start
-    await pool.connect();
-
-    // 1. Internal Project Data
+    // Sync all files
     const webDataDir = path.join(process.cwd(), 'data/raw');
     await seedTable(path.join(webDataDir, 'hotels.csv'), 'hotel');
     await seedTable(path.join(webDataDir, 'pakistan_pois.csv'), 'poi');
-    await seedTable(path.join(webDataDir, 'pakistan_restaurants.csv'), 'restaurant');
-    await seedTable(path.join(webDataDir, 'pakistan_road_safety_advisories.csv'), 'safety');
-    await seedTable(path.join(webDataDir, 'pakistan_seasonal_events.csv'), 'event');
 
-    // 2. Root Knowledge Data (Including Excel files)
-    const ragDir = path.join(process.cwd(), '../rag knowledge');
-    await seedTable(path.join(ragDir, 'pakistan_pois.xlsx'), 'poi');
-    await seedTable(path.join(ragDir, 'pakistan_restaurants.xlsx'), 'restaurant');
-    await seedTable(path.join(ragDir, 'pakistan_road_safety_advisories.xlsx'), 'safety');
-    await seedTable(path.join(ragDir, 'pakistan_seasonal_events.xlsx'), 'event');
-    await seedTable(path.join(ragDir, 'Tourist Destinations.csv'), 'poi');
-
-    console.log(`\n🌟 AUDIT COMPLETE: ALL KNOWLEDGE SOURCES SYNCED!`);
+    console.log(`\n🌟 SEMANTIC SYNC COMPLETE!`);
   } catch (error: any) {
     console.error('\n❌ Error:', error.message);
   } finally {
-    // End connection ONCE at the very end
     await pool.end();
   }
 }
