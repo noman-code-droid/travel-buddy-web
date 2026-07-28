@@ -201,7 +201,7 @@ export default function FindRideView({ onClose, onRideClick, onViewDriverProfile
         isOpen={!!previewRide}
         onClose={() => setPreviewRide(null)}
         pickup={{ lat: previewRide?.pickupLat || 0, lng: previewRide?.pickupLng || 0 }}
-        dropoff={{ lat: previewRide?.dropoffLat || ride?.dropOffLat || 0, lng: previewRide?.dropoffLng || ride?.dropOffLng || 0 }}
+        dropoff={{ lat: previewRide?.dropoffLat || previewRide?.dropOffLat || 0, lng: previewRide?.dropoffLng || previewRide?.dropOffLng || 0 }}
       />
     </motion.div>
   );
