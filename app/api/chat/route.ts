@@ -1,51 +1,92 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { streamText, convertToCoreMessages } from 'ai';
+import { streamText, convertToCoreMessages, CoreMessage } from 'ai';
 import { createPool } from '@vercel/postgres';
 
 export const runtime = 'nodejs';
 
 const pool = createPool({ connectionString: process.env.POSTGRES_URL });
 
-export async function POST(req: Request) {
-  try {
-    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-    if (!apiKey) return new Response('Missing API Key', { status: 500 });
+/**
+ * Top 5 models ranked by performance and stability
+ */
+const MODEL_PRIORITY = [
+  'gemini-2.5-flash',
+  'gemini-2.5-pro',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-1.5-pro'
+];
 
-    const google = createGoogleGenerativeAI({ apiKey });
+async function getTravelContext(userMessage: string) {
+  if (!userMessage || userMessage.length < 2) return "";
+  try {
+    const { rows } = await pool.query(
+      `SELECT content FROM travel_knowledge
+       WHERE fts_tokens @@ websearch_to_tsquery('english', $1)
+       OR content ILIKE $2
+       LIMIT 8`,
+      [userMessage, `%${userMessage.split(' ')[0]}%`]
+    );
+    return rows.map(r => r.content).join("\n\n");
+  } catch (e) {
+    return "";
+  }
+}
+
+export async function POST(req: Request) {
+  const keys = [
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY_SECONDARY
+  ].filter(Boolean) as string[];
+
+  if (keys.length === 0) return new Response('Missing API Configuration', { status: 500 });
+
+  try {
     const body = await req.json();
     const isChat = !!body.messages;
 
-    const coreMessages = isChat ? convertToCoreMessages(body.messages) : [{ role: 'user', content: body.prompt }];
-    const lastUserMessage = isChat ? body.messages[body.messages.length - 1].content : body.prompt;
+    // Fix: Explicitly type coreMessages as CoreMessage[] to resolve the build error
+    const coreMessages: CoreMessage[] = isChat
+      ? convertToCoreMessages(body.messages)
+      : [{ role: 'user', content: String(body.prompt || "") }];
 
-    // 1. RAG Search
-    let context = "";
-    if (lastUserMessage && lastUserMessage.length > 2) {
-      try {
-        const { rows } = await pool.query(
-          `SELECT content FROM travel_knowledge
-           WHERE fts_tokens @@ plainto_tsquery('english', $1)
-           OR content ILIKE $2
-           LIMIT 5`,
-          [lastUserMessage, `%${lastUserMessage.split(' ')[0]}%`]
-        );
-        context = rows.map(r => r.content).join("\n\n");
-      } catch (e) { console.error("DB Error:", e); }
+    const lastUserMessage = isChat
+      ? body.messages[body.messages.length - 1].content
+      : body.prompt;
+
+    const context = await getTravelContext(lastUserMessage);
+
+    for (const apiKey of keys) {
+      const google = createGoogleGenerativeAI({ apiKey });
+
+      for (const modelId of MODEL_PRIORITY) {
+        try {
+          const result = await streamText({
+            model: google(modelId),
+            messages: coreMessages,
+            system: `You are Travel Buddy AI, an expert travel companion for Pakistan.
+            VERIFIED DATA: ${context || "Use general knowledge of Pakistan."}
+            BUSINESS RULES:
+            - Small Cars (1000cc): 38 PKR/km
+            - Large Cars/SUVs: 54 PKR/km
+            - Model: Zero-Profit Cost-Sharing.
+            - Safety: Suggest sharing live trip with 'Trusted Contacts'.`,
+          });
+
+          return isChat ? result.toDataStreamResponse() : result.toTextStreamResponse();
+
+        } catch (modelErr: any) {
+          const errorMsg = modelErr.message || "";
+          console.warn(`⚠️ Model ${modelId} failed:`, errorMsg);
+          if (errorMsg.includes('429') || errorMsg.includes('limit')) break;
+          continue;
+        }
+      }
     }
 
-    // 2. Generate using gemini-2.0-flash (verified available in your list)
-    const result = await streamText({
-      model: google('gemini-2.0-flash'),
-      messages: coreMessages,
-      system: `You are Travel Buddy AI, an expert travel companion for Pakistan.
-      VERIFIED DATA: ${context || "Use general knowledge."}
-      RULES: Small Cars 38 PKR/km, Large Cars 54 PKR/km.`,
-    });
-
-    return isChat ? result.toDataStreamResponse() : result.toTextStreamResponse();
+    return new Response("All AI accounts and models are currently at capacity.", { status: 503 });
 
   } catch (err: any) {
-    console.error("AI Route Error:", err);
     return new Response(err.message, { status: 500 });
   }
 }
