@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
@@ -143,20 +143,20 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
         </div>
 
         <div className="absolute top-4 left-4 z-20">
-          <button onClick={onClose} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10 active:scale-90 transition-transform"><ArrowLeft className="text-white w-6 h-6 rotate-180" /></button>
+          <button onClick={onClose} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center border border-white/10 active:scale-90 transition-transform"><ArrowLeft className="text-white w-6 h-6 rotate-180" /></button>
         </div>
 
         <div className="absolute top-4 left-20 right-16 z-20">
-          <Card radius="3xl" className="bg-black/80 backdrop-blur-md p-1.5 shadow-2xl border border-white/10 cursor-pointer" onClick={() => setExpanded(!expanded)}>
+          <Card radius="3xl" className="bg-black/80 backdrop-blur-md p-1.5 border border-white/10 cursor-pointer" onClick={() => setExpanded(!expanded)}>
             <div className="flex items-center gap-3 p-1">
               <div className="w-11 h-11 bg-[#FFD500] rounded-full flex items-center justify-center overflow-hidden shrink-0 border-2 border-black">
                 {rideInfo.driverPhoto ? <img src={rideInfo.driverPhoto} alt={rideInfo.driverName} className="w-full h-full object-cover" /> : <User className="text-black w-6 h-6" />}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-black text-white truncate uppercase tracking-tighter">{rideInfo.driverName}</h3>
+                <h3 className="text-sm font-bold text-white truncate">{rideInfo.driverName}</h3>
                 <div className="flex items-center gap-1">
                   <Star className="w-3 h-3 text-[#FFD500] fill-[#FFD500]" />
-                  <span className="text-[10px] text-[#FFD500] font-black">Verified</span>
+                  <span className="text-[10px] text-[#FFD500] font-bold">Verified</span>
                   <span className="text-[10px] text-[#666666] truncate ml-1">{rideInfo.vehicleSubtitle || 'Premium Trip'}</span>
                 </div>
               </div>
@@ -167,27 +167,27 @@ export default function TrackRideView({ onClose, rideInfo }: TrackRideViewProps)
 
         <div className="absolute top-4 right-4 z-20 flex flex-col gap-3">
           <button onClick={handleSos} className="w-12 h-12 bg-[#E46767] rounded-2xl flex items-center justify-center shadow-lg active:scale-90 transition-transform"><AlertTriangle className="text-white w-6 h-6" /></button>
-          <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent("Tracking my ride: " + window.location.href)}`, '_blank')} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10 active:scale-90 transition-transform"><Share2 className="text-white w-6 h-6" /></button>
-          <button onClick={handleNavigation} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10 active:scale-90 transition-transform"><Navigation className="text-[#FFD500] w-6 h-6" /></button>
+          <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent("Tracking my ride: " + window.location.href)}`, '_blank')} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center border border-white/10 active:scale-90 transition-transform"><Share2 className="text-white w-6 h-6" /></button>
+          <button onClick={handleNavigation} className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center border border-white/10 active:scale-90 transition-transform"><Navigation className="text-[#FFD500] w-6 h-6" /></button>
         </div>
 
-        <div className="mt-auto bg-black rounded-t-[40px] p-8 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] border-t border-white/5 z-30">
+        <div className="mt-auto bg-black rounded-t-[40px] p-8 border-t border-white/5 z-30">
           <div className="w-12 h-1.5 bg-[#222222] rounded-full mx-auto mb-8" />
           <div className="flex justify-between items-start mb-6">
              <div>
-                <h2 className="text-3xl font-black text-white tracking-tighter uppercase mb-1">
-                  {rideData?.status ? rideData.status.replace("_", " ") : 'ON THE WAY'}
+                <h2 className="text-2xl font-bold text-white mb-1 uppercase">
+                  {rideData?.status ? rideData.status.replace("_", " ") : 'On the way'}
                 </h2>
-                <p className="text-[#666666] text-xs font-bold uppercase tracking-widest">{rideData?.vehicleMake} {rideData?.vehicleModel} • {rideData?.registrationNumber}</p>
+                <p className="text-[#666666] text-xs font-bold uppercase">{rideData?.vehicleMake} {rideData?.vehicleModel} • {rideData?.registrationNumber}</p>
              </div>
              <div className="text-right">
-                <p className="text-[10px] font-black text-[#FFD500] uppercase mb-1">Fare Share</p>
-                <p className="text-xl font-black text-white">RS {rideData?.price || '---'}</p>
+                <p className="text-[10px] font-bold text-[#FFD500] uppercase mb-1">Fare Share</p>
+                <p className="text-xl font-bold text-white">RS {rideData?.price || '---'}</p>
              </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-             <Button variant="secondary" className="!h-14 !rounded-[20px] font-black text-xs uppercase tracking-widest" onClick={onClose}>Minimize</Button>
-             <Button variant="destructive" className="!h-14 !rounded-[20px] font-black text-xs uppercase tracking-widest opacity-50 cursor-not-allowed">Cancel</Button>
+             <Button variant="secondary" className="!h-14 !rounded-[20px] font-bold text-xs uppercase" onClick={onClose}>Minimize</Button>
+             <Button variant="destructive" className="!h-14 !rounded-[20px] font-bold text-xs uppercase opacity-50 cursor-not-allowed">Cancel</Button>
           </div>
         </div>
       </div>

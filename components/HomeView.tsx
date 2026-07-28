@@ -77,7 +77,7 @@ export default function HomeView({
         <div className="flex gap-3 px-1">
            <Card className="flex-1 p-4 flex flex-col items-center justify-center !rounded-[16px]">
              <span className="text-[17px] font-bold text-white">{stats.trips}</span>
-             <span className="text-[11px] text-[#ABABAB] uppercase tracking-wider mt-0.5">Trips</span>
+             <span className="text-[11px] text-[#666666] mt-0.5">Trips</span>
            </Card>
 
            <button
@@ -86,7 +86,7 @@ export default function HomeView({
            >
              <Card className="h-full p-4 flex flex-col items-center justify-center !rounded-[16px]">
                <span className="text-[17px] font-bold text-white">PKR {stats.savingsOrEarnings}</span>
-               <span className="text-[11px] text-[#ABABAB] uppercase tracking-wider mt-0.5">
+               <span className="text-[11px] text-[#666666] mt-0.5">
                  {userMode === 'passenger' ? 'Savings' : 'Earnings'}
                </span>
              </Card>
@@ -97,28 +97,28 @@ export default function HomeView({
                <span className="text-[17px] font-bold text-[#FFD500]">★</span>
                <span className="text-[17px] font-bold text-[#FFD500]">{stats.rating}</span>
              </div>
-             <span className="text-[11px] text-[#ABABAB] uppercase tracking-wider mt-0.5">Rating</span>
+             <span className="text-[11px] text-[#666666] mt-0.5">Rating</span>
            </Card>
         </div>
 
-        {/* Global Chat CTA - Premium look */}
+        {/* Global Chat CTA - Flattened and cleaned */}
         <div className="px-1">
           <Card
-            variant="active"
+            variant="default"
             radius="xl"
-            className="p-5 flex items-center justify-between cursor-pointer border-[#FFD500]/20"
+            className="p-5 flex items-center justify-between cursor-pointer border border-white/5"
             onClick={() => onNavigate('global_chat')}
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[#FFD500] rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-[#FFD500] rounded-2xl flex items-center justify-center">
                 <Globe className="text-black w-6 h-6" />
               </div>
               <div>
-                <p className="text-[16px] font-bold text-white uppercase tracking-tighter">Global Community</p>
-                <p className="text-[11px] text-[#ABABAB] font-medium">Connect with travelers nearby</p>
+                <p className="text-[16px] font-bold text-white">Global Community</p>
+                <p className="text-[12px] text-[#666666]">Connect with travelers nearby</p>
               </div>
             </div>
-            <ChevronRight className="w-5 h-5 text-[#FFD500] opacity-50" />
+            <ChevronRight className="w-5 h-5 text-[#333333]" />
           </Card>
         </div>
 
@@ -137,7 +137,7 @@ export default function HomeView({
                 onClick={() => action.action ? action.action() : onNavigate(action.id)}
                 className="bg-[#212121] rounded-[24px] p-6 flex flex-col items-center gap-3 transition-all active:bg-[#2a2a2a] active:scale-[0.98] group"
               >
-                <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center group-active:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center">
                   <action.icon className="w-7 h-7 text-[#FFD500]" />
                 </div>
                 <span className="text-[14px] font-bold text-white/90">{action.label}</span>
@@ -145,11 +145,10 @@ export default function HomeView({
             ))}
           </div>
 
-          {/* Premium Centered 5th Button - Matches Received Bookings LinearLayout weights */}
           <div className="flex justify-center mt-4">
             <button
               onClick={() => onTabChange('rides')}
-              className="w-full bg-[#212121] rounded-[24px] p-6 flex flex-col items-center gap-3 transition-all active:bg-[#2a2a2a] border border-[#FFD500]/10"
+              className="w-full bg-[#212121] rounded-[24px] p-6 flex flex-col items-center gap-3 transition-all active:bg-[#2a2a2a]"
             >
               <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center">
                 <ClipboardList className="w-7 h-7 text-[#FFD500]" />
@@ -161,11 +160,11 @@ export default function HomeView({
           </div>
         </div>
 
-        {/* Active Ride Card - Matches activity_main.xml styling */}
+        {/* Active Ride Card - Cleaned up fonts and status */}
         {activeRide ? (
           <div className="px-1 pb-10">
             <h2 className="text-[18px] font-bold text-white mb-4 ml-1">Active Ride</h2>
-            <div className="android-card-elevated p-6 relative overflow-hidden">
+            <div className="bg-[#212121] rounded-[32px] p-6 border border-white/[0.03]">
               <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-[#FFD500] rounded-[28px] flex items-center justify-center overflow-hidden border-2 border-black shrink-0">
@@ -177,31 +176,30 @@ export default function HomeView({
                   </div>
                   <div>
                     <h3 className="text-[18px] font-bold text-white leading-tight">{activeRide.driverName}</h3>
-                    <p className="text-[14px] text-[#666666] font-medium">{activeRide.isDriver ? 'Driver' : 'Passenger'}</p>
+                    <p className="text-[14px] text-[#666666]">{activeRide.isDriver ? 'Driver' : 'Passenger'}</p>
                   </div>
                 </div>
-                <span className="text-[14px] font-bold text-[#FFD500] uppercase tracking-tighter bg-[#FFD500]/10 px-3 py-1 rounded-full border border-[#FFD500]/20">
+                <span className="text-[14px] font-bold text-[#FFD500]">
                   {activeRide.status.replace("_", " ")}
                 </span>
               </div>
 
               <div className="flex items-start gap-3 mb-8 px-1">
                 <Navigation className="w-5 h-5 text-[#666666] mt-0.5 shrink-0" />
-                <p className="text-[15px] text-[#ABABAB] leading-relaxed font-medium">
+                <p className="text-[15px] text-[#ABABAB] leading-relaxed">
                   {activeRide.route}
                 </p>
               </div>
 
               <button
                 onClick={() => onNavigate('track_ride')}
-                className="android-btn-primary !h-[64px]"
+                className="android-btn-primary"
               >
                 Track Ride
               </button>
             </div>
           </div>
         ) : (
-          /* Empty state or spacer if no active ride */
           <div className="h-20" />
         )}
       </div>

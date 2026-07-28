@@ -1,0 +1,21 @@
+﻿Event_ID,Event_Name,Location,Region,Category,Timing,Description
+EVT_001,Shandur Polo Festival,Shandur Pass,Gilgit-Baltistan / KPK,Festival,Jul,"Annual freestyle polo tournament at the world's highest polo ground, between Chitral and Gilgit teams."
+EVT_002,Kalash Chilam Joshi Festival,Kalash Valleys,Khyber Pakhtunkhwa,Cultural Festival,May,"Spring festival of the indigenous Kalash people, marked by singing, dancing, and traditional rituals."
+EVT_003,Kalash Uchal Festival,Kalash Valleys,Khyber Pakhtunkhwa,Cultural Festival,Aug,Harvest festival celebrated by the Kalash community with music and dance.
+EVT_004,Kalash Choimus Festival,Kalash Valleys,Khyber Pakhtunkhwa,Cultural Festival,Dec,"Winter solstice festival, the largest and most important Kalash celebration of the year."
+EVT_005,Cholistan Desert Jeep Rally,Bahawalpur,Punjab,Sporting Event,Feb,Annual off-road jeep rally held in the Cholistan Desert near Derawar Fort.
+EVT_006,Lok Mela (National Folk Festival),Islamabad,Islamabad Capital Territory,Cultural Festival,Nov,"Annual folk heritage festival organized by Lok Virsa, showcasing crafts and performances from across Pakistan."
+EVT_007,Sibi Mela,Sibi,Balochistan,Cultural Festival,Feb,"Historic annual fair featuring livestock trade, cultural performances, and handicrafts."
+EVT_008,Lahore Horse and Cattle Show,Lahore,Punjab,Cultural Festival,Mar-Apr,Traditional livestock show combined with cultural performances and tent pegging competitions.
+EVT_009,Nowruz (Navroz),Gilgit-Baltistan / Chitral,Gilgit-Baltistan / KPK,Cultural Festival,Mar,Persian/Central Asian New Year celebration observed in parts of northern Pakistan.
+EVT_010,Silk Route Festival,Gilgit,Gilgit-Baltistan,Cultural Festival,Aug,Festival celebrating the cultural heritage of the historic Silk Route region.
+EVT_011,Independence Day,Nationwide,Nationwide,National Holiday,14 Aug,"National holiday marking Pakistan's independence in 1947, observed with flag hoisting and celebrations."
+EVT_012,Eid-ul-Fitr,Nationwide,Nationwide,Religious Holiday,Varies (lunar calendar),Major religious holiday marking the end of Ramadan; expect high domestic travel demand around this period.
+EVT_013,Eid-ul-Adha,Nationwide,Nationwide,Religious Holiday,Varies (lunar calendar),"Major religious holiday; also a peak domestic travel period, especially to northern areas."
+EVT_014,Ramadan (travel/dining note),Nationwide,Nationwide,Seasonal Note,Varies (lunar calendar),Restaurant hours shift during the fasting month; many food outlets open later and stay open into the night.
+EVT_015,Murree Winter Tourist Season,Murree,Punjab,Seasonal Window,Dec-Feb,Peak snowfall season draws heavy domestic tourism; expect traffic congestion and higher hotel rates.
+EVT_016,Naran-Kaghan Open Season,Naran/Kaghan,Khyber Pakhtunkhwa,Seasonal Window,Jun-Sep,Main tourist season when upper valley roads and Saiful Muluk Lake are accessible.
+EVT_017,Hunza Autumn Foliage Season,Hunza,Gilgit-Baltistan,Seasonal Window,Oct,Popular period for photography tourism due to golden autumn foliage across the valley.
+EVT_018,Skardu/Deosai Peak Season,Skardu,Gilgit-Baltistan,Seasonal Window,Jun-Sep,Best window for visiting Deosai Plains and surrounding lakes before winter snow closes access.
+EVT_019,Swat Spring Bloom Season,Swat,Khyber Pakhtunkhwa,Seasonal Window,Mar-Apr,"Valley's orchards and hillsides bloom, a popular period for scenic travel."
+EVT_020,Chilam Joshi to Uchal Travel Window,Kalash Valleys,Khyber Pakhtunkhwa,Seasonal Window,May-Aug,Best period to experience Kalash cultural festivals alongside pleasant valley weather.

@@ -1,0 +1,121 @@
+﻿Restaurant_ID,Name,City,Cuisine_Type,Price_Range,Latitude,Longitude,Description
+RES_0001,Butt Karahi,Lahore,Pakistani,Mid,31.5825,74.3319,Iconic Old Lahore karahi restaurant known for its mutton and chicken karahi.
+RES_0002,Phajja Siri Paye,Lahore,Pakistani,Budget,31.591,74.308,Famous late-night eatery in the Walled City known for siri paye (trotters).
+RES_0003,Cuckoo's Den,Lahore,Pakistani,High,31.5885,74.3095,"Rooftop restaurant overlooking Badshahi Mosque, known for its ambience."
+RES_0004,Andaaz Restaurant,Lahore,Pakistani,High,31.547,74.355,Traditional Punjabi restaurant popular for its BBQ and family halls.
+RES_0005,Haveli Restaurant,Lahore,Pakistani,High,31.5885,74.31,Rooftop dining venue in a restored haveli facing the Badshahi Mosque.
+RES_0006,"Bundu Khan, Gulberg",Lahore,Pakistani BBQ,Mid,31.509,74.345,Well-known chain famous for seekh kababs and dal gosht.
+RES_0007,Salt'n Pepper Village,Lahore,Pakistani,Mid,31.5,74.335,Large traditional-themed restaurant popular for family dining.
+RES_0008,Cafe Aylanto,Lahore,Continental,High,31.5075,74.343,Upscale continental and Italian restaurant in Gulberg.
+RES_0009,Waris Nihari,Lahore,Pakistani,Budget,31.568,74.311,"Old-city institution famous for its nihari, running for decades."
+RES_0010,Fujiya Restaurant,Lahore,Continental,Mid,31.559,74.329,Long-running Mall Road restaurant known for continental dishes and bakery.
+RES_0011,Mocca Coffee,Lahore,Cafe,Mid,31.478,74.363,Popular cafe chain known for coffee and casual all-day dining.
+RES_0012,"Cheezious, Gulberg",Lahore,Fast Food,Budget,31.514,74.348,Popular Pakistani pizza and fast-food chain.
+RES_0013,Yasir Broast,Lahore,Fast Food,Budget,31.556,74.332,Local broast chain known for fried chicken and burgers.
+RES_0014,Spice Bazaar,Lahore,Buffet,High,31.5075,74.338,Popular buffet restaurant offering a wide spread of local and continental food.
+RES_0015,"Student Biryani, Lahore",Lahore,Pakistani,Budget,31.556,74.312,Branch of the well-known Karachi-origin biryani chain.
+RES_0016,Monal Restaurant,Islamabad,Pakistani,High,33.746,73.11,Hilltop restaurant on the Margalla Hills offering panoramic city views.
+RES_0017,Des Pardes,Islamabad,Pakistani,Mid,33.698,73.048,Popular Pakistani restaurant known for BBQ and traditional dishes.
+RES_0018,Chaaye Khana,Islamabad,Cafe,Mid,33.702,73.048,Trendy cafe chain known for chai and Pakistani fusion snacks.
+RES_0019,Savour Foods,Islamabad,Buffet,Mid,33.69,73.05,Long-standing buffet restaurant popular for affordable family dining.
+RES_0020,Tuscany Courtyard,Islamabad,Continental,High,33.705,73.043,Upscale restaurant known for Italian and continental cuisine.
+RES_0021,"Kabul Restaurant, Islamabad",Islamabad,Afghan,Mid,33.7,73.046,Popular Afghan restaurant known for kabuli pulao and mantu.
+RES_0022,Street 1 Food Street,Islamabad,Food Street,Budget,33.702,73.029,F-7 food street with a variety of casual dining options.
+RES_0023,"Chaye Khana, Centaurus",Islamabad,Cafe,Mid,33.7089,73.0563,Branch of the popular chai cafe chain inside Centaurus Mall.
+RES_0024,Melody Food Park,Rawalpindi,Food Street,Budget,33.606,73.048,"Popular street-food hub known for BBQ, chaat, and fast food stalls."
+RES_0025,Charsi Tikka Shop,Rawalpindi,Pakistani BBQ,Budget,33.599,73.049,"Legendary tikka shop in Rawalpindi's old city, famous nationwide."
+RES_0026,Chatkhara Food Street,Rawalpindi,Food Street,Budget,33.618,73.063,Lively food street with a range of local fast-food vendors.
+RES_0027,Al-Faisal Restaurant,Rawalpindi,Pakistani,Mid,33.6,73.05,Traditional restaurant known for karahi and BBQ dishes.
+RES_0028,Kolachi Restaurant,Karachi,Pakistani,High,24.7969,66.9967,Popular waterfront restaurant at Do Darya known for BBQ and seafood.
+RES_0029,BBQ Tonight,Karachi,Pakistani BBQ,High,24.86,67.05,Well-known BBQ chain with multiple branches across the city.
+RES_0030,Xander's,Karachi,Continental,High,24.809,67.033,Upscale multi-cuisine restaurant popular for continental fare.
+RES_0031,Okra,Karachi,Continental,High,24.808,67.03,Fine-dining restaurant known for contemporary continental cuisine.
+RES_0032,Burns Road Food Street,Karachi,Food Street,Budget,24.86,67.018,"Historic food street famous for nihari, kebabs, and local sweets."
+RES_0033,Student Biryani,Karachi,Pakistani,Budget,24.859,67.029,Iconic Karachi biryani chain with its original outlet in the city.
+RES_0034,Ideal Restaurant,Karachi,Pakistani,Budget,24.861,67.02,Long-running eatery near Saddar known for biryani and karahi.
+RES_0035,Kababjees,Karachi,Pakistani BBQ,Mid,24.821,67.045,Popular BBQ and grill chain with several branches in Karachi.
+RES_0036,"Cafe Flo, Karachi",Karachi,Continental,High,24.813,67.03,French-continental restaurant popular in Clifton.
+RES_0037,Do Darya Food Strip,Karachi,Food Street,Mid,24.7969,66.9967,Cluster of waterfront restaurants and cafes along the Arabian Sea.
+RES_0038,"Chef's Restaurant, Multan",Multan,Pakistani,Mid,30.198,71.47,Well-known restaurant in Multan famous for karahi and BBQ.
+RES_0039,Al-Fatah Chargha,Multan,Fast Food,Budget,30.196,71.465,Popular chargha (roasted chicken) chain with branches across Punjab.
+RES_0040,"Bundu Khan, Multan",Multan,Pakistani BBQ,Mid,30.197,71.468,Branch of the well-known BBQ chain known for seekh kababs.
+RES_0041,Multan Sohan Halwa House,Multan,Sweets,Budget,30.198,71.469,Traditional sweet shop famous for Multan's signature sohan halwa.
+RES_0042,Namak Mandi,Peshawar,Pakistani BBQ,Budget,34.008,71.568,"Historic food quarter famous for tikka, karahi, and traditional BBQ."
+RES_0043,Cafe Piyala,Peshawar,Pakistani,Mid,34.008,71.546,Popular cafe known for traditional Peshawari breakfast and chai.
+RES_0044,Shiraz Restaurant,Peshawar,Pakistani,Mid,34.009,71.549,Long-standing restaurant known for karahi and Peshawari cuisine.
+RES_0045,"Charsi Tikka, Peshawar",Peshawar,Pakistani BBQ,Budget,34.0083,71.567,Famous tikka shop in Peshawar's old city.
+RES_0046,Kabul Darbar,Faisalabad,Afghan,Mid,31.418,73.079,Popular restaurant known for Afghan pulao and grilled dishes.
+RES_0047,Rangeela Sweets,Faisalabad,Sweets,Budget,31.418,73.08,Well-known sweets and bakery shop in Faisalabad.
+RES_0048,Ghar Restaurant,Faisalabad,Pakistani,Mid,31.42,73.085,Popular local restaurant known for karahi and BBQ.
+RES_0049,Amritsari Hareesa,Gujranwala,Pakistani,Budget,32.161,74.188,Famous local eatery known for its winter-season hareesa dish.
+RES_0050,Gujranwala Food Street,Gujranwala,Food Street,Budget,32.156,74.183,Popular local food street known for BBQ and street food.
+RES_0051,Rasoi Restaurant,Gujrat,Pakistani,Mid,32.573,74.079,Well-known local restaurant famous for Gujrat's signature chapli kabab.
+RES_0052,New Gujrat Sweets,Gujrat,Sweets,Budget,32.575,74.08,Popular sweet shop known for traditional Punjabi mithai.
+RES_0053,Sialkoti Paye House,Sialkot,Pakistani,Budget,32.494,74.533,Local favorite known for paye (trotters) and nihari.
+RES_0054,"Anmol Sweets, Sialkot",Sialkot,Sweets,Budget,32.499,74.535,Well-known sweet shop in Sialkot city.
+RES_0055,Bahawalpuri Sohan Halwa House,Bahawalpur,Sweets,Budget,29.4046,71.696,Traditional shop famous for Bahawalpur's signature sohan halwa.
+RES_0056,"Al-Fateh Restaurant, Bahawalpur",Bahawalpur,Pakistani,Mid,29.4,71.69,Popular local restaurant known for karahi and BBQ.
+RES_0057,Cafe 1947,Murree,Cafe,Mid,33.907,73.39,Popular cafe on Mall Road known for coffee and light meals.
+RES_0058,"Sam's Pizza, Murree",Murree,Fast Food,Mid,33.908,73.391,Well-known pizza spot on Murree's Mall Road.
+RES_0059,"Kashmir Restaurant, Mall Road",Murree,Pakistani,Mid,33.906,73.389,Long-standing restaurant on Mall Road known for local cuisine.
+RES_0060,Delhi Darbar Murree,Murree,Pakistani,Mid,33.9075,73.3905,Popular restaurant serving traditional Pakistani dishes.
+RES_0061,"Sarosh Restaurant, Mingora",Swat,Pakistani,Mid,34.7717,72.36,Popular restaurant in Mingora known for local and BBQ dishes.
+RES_0062,Kalam River View Restaurant,Swat,Pakistani,Mid,35.487,72.581,Riverside restaurant in Kalam offering trout and local cuisine.
+RES_0063,Marghazar Restaurant,Swat,Pakistani,Budget,34.728,72.34,Local eatery near the White Palace in Marghazar.
+RES_0064,Naran Lake View Restaurant,Naran,Pakistani,Mid,34.907,73.65,Popular restaurant in Naran bazaar known for trout fish.
+RES_0065,Kaghan Continental,Kaghan,Pakistani,Mid,34.783,73.534,Local restaurant serving Pakistani and continental dishes.
+RES_0066,K2 Motel Restaurant,Skardu,Pakistani,Mid,35.296,75.633,Well-known restaurant serving local Balti and Pakistani cuisine.
+RES_0067,Shangrila Restaurant,Skardu,Pakistani,High,35.305,75.737,Restaurant within the Shangrila Resort known for scenic dining.
+RES_0068,"PTDC Motel Restaurant, Skardu",Skardu,Pakistani,Mid,35.298,75.63,Government-run motel restaurant offering local and Pakistani meals.
+RES_0069,Cafe de Hunza,Hunza,Cafe,Mid,36.319,74.66,Popular cafe in Karimabad known for apricot cake and mountain views.
+RES_0070,Karim Hotel Restaurant,Hunza,Pakistani,Budget,36.317,74.658,Long-standing budget restaurant popular with trekkers in Karimabad.
+RES_0071,Hunza Serena Restaurant,Hunza,Pakistani,High,36.315,74.656,Restaurant within the Serena Hunza hotel offering local specialties.
+RES_0072,"PTDC Motel Restaurant, Chitral",Chitral,Pakistani,Mid,35.85,71.786,Government-run motel restaurant serving local and Pakistani cuisine.
+RES_0073,Sarban Restaurant,Abbottabad,Pakistani,Mid,34.159,73.221,Popular restaurant known for karahi and BBQ in Abbottabad.
+RES_0074,Chinar Restaurant,Abbottabad,Pakistani,Mid,34.155,73.215,Local favorite for traditional Pakistani dishes.
+RES_0075,Hyderabadi Biryani House,Hyderabad,Pakistani,Budget,25.379,68.367,Local eatery known for Sindhi-style biryani.
+RES_0076,Sindhi Village Restaurant,Hyderabad,Pakistani,Mid,25.396,68.363,Popular restaurant serving traditional Sindhi cuisine.
+RES_0077,Indus View Restaurant,Sukkur,Pakistani,Mid,27.701,68.848,Restaurant near the Sukkur Barrage known for river views.
+RES_0078,Quetta Sajji House,Quetta,Balochi,Mid,30.198,67.001,Well-known restaurant famous for traditional Balochi sajji.
+RES_0079,"Lahori Restaurant, Quetta",Quetta,Pakistani,Mid,30.2,67.005,Popular restaurant serving Punjabi and Balochi cuisine.
+RES_0080,Balochi Sajji Corner,Quetta,Balochi,Budget,30.195,66.998,Local favorite for open-fire roasted sajji.
+RES_0081,"New Lahore Hotel, Sargodha",Sargodha,Pakistani,Mid,32.0836,72.6711,Popular local restaurant known for karahi and BBQ.
+RES_0082,Sargodha Food Street,Sargodha,Food Street,Budget,32.085,72.675,Local food street known for street food and fast food.
+RES_0083,Sahiwal Food Street,Sahiwal,Food Street,Budget,30.67,73.11,Popular local food street with a variety of fast-food vendors.
+RES_0084,"Rohtas Restaurant, Jhelum",Jhelum,Pakistani,Mid,32.935,73.725,Local restaurant known for traditional Punjabi dishes.
+RES_0085,Mardan Chapli Kabab House,Mardan,Pakistani BBQ,Budget,34.1986,72.0404,Famous local eatery known for Mardan-style chapli kabab.
+RES_0086,D.I. Khan Sajji House,Dera Ismail Khan,Balochi,Budget,31.8313,70.9028,Popular restaurant known for sajji and BBQ.
+RES_0087,Larkana Sindhi Restaurant,Larkana,Pakistani,Budget,27.559,68.212,Local restaurant serving traditional Sindhi cuisine.
+RES_0088,"Pines Restaurant, Nathiagali",Nathiagali,Pakistani,Mid,34.067,73.383,Popular restaurant on Mall Road known for local and continental dishes.
+RES_0089,Ziarat Restaurant,Ziarat,Pakistani,Budget,30.381,67.728,Small local restaurant serving traditional Balochi and Pakistani food.
+RES_0090,"Student Biryani, Islamabad",Islamabad,Pakistani,Budget,33.699,73.048,Islamabad branch of the well-known Karachi-origin biryani chain.
+RES_0091,"Student Biryani, Rawalpindi",Rawalpindi,Pakistani,Budget,33.6,73.049,Rawalpindi branch of the well-known biryani chain.
+RES_0092,"Bundu Khan, Islamabad",Islamabad,Pakistani BBQ,Mid,33.701,73.047,Islamabad branch of the popular BBQ chain.
+RES_0093,"Bundu Khan, Karachi",Karachi,Pakistani BBQ,Mid,24.86,67.03,Karachi branch of the well-known BBQ chain.
+RES_0094,"Cheezious, Karachi",Karachi,Fast Food,Budget,24.86,67.035,Karachi branch of the popular Pakistani pizza chain.
+RES_0095,"Cheezious, Islamabad",Islamabad,Fast Food,Budget,33.7,73.049,Islamabad branch of the popular Pakistani pizza chain.
+RES_0096,"Chaaye Khana, Lahore",Lahore,Cafe,Mid,31.5075,74.345,Lahore branch of the popular chai cafe chain.
+RES_0097,"BBQ Tonight, Islamabad",Islamabad,Pakistani BBQ,High,33.704,73.05,Islamabad branch of the well-known BBQ restaurant chain.
+RES_0098,"Kababjees, Lahore",Lahore,Pakistani BBQ,Mid,31.509,74.346,Lahore branch of the popular BBQ and grill chain.
+RES_0099,"Al-Fatah Chargha, Lahore",Lahore,Fast Food,Budget,31.56,74.33,Lahore branch of the popular chargha chain.
+RES_0100,"OPTP, Lahore",Lahore,Fast Food,Budget,31.51,74.34,Popular Lahore-origin fast-food chain known for burgers and fries.
+RES_0101,"OPTP, Islamabad",Islamabad,Fast Food,Budget,33.695,73.048,Islamabad branch of the popular fast-food chain.
+RES_0102,"Howdy, Lahore",Lahore,Fast Food,Budget,31.478,74.362,Popular Pakistani fast-food chain known for burgers and shakes.
+RES_0103,"Ginsoy, Lahore",Lahore,Chinese/Thai,High,31.5075,74.34,Well-known Chinese and Thai restaurant chain in Lahore.
+RES_0104,"Ginsoy, Islamabad",Islamabad,Chinese/Thai,High,33.701,73.049,Islamabad branch of the popular Chinese and Thai restaurant chain.
+RES_0105,"Village Restaurant, Karachi",Karachi,Pakistani,Mid,24.86,67.04,Traditional-themed restaurant chain popular for Pakistani cuisine.
+RES_0106,"Cafe Zouq, Karachi",Karachi,Continental,High,24.81,67.031,Well-known continental and Pakistani fusion restaurant.
+RES_0107,"Kabab Junction, Lahore",Lahore,Pakistani BBQ,Mid,31.514,74.347,Popular BBQ chain known for kababs and grilled platters.
+RES_0108,"Kabab Junction, Islamabad",Islamabad,Pakistani BBQ,Mid,33.7,73.047,Islamabad branch of the popular BBQ chain.
+RES_0109,"Broast House, Faisalabad",Faisalabad,Fast Food,Budget,31.418,73.082,Local fast-food outlet known for broast chicken.
+RES_0110,"Yum Chinese Restaurant, Lahore",Lahore,Chinese,Mid,31.509,74.344,Popular restaurant chain known for Chinese cuisine.
+RES_0111,"Delhi Sweets, Rawalpindi",Rawalpindi,Sweets,Budget,33.6,73.047,Well-known sweets shop known for traditional mithai.
+RES_0112,"Rehmat-e-Shereen, Multan",Multan,Sweets,Budget,30.197,71.47,Popular sweet shop known for Multani specialties.
+RES_0113,"Cafe Nawab, Peshawar",Peshawar,Pakistani,Mid,34.009,71.55,Well-known restaurant serving traditional Peshawari dishes.
+RES_0114,"Bahoo Restaurant, Faisalabad",Faisalabad,Pakistani,Mid,31.419,73.081,Popular local restaurant known for karahi and BBQ.
+RES_0115,"Sindh Sagar Restaurant, Sukkur",Sukkur,Pakistani,Mid,27.703,68.849,Local restaurant known for traditional Sindhi meals.
+RES_0116,"Chinar Cafe, Muzaffarabad",Muzaffarabad,Cafe,Mid,34.37,73.471,Local cafe near the Neelum River popular with visitors.
+RES_0117,"Kel View Restaurant, Neelum Valley",Muzaffarabad,Pakistani,Mid,34.893,74.323,Small restaurant offering local food with valley views.
+RES_0118,Gilgit Serena Restaurant,Gilgit,Pakistani,High,35.92,74.308,Restaurant within the Serena Gilgit hotel offering local specialties.
+RES_0119,Naltar View Restaurant,Gilgit,Pakistani,Budget,36.167,74.183,Small local eatery near Naltar Valley serving simple meals.
+RES_0120,PC Bhurban Restaurant,Murree,Continental,High,33.972,73.376,"Restaurant within the Pearl Continental Bhurban, known for its views."

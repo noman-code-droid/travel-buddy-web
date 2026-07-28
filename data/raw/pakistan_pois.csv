@@ -1,0 +1,139 @@
+﻿POI_ID,Name,City,Province,Category,Latitude,Longitude,Description
+POI_0001,Lahore Fort,Lahore,Punjab,Historical,31.5889,74.3145,Mughal-era fort and UNESCO World Heritage Site featuring the Sheesh Mahal and Alamgiri Gate.
+POI_0002,Badshahi Mosque,Lahore,Punjab,Religious,31.588,74.3103,"One of the largest mosques in the world, built by Emperor Aurangzeb in 1673."
+POI_0003,Shalimar Gardens,Lahore,Punjab,Historical,31.5925,74.3801,Mughal-era terraced garden complex known for its fountains and pavilions.
+POI_0004,Minar-e-Pakistan,Lahore,Punjab,Monument,31.5931,74.3103,National monument marking the site where the Pakistan Resolution was adopted in 1940.
+POI_0005,Wazir Khan Mosque,Lahore,Punjab,Religious,31.5825,74.3319,17th-century mosque famous for its intricate tile work and frescoes.
+POI_0006,Anarkali Bazaar,Lahore,Punjab,Shopping,31.5675,74.3103,"One of the oldest surviving markets in South Asia, known for clothing and street food."
+POI_0007,Data Darbar,Lahore,Punjab,Religious,31.5941,74.308,"Shrine of the Sufi saint Ali Hujwiri, one of the largest shrines in South Asia."
+POI_0008,Lahore Museum,Lahore,Punjab,Museum,31.5686,74.3096,"Punjab's largest museum, housing Gandhara sculptures and Mughal-era artifacts."
+POI_0009,Jilani Park (Race Course Park),Lahore,Punjab,Park,31.5461,74.3436,"Large public park popular for morning walks, jogging, and picnics."
+POI_0010,Lahore Zoo,Lahore,Punjab,Recreation,31.562,74.3199,"One of the oldest zoos in Asia, home to a wide range of animal species."
+POI_0011,Shahi Hammam,Lahore,Punjab,Historical,31.5824,74.3315,17th-century Mughal-era public bathhouse restored as a heritage site.
+POI_0012,Tomb of Jahangir,Lahore,Punjab,Historical,31.6209,74.2936,Mausoleum of Mughal Emperor Jahangir located in Shahdara Bagh.
+POI_0013,Bagh-e-Jinnah,Lahore,Punjab,Park,31.5504,74.3298,Historic botanical garden formerly known as Lawrence Gardens.
+POI_0014,Wagah Border,Lahore,Punjab,Landmark,31.6042,74.5735,Pakistan-India border crossing famous for its daily flag-lowering ceremony.
+POI_0015,Lahore Safari Park,Lahore,Punjab,Recreation,31.478,74.244,Drive-through wildlife park where animals roam in open enclosures.
+POI_0016,Faisal Mosque,Islamabad,Islamabad Capital Territory,Religious,33.7295,73.0372,"One of the largest mosques in South Asia, known for its striking modern architecture."
+POI_0017,Daman-e-Koh,Islamabad,Islamabad Capital Territory,Viewpoint,33.7404,73.07,Hilltop viewpoint in the Margalla Hills offering panoramic views of Islamabad.
+POI_0018,Pakistan Monument,Islamabad,Islamabad Capital Territory,Monument,33.6938,73.0652,"National monument shaped like a blooming flower, symbolizing the four provinces."
+POI_0019,Lok Virsa Museum,Islamabad,Islamabad Capital Territory,Museum,33.6926,73.0656,"Museum showcasing Pakistan's folk heritage, crafts, and cultural artifacts."
+POI_0020,Rawal Lake,Islamabad,Islamabad Capital Territory,Nature,33.6996,73.1265,Artificial reservoir popular for boating and picnicking with lakeside views.
+POI_0021,Margalla Hills National Park,Islamabad,Islamabad Capital Territory,Nature,33.7515,73.085,Protected hiking area with numerous trails overlooking the capital.
+POI_0022,Shakarparian,Islamabad,Islamabad Capital Territory,Park,33.6961,73.0666,Hilltop park and cultural complex offering views of Islamabad and Rawalpindi.
+POI_0023,Saidpur Village,Islamabad,Islamabad Capital Territory,Historical,33.7376,73.0611,Restored heritage village at the base of the Margalla Hills with cafes and temples.
+POI_0024,Centaurus Mall,Islamabad,Islamabad Capital Territory,Shopping,33.7089,73.0563,Major shopping and entertainment complex in the heart of Islamabad.
+POI_0025,Margalla (Islamabad) Zoo,Islamabad,Islamabad Capital Territory,Recreation,33.7432,73.068,"Zoo located near the Margalla Hills, home to a variety of animals and birds."
+POI_0026,Lake View Park,Islamabad,Islamabad Capital Territory,Park,33.6841,73.133,Recreational park on the shores of Rawal Lake with boating and picnic spots.
+POI_0027,"Trail 5, Margalla Hills",Islamabad,Islamabad Capital Territory,Nature,33.746,73.101,One of the most popular hiking trails in the Margalla Hills range.
+POI_0028,Ayub National Park,Rawalpindi,Punjab,Park,33.559,73.079,"Large public park with a lake, gardens, and a small zoo."
+POI_0029,Raja Bazaar,Rawalpindi,Punjab,Shopping,33.5989,73.0479,Historic and busy commercial market in the old city of Rawalpindi.
+POI_0030,Rawalpindi Cricket Stadium,Rawalpindi,Punjab,Sports,33.6215,73.0654,Major international cricket venue hosting domestic and international matches.
+POI_0031,"Jinnah Park, Rawalpindi",Rawalpindi,Punjab,Park,33.635,73.071,Community park popular for family outings and evening walks.
+POI_0032,"Jungle World, Rawalpindi",Rawalpindi,Punjab,Recreation,33.561,73.08,Small wildlife park located within Ayub National Park.
+POI_0033,Liaquat Bagh,Rawalpindi,Punjab,Park,33.5991,73.0631,Historic public park known for major political rallies and gatherings.
+POI_0034,Mazar-e-Quaid,Karachi,Sindh,Monument,24.8536,67.0298,"Mausoleum of Muhammad Ali Jinnah, founder of Pakistan, set in landscaped gardens."
+POI_0035,Clifton Beach,Karachi,Sindh,Nature,24.8138,67.0298,"Popular sandy beach along the Arabian Sea, known for camel rides and food stalls."
+POI_0036,Frere Hall,Karachi,Sindh,Historical,24.8425,67.0308,Colonial-era building with a public library and surrounding gardens.
+POI_0037,Mohatta Palace,Karachi,Sindh,Museum,24.8225,67.0339,Early 20th-century palace now serving as a museum of art and history.
+POI_0038,Empress Market,Karachi,Sindh,Shopping,24.8567,67.0177,"Colonial-era market known for produce, spices, and general goods."
+POI_0039,Do Darya,Karachi,Sindh,Recreation,24.7969,66.9967,Waterfront dining strip popular for restaurants and evening outings.
+POI_0040,Port Grand,Karachi,Sindh,Recreation,24.828,66.9807,Waterfront food and entertainment complex near Karachi Port.
+POI_0041,National Museum of Pakistan,Karachi,Sindh,Museum,24.8459,67.0217,Museum housing artifacts spanning Pakistan's ancient and Islamic history.
+POI_0042,Karachi Zoo,Karachi,Sindh,Recreation,24.8737,67.0294,"One of the oldest zoos in Pakistan, home to diverse animal species."
+POI_0043,PAF Museum,Karachi,Sindh,Museum,24.8918,67.1584,Museum dedicated to the history of the Pakistan Air Force with aircraft displays.
+POI_0044,Quaid-e-Azam House Museum,Karachi,Sindh,Museum,24.8339,67.0308,"Former residence of Muhammad Ali Jinnah, preserved as a heritage museum."
+POI_0045,Manora Island,Karachi,Sindh,Nature,24.7938,66.9782,"Coastal island accessible by boat, known for its beach and old lighthouse."
+POI_0046,"Sea View, Karachi",Karachi,Sindh,Nature,24.7969,67.033,"Popular beachfront promenade along Clifton, busy in the evenings."
+POI_0047,Dolmen Mall Clifton,Karachi,Sindh,Shopping,24.8129,67.0296,"One of Karachi's largest shopping malls with retail, dining, and entertainment."
+POI_0048,"Safari Park, Karachi",Karachi,Sindh,Recreation,24.9243,67.1108,Large recreational park with a mini zoo and green open spaces.
+POI_0049,Shrine of Shah Rukn-e-Alam,Multan,Punjab,Religious,30.1968,71.4306,Iconic 14th-century Sufi shrine known for its distinctive tiled dome.
+POI_0050,Multan Fort (Qasim Bagh),Multan,Punjab,Historical,30.198,71.427,Historic fort area housing several old shrines and archaeological remains.
+POI_0051,"Ghanta Ghar, Multan",Multan,Punjab,Landmark,30.198,71.4695,Colonial-era clock tower at the heart of Multan's old city.
+POI_0052,Shrine of Shah Shams Tabrez,Multan,Punjab,Religious,30.1988,71.4361,"Sufi shrine dedicated to the mystic Shams Tabrez, popular with pilgrims."
+POI_0053,Multan Zoo,Multan,Punjab,Recreation,30.165,71.47,Public zoo offering a variety of animal exhibits for families.
+POI_0054,"Chowk Bazaar, Multan",Multan,Punjab,Shopping,30.1962,71.4693,"Traditional bazaar known for pottery, textiles, and local handicrafts."
+POI_0055,Peshawar Museum,Peshawar,Khyber Pakhtunkhwa,Museum,34.0083,71.546,Museum with one of the finest collections of Gandhara-era Buddhist art.
+POI_0056,Bala Hisar Fort,Peshawar,Khyber Pakhtunkhwa,Historical,34.0128,71.5606,"Historic fort overlooking Peshawar, used by the military since Mughal times."
+POI_0057,Qissa Khwani Bazaar,Peshawar,Khyber Pakhtunkhwa,Shopping,34.0097,71.5673,"Historic 'Storytellers' Market', once a major stop on trade caravan routes."
+POI_0058,Chowk Yadgar,Peshawar,Khyber Pakhtunkhwa,Landmark,34.0089,71.567,"Central square in Peshawar's old city, a hub of commercial activity."
+POI_0059,Sethi House,Peshawar,Khyber Pakhtunkhwa,Historical,34.011,71.5647,19th-century merchant mansion known for its intricate woodwork.
+POI_0060,Peshawar Zoo,Peshawar,Khyber Pakhtunkhwa,Recreation,33.993,71.525,City zoo with a range of animal enclosures popular with families.
+POI_0061,"Clock Tower (Ghanta Ghar), Faisalabad",Faisalabad,Punjab,Landmark,31.418,73.079,Central clock tower around which Faisalabad's eight market bazaars radiate.
+POI_0062,Lyallpur Museum,Faisalabad,Punjab,Museum,31.4187,73.0791,Museum chronicling the colonial and agricultural history of Faisalabad.
+POI_0063,"Jinnah Garden, Faisalabad",Faisalabad,Punjab,Park,31.44,73.114,Large public garden popular for family outings and morning walks.
+POI_0064,"Jhang Bazaar, Faisalabad",Faisalabad,Punjab,Shopping,31.416,73.085,One of the eight historic bazaars radiating from the Clock Tower.
+POI_0065,Gujranwala Fort Area,Gujranwala,Punjab,Historical,32.161,74.188,Site associated with the historic old city and Sikh-era heritage of Gujranwala.
+POI_0066,"Jinnah Park, Gujranwala",Gujranwala,Punjab,Park,32.156,74.183,Popular local park for evening walks and family gatherings.
+POI_0067,Nandi Pind,Gujranwala,Punjab,Landmark,32.146,74.199,Historic neighborhood known for traditional Punjabi wrestling (kushti) culture.
+POI_0068,Gujrat Fort,Gujrat,Punjab,Historical,32.573,74.079,Remnants of a Mughal-era fort in the old city of Gujrat.
+POI_0069,Sardar Begum Trust Park,Gujrat,Punjab,Park,32.57,74.085,Well-maintained public park popular with local families.
+POI_0070,Shahi Guluband Bazaar,Gujrat,Punjab,Shopping,32.575,74.08,"Historic market known for pottery, furniture, and local crafts."
+POI_0071,Iqbal Manzil,Sialkot,Punjab,Historical,32.498,74.531,"Birthplace of poet-philosopher Allama Iqbal, preserved as a heritage site."
+POI_0072,Sialkot Fort,Sialkot,Punjab,Historical,32.494,74.533,Ancient fort believed to date back over two thousand years.
+POI_0073,Allama Iqbal Memorial,Sialkot,Punjab,Monument,32.499,74.535,Memorial complex dedicated to the national poet Allama Iqbal.
+POI_0074,Noor Mahal,Bahawalpur,Punjab,Historical,29.4046,71.696,"19th-century palace of the Nawabs of Bahawalpur, an architectural landmark."
+POI_0075,Derawar Fort,Bahawalpur,Punjab,Historical,28.75,71.323,Massive square fort in the Cholistan Desert with 40 imposing bastions.
+POI_0076,Lal Suhanra National Park,Bahawalpur,Punjab,Nature,29.367,71.967,"National park and biosphere reserve home to deer, blackbuck, and birdlife."
+POI_0077,Sadiq Garh Palace,Bahawalpur,Punjab,Historical,29.65,71.558,"Grand former palace of the Bahawalpur royal family, now in a state of decay."
+POI_0078,Taxila Museum,Taxila,Punjab,Museum,33.746,72.789,Museum housing Gandhara-era Buddhist artifacts from nearby archaeological sites.
+POI_0079,Julian Ruins,Taxila,Punjab,Historical,33.766,72.813,"Ruins of an ancient Buddhist monastery and stupa complex, UNESCO-listed."
+POI_0080,Dharmarajika Stupa,Taxila,Punjab,Historical,33.755,72.828,"One of the oldest Buddhist stupas in the Taxila Valley, dating to the 2nd century BCE."
+POI_0081,"Mall Road, Murree",Murree,Punjab,Shopping,33.907,73.39,"Main pedestrian street lined with shops, cafes, and colonial buildings."
+POI_0082,Kashmir Point,Murree,Punjab,Viewpoint,33.902,73.397,Scenic viewpoint offering views toward Azad Kashmir on clear days.
+POI_0083,Pindi Point,Murree,Punjab,Viewpoint,33.913,73.385,Popular chairlift viewpoint overlooking the valley below Murree.
+POI_0084,Patriata (New Murree) Chairlift,Murree,Punjab,Recreation,33.842,73.452,Chairlift and cable car destination with pine forests and hill views.
+POI_0085,Bhurban,Murree,Punjab,Nature,33.972,73.376,Hill resort town near Murree known for golf courses and scenic views.
+POI_0086,Malam Jabba,Swat,Khyber Pakhtunkhwa,Recreation,34.794,72.573,Pakistan's premier ski resort with a chairlift and mountain views.
+POI_0087,Fizagat Park,Swat,Khyber Pakhtunkhwa,Park,34.786,72.38,"Riverside park along the Swat River, popular for picnics."
+POI_0088,Mingora Bazaar,Swat,Khyber Pakhtunkhwa,Shopping,34.7717,72.36,Main commercial hub of Swat Valley known for local handicrafts.
+POI_0089,"White Palace, Marghazar",Swat,Khyber Pakhtunkhwa,Historical,34.728,72.34,"Former summer residence of the Wali of Swat, now a heritage hotel."
+POI_0090,Kalam Valley,Swat,Khyber Pakhtunkhwa,Nature,35.487,72.581,"Scenic upper Swat valley known for forests, rivers, and mountain views."
+POI_0091,Saiful Muluk Lake,Naran,Khyber Pakhtunkhwa,Nature,34.8804,73.697,"High-altitude alpine lake surrounded by mountains, a top northern destination."
+POI_0092,Naran Bazaar,Naran,Khyber Pakhtunkhwa,Shopping,34.907,73.65,Small bazaar town serving as the gateway to Kaghan Valley's attractions.
+POI_0093,Lulusar Lake,Kaghan,Khyber Pakhtunkhwa,Nature,35.029,73.698,High-altitude lake considered the source of the Kunhar River.
+POI_0094,Shangrila Resort,Skardu,Gilgit-Baltistan,Recreation,35.305,75.737,"Resort built around Lower Kachura Lake, often called 'heaven on earth'."
+POI_0095,Satpara Lake,Skardu,Gilgit-Baltistan,Nature,35.234,75.662,Glacial lake near Skardu popular for boating and scenic views.
+POI_0096,Deosai National Park,Skardu,Gilgit-Baltistan,Nature,35.027,75.533,"High-altitude plateau known as the 'Land of Giants', rich in wildlife."
+POI_0097,Kharpocho Fort,Skardu,Gilgit-Baltistan,Historical,35.304,75.625,Historic fort overlooking Skardu town and the Indus River.
+POI_0098,Baltit Fort,Hunza,Gilgit-Baltistan,Historical,36.319,74.66,"Centuries-old fort overlooking Karimabad, former seat of Hunza's rulers."
+POI_0099,Attabad Lake,Hunza,Gilgit-Baltistan,Nature,36.348,74.872,"Turquoise lake formed by a 2010 landslide, popular for boating."
+POI_0100,Passu Cones,Hunza,Gilgit-Baltistan,Nature,36.452,74.887,Dramatic jagged peaks that are among the most photographed in Pakistan.
+POI_0101,Rakaposhi Viewpoint,Hunza,Gilgit-Baltistan,Viewpoint,36.198,74.582,Roadside viewpoint offering close-up views of Rakaposhi peak.
+POI_0102,Altit Fort,Hunza,Gilgit-Baltistan,Historical,36.302,74.681,"Older of Hunza's two forts, over 900 years old, overlooking the Hunza River."
+POI_0103,Chitral Fort,Chitral,Khyber Pakhtunkhwa,Historical,35.85,71.786,"Historic fort in Chitral town, former seat of the Mehtar rulers."
+POI_0104,Kalash Valleys,Chitral,Khyber Pakhtunkhwa,Cultural,35.65,71.75,"Home to the indigenous Kalash people, known for unique traditions and festivals."
+POI_0105,"Shahi Masjid, Chitral",Chitral,Khyber Pakhtunkhwa,Religious,35.848,71.787,"Grand mosque built in 1924, a landmark of Chitral town."
+POI_0106,Shimla Hill,Abbottabad,Khyber Pakhtunkhwa,Viewpoint,34.159,73.221,Hilltop area offering panoramic views over Abbottabad city.
+POI_0107,Thandiani,Abbottabad,Khyber Pakhtunkhwa,Nature,34.283,73.333,Cool hill station near Abbottabad known for pine forests and views.
+POI_0108,Ilyasi Mosque,Abbottabad,Khyber Pakhtunkhwa,Religious,34.146,73.211,Notable mosque in Abbottabad known for its architecture.
+POI_0109,Pacco Qillo Fort,Hyderabad,Sindh,Historical,25.379,68.367,18th-century fort overlooking the Indus River in old Hyderabad.
+POI_0110,Hyderabad Zoo,Hyderabad,Sindh,Recreation,25.396,68.363,"City zoo popular with families, home to a range of species."
+POI_0111,Sindh Museum,Hyderabad,Sindh,Museum,25.373,68.352,Museum showcasing Sindh's archaeological and cultural heritage.
+POI_0112,Sukkur Barrage,Sukkur,Sindh,Landmark,27.701,68.848,"Major irrigation barrage on the Indus River, an engineering landmark."
+POI_0113,Lansdowne Bridge,Sukkur,Sindh,Landmark,27.699,68.846,"Historic cantilever bridge over the Indus, once the longest of its kind."
+POI_0114,Sadhu Bela Temple,Sukkur,Sindh,Religious,27.695,68.85,Hindu temple complex on an island in the Indus River near Sukkur.
+POI_0115,Hanna Lake,Quetta,Balochistan,Nature,30.301,67.133,"Scenic lake surrounded by mountains, popular for boating and picnics."
+POI_0116,Quetta Geological Museum,Quetta,Balochistan,Museum,30.198,67.001,"Museum featuring mineral, rock, and fossil specimens from Balochistan."
+POI_0117,Hazarganji-Chiltan National Park,Quetta,Balochistan,Nature,30.117,66.833,National park protecting the rare Chiltan wild goat (markhor).
+POI_0118,Urak Valley,Quetta,Balochistan,Nature,30.15,67.133,Fertile valley near Quetta known for orchards and mountain scenery.
+POI_0119,"Keran, Neelum Valley",Muzaffarabad,Azad Kashmir,Nature,34.606,73.913,Scenic riverside village along the Neelum River near the Line of Control.
+POI_0120,Sharda,Muzaffarabad,Azad Kashmir,Historical,34.796,74.178,Site of the ancient Sharda Peeth ruins and scenic Neelum Valley views.
+POI_0121,"Kel, Neelum Valley",Muzaffarabad,Azad Kashmir,Nature,34.893,74.323,Remote alpine village popular as a base for trekking in Neelum Valley.
+POI_0122,Pir Chinasi,Muzaffarabad,Azad Kashmir,Viewpoint,34.44,73.533,Mountain shrine and viewpoint offering panoramic views over Muzaffarabad.
+POI_0123,"Red Fort, Muzaffarabad",Muzaffarabad,Azad Kashmir,Historical,34.37,73.471,17th-century fort overlooking the confluence of the Neelum and Jhelum rivers.
+POI_0124,Kargah Buddha,Gilgit,Gilgit-Baltistan,Historical,35.89,74.283,7th-century rock-carved Buddha statue near Gilgit town.
+POI_0125,Naltar Valley,Gilgit,Gilgit-Baltistan,Nature,36.167,74.183,"Alpine valley known for pine forests, lakes, and winter skiing."
+POI_0126,Fairy Meadows,Diamer,Gilgit-Baltistan,Nature,35.398,74.579,"Grassy meadow offering close-up views of Nanga Parbat, the world's ninth-highest peak."
+POI_0127,"Mall Road, Nathiagali",Nathiagali,Khyber Pakhtunkhwa,Shopping,34.067,73.383,Pine-shaded pedestrian street lined with shops and cafes.
+POI_0128,Miranjani Peak,Nathiagali,Khyber Pakhtunkhwa,Nature,34.09,73.399,Popular trekking peak near Nathiagali offering sweeping valley views.
+POI_0129,"Quaid-e-Azam Residency, Ziarat",Ziarat,Balochistan,Historical,30.381,67.728,Colonial-era residency where Muhammad Ali Jinnah spent his final days.
+POI_0130,Ziarat Juniper Forest,Ziarat,Balochistan,Nature,30.37,67.71,"One of the largest juniper forests in the world, thousands of years old."
+POI_0131,Makli Necropolis,Thatta,Sindh,Historical,24.746,67.924,"One of the largest funerary sites in the world, a UNESCO World Heritage Site."
+POI_0132,"Shah Jahan Mosque, Thatta",Thatta,Sindh,Religious,24.747,67.921,17th-century mosque renowned for its Persian-style tile work and acoustics.
+POI_0133,Ranikot Fort,Jamshoro,Sindh,Historical,25.933,67.833,"One of the largest forts in the world, sometimes called the 'Great Wall of Sindh'."
+POI_0134,Mohenjo-daro,Larkana,Sindh,Historical,27.329,68.138,UNESCO World Heritage archaeological site of the ancient Indus Valley Civilization.
+POI_0135,Harappa,Sahiwal,Punjab,Historical,30.628,72.865,Archaeological site of one of the earliest cities of the Indus Valley Civilization.
+POI_0136,Rohtas Fort,Jhelum,Punjab,Historical,32.965,73.586,16th-century fort and UNESCO World Heritage Site built by Sher Shah Suri.
+POI_0137,Katas Raj Temples,Chakwal,Punjab,Religious,32.776,72.928,Complex of ancient Hindu temples built around a sacred pond.
+POI_0138,Kartarpur Corridor,Narowal,Punjab,Religious,32.098,74.927,"Visa-free border corridor to Gurdwara Darbar Sahib, a major Sikh pilgrimage site."

@@ -199,8 +199,7 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
   return (
     <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} className="absolute inset-0 bg-black z-[60] flex flex-col">
       {/* Header */}
-      <div className="bg-black z-20">
-        <div className="px-2 py-3 flex items-center justify-between">
+      <div className="bg-black z-20 px-2 py-3 flex items-center justify-between border-b border-[#333333]">
           <button
             onClick={() => {
               if (currentStep === 'MAP_PICKUP') onClose();
@@ -216,15 +215,14 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
           <h2 className="text-[20px] font-bold text-white flex-1 text-center pr-12">
             {currentStep === 'RIDE_DETAILS' ? 'Post a Ride' : 'Select Location'}
           </h2>
-        </div>
+      </div>
 
-        <div className="w-full h-1 bg-[#212121]">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${getProgress()}%` }}
-            className="h-full bg-[#FFD500]"
-          />
-        </div>
+      <div className="w-full h-1 bg-[#212121]">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${getProgress()}%` }}
+          className="h-full bg-[#FFD500]"
+        />
       </div>
 
       <div className="flex-1 relative overflow-hidden">
@@ -327,8 +325,8 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
                 disabled={isResolvingAddress}
                 className="android-btn-primary !h-[60px]"
               >
-                {currentStep === 'MAP_PICKUP' ? 'Confirm Pickup Point' :
-                 currentStep === 'MAP_DROPOFF' ? 'Confirm Target' : 'Set Ride Details'}
+                {currentStep === 'MAP_PICKUP' ? 'Confirm Pickup' :
+                 currentStep === 'MAP_DROPOFF' ? 'Confirm Target' : 'Set Details'}
               </Button>
             </div>
           </div>
@@ -344,11 +342,11 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
                 </div>
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1">
-                    <p className="text-[12px] font-bold text-[#666666] uppercase tracking-widest">Source</p>
+                    <p className="text-[12px] font-bold text-[#666666] uppercase">Source</p>
                     <p className="text-white font-bold text-[15px] leading-tight line-clamp-1">{pickup?.address}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[12px] font-bold text-[#666666] uppercase tracking-widest">Destination</p>
+                    <p className="text-[12px] font-bold text-[#666666] uppercase">Destination</p>
                     <p className="text-white font-bold text-[15px] leading-tight line-clamp-1">{dropoff?.address}</p>
                   </div>
                 </div>
@@ -361,7 +359,7 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
                 <div className="w-10 h-10 bg-[#FFD50010] rounded-xl flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-[#FFD500]" />
                 </div>
-                <span className="text-white font-black text-[15px] uppercase tracking-tight">Distance: {distance.toFixed(1)} km</span>
+                <span className="text-white font-bold text-[15px]">Distance: {distance.toFixed(1)} km</span>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -380,7 +378,7 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
                 <div className="space-y-2">
                   <label className="label-android">Price</label>
                   <div className="android-input-container !bg-[#1A1A1A] !border-none !py-4 h-[60px]">
-                    <span className="text-[#666666] font-black text-sm">RS</span>
+                    <span className="text-[#666666] font-bold text-sm">PKR</span>
                     <input
                       type="number"
                       value={formData.price}
@@ -417,10 +415,10 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
                 <label className="label-android">Additional Notes</label>
                 <div className="android-input-container !bg-[#1A1A1A] !border-none !py-4 h-[120px] items-start">
                   <textarea
-                    placeholder="E.G. NO SMOKING, AC ON..."
+                    placeholder="e.g. No smoking, AC available..."
                     value={formData.notes}
                     onChange={e => setFormData({...formData, notes: e.target.value})}
-                    className="android-input h-full resize-none py-1 font-bold uppercase placeholder:text-[#333333]"
+                    className="android-input h-full resize-none py-1 font-medium placeholder:text-[#333333]"
                   />
                 </div>
               </div>
@@ -429,7 +427,7 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
                 <Button
                   onClick={handlePublish}
                   loading={loading}
-                  className="android-btn-primary !h-[72px] !rounded-full font-black uppercase tracking-widest italic shadow-xl shadow-[#FFD500]/10"
+                  className="android-btn-primary"
                 >
                   Publish Ride
                 </Button>
@@ -440,7 +438,6 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
         )}
       </div>
 
-      {/* Time Picker Dialog */}
       <TimePickerDialog
         isOpen={showTimePicker}
         onClose={() => setShowTimePicker(false)}
@@ -448,7 +445,6 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
         onConfirm={(time) => setFormData({ ...formData, time })}
       />
 
-      {/* Loading Overlay */}
       <AnimatePresence>
         {loading && (
           <motion.div
@@ -457,11 +453,11 @@ export default function PostRideView({ onClose }: PostRideViewProps) {
             exit={{ opacity: 0 }}
             className="absolute inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-8"
           >
-            <div className="bg-[#212121] rounded-[32px] p-10 flex flex-col items-center gap-6 shadow-2xl border border-white/5">
+            <div className="bg-[#212121] rounded-[32px] p-10 flex flex-col items-center gap-6 border border-white/5">
               <Loader2 className="w-12 h-12 animate-spin text-[#FFD500]" />
-              <div className="text-center space-y-2">
-                <p className="text-xl font-black text-white italic uppercase tracking-tight leading-none">Publishing Ride</p>
-                <p className="text-sm text-[#666666] font-medium">Securing journey protocol...</p>
+              <div className="text-center space-y-1">
+                <p className="text-lg font-bold text-white">Publishing Ride</p>
+                <p className="text-sm text-[#666666]">Please wait a moment...</p>
               </div>
             </div>
           </motion.div>

@@ -1,0 +1,24 @@
+﻿Advisory_ID,Route_Segment,Region,Advisory_Type,Risk_Level,Best_Travel_Window,Notes
+ADV_001,Babusar Top,Khyber Pakhtunkhwa / Gilgit-Baltistan,Seasonal Closure,High,Jun-Oct,"Connects Naran (KPK) to Chilas (GB) at ~4,170m. Closed by heavy snowfall in winter and early spring; only open in summer/early autumn."
+ADV_002,Khunjerab Pass,Gilgit-Baltistan,Seasonal Closure,High,May-Nov,"World's highest paved border crossing (~4,700m) connecting Pakistan to China. Closed in winter due to snow."
+ADV_003,Shandur Pass,Khyber Pakhtunkhwa / Gilgit-Baltistan,Seasonal Closure,High,Jun-Oct,"High-altitude pass connecting Chitral and Gilgit, home to the Shandur Polo Festival. Impassable in winter due to snow."
+ADV_004,Deosai Plains Road,Gilgit-Baltistan,Seasonal Closure,High,Jun-Sep,Access road to the Deosai National Park plateau is snowbound outside summer months.
+ADV_005,Fairy Meadows Jeep Track,Gilgit-Baltistan,Terrain Hazard,High,Year-round caution,"Narrow, unpaved 4x4-only track with steep drops; closes entirely after heavy snowfall."
+ADV_006,Karakoram Highway (Chilas-Gilgit section),Gilgit-Baltistan,Landslide Risk,Medium,Jul-Sep (monsoon),Prone to rockfall and landslides during monsoon rains; occasional short-term closures for clearance.
+ADV_007,Karakoram Highway (Attabad Lake area),Gilgit-Baltistan,Landslide Risk,Medium,Year-round caution,Road passes through tunnels built after the 2010 landslide that formed Attabad Lake; generally improved but still narrow in places.
+ADV_008,Gilgit-Skardu Road,Gilgit-Baltistan,Landslide Risk,Medium,Jul-Sep (monsoon),Improved road but sections remain vulnerable to landslides and rockfall during monsoon season.
+ADV_009,Naran-Jalkhad Road,Khyber Pakhtunkhwa,Seasonal Closure,Medium,May-Nov,Upper Kaghan Valley road beyond Naran typically closes in heavy winter snowfall.
+ADV_010,Kalam-Ushu Road,Khyber Pakhtunkhwa,Landslide Risk,Medium,Jul-Sep (monsoon),Narrow mountain road above Kalam prone to landslides and flash floods during monsoon.
+ADV_011,Lowari Pass (old route),Khyber Pakhtunkhwa,Seasonal Closure,Medium,Jun-Oct (pass); tunnel year-round,The old Lowari Pass closes in winter; the Lowari Tunnel below it now provides a year-round alternate route to Chitral.
+ADV_012,Chitral-Booni-Mastuj Road,Khyber Pakhtunkhwa,Terrain Hazard,Medium,Year-round caution,Narrow mountain road with rough surface sections; landslide risk increases during monsoon.
+ADV_013,Muzaffarabad-Kaghan Road (via Balakot),Khyber Pakhtunkhwa,Landslide Risk,Medium,Jul-Sep (monsoon),Route through earthquake-affected terrain; occasional landslide-related delays during heavy rain.
+ADV_014,Neelum Valley Road,Azad Kashmir,Landslide Risk,Medium,Jul-Sep (monsoon),Winding valley road along the Neelum River prone to landslides in monsoon season.
+ADV_015,Skardu-Khaplu Road,Gilgit-Baltistan,Landslide Risk,Low-Medium,Jul-Sep (monsoon),Generally well-maintained but can see localized landslide delays during heavy rain.
+ADV_016,"Kohistan Section, KKH (Thakot-Chilas)",Khyber Pakhtunkhwa,Checkpoint Delays,Low-Medium,Year-round,"Multiple security checkpoints; travelers, especially foreigners, may face document checks and short delays."
+ADV_017,Chilas Town Checkpoints,Gilgit-Baltistan,Checkpoint Delays,Low,Year-round,"Routine security checkpoints on entry/exit; standard ID checks, occasional short queues."
+ADV_018,Murree-Kashmir Road (Mall Road area),Punjab,Traffic Congestion,Medium,"Dec-Feb (snowfall), May-Jul (peak season)",Severe traffic congestion during snowfall and peak tourist season; road can be gridlocked for hours.
+ADV_019,Ayubia-Nathiagali Road,Khyber Pakhtunkhwa,Traffic Congestion,Medium,"Dec-Feb (snowfall), Jun-Aug (peak season)",Narrow winding road that gets heavily congested during snowfall and summer tourist peaks.
+ADV_020,Cholistan Desert Tracks,Punjab,Terrain Hazard,Medium,Nov-Feb recommended,Unpaved desert tracks best attempted with 4x4 and a guide; extreme heat outside winter months.
+ADV_021,Balochistan Interior Routes,Balochistan,Security Advisory,Variable,Year-round caution,"Some interior routes require a No Objection Certificate (NOC) for travel, particularly for foreign nationals; check current requirements before planning."
+ADV_022,Khyber Pass / Torkham Road,Khyber Pakhtunkhwa,Security Advisory,Variable,Year-round caution,Border-area road with security checkpoints; travel near Torkham border crossing may require permits.
+ADV_023,Astore Valley Road,Gilgit-Baltistan,Terrain Hazard,Medium,Jun-Sep recommended,"Rough, partly unpaved road; best attempted in summer with a high-clearance vehicle."
