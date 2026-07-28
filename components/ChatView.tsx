@@ -1,13 +1,17 @@
 'use client';
 
 import { useChat } from 'ai/react';
-import { Send, Sparkles, Bot, User } from 'lucide-react';
+import { Send, Sparkles, Bot, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Card from './ui/Card';
 import Button from './ui/Button';
 
 export default function ChatView() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat();
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error, reload } = useChat({
+    onError: (err) => {
+      console.error("Chat failure:", err);
+    }
+  });
 
   return (
     <div className="flex flex-col h-full bg-black">
@@ -24,7 +28,7 @@ export default function ChatView() {
 
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 && (
+        {messages.length === 0 && !error && (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-6 px-4">
             <div className="w-20 h-20 bg-[#212121] rounded-full flex items-center justify-center border border-[#333333]">
               <Sparkles className="w-10 h-10 text-[#FFD500]" />
@@ -32,26 +36,8 @@ export default function ChatView() {
             <div className="space-y-2">
               <h3 className="font-bold text-xl">How can I help you?</h3>
               <p className="text-sm text-[#ABABAB] leading-relaxed">
-                Ask about safety protocols, PKR pricing, or plan your next trip across Pakistan.
+                Ask about safety protocols, PKR pricing, or plan your next trip.
               </p>
-            </div>
-            <div className="grid grid-cols-1 gap-2 w-full max-w-[280px]">
-              {[
-                "What is the SOS number?",
-                "How is ride price calculated?",
-                "Plan a trip to Hunza"
-              ].map((suggestion) => (
-                <button
-                  key={suggestion}
-                  onClick={() => {
-                    const event = { target: { value: suggestion } } as any;
-                    handleInputChange(event);
-                  }}
-                  className="bg-[#212121] border border-[#333333] p-3 rounded-xl text-xs text-center hover:border-[#FFD500] transition-colors"
-                >
-                  {suggestion}
-                </button>
-              ))}
             </div>
           </div>
         )}
@@ -78,6 +64,21 @@ export default function ChatView() {
           ))}
         </AnimatePresence>
 
+        {/* Error Display */}
+        {error && (
+          <div className="flex justify-center p-4">
+            <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex flex-col items-center gap-3 max-w-[300px] text-center">
+              <AlertCircle className="text-red-500 w-6 h-6" />
+              <p className="text-xs text-red-400 font-medium">
+                Connection lost. This is usually due to a missing API Key or database timeout.
+              </p>
+              <Button variant="secondary" onClick={() => reload()} className="!h-10 !text-[10px]">
+                Try Again
+              </Button>
+            </div>
+          </div>
+        )}
+
         {isLoading && (
           <div className="flex justify-start">
             <Card radius="xl" className="bg-[#212121] p-4 !rounded-tl-none border border-[#333333] shadow-sm">
@@ -99,20 +100,17 @@ export default function ChatView() {
               value={input}
               onChange={handleInputChange}
               placeholder="Ask about travel safety..."
-              className="w-full bg-[#212121] border border-[#333333] rounded-[24px] py-4 px-6 text-[14px] focus:outline-none focus:border-[#FFD500] focus:ring-1 focus:ring-[#FFD500] transition-all text-white placeholder:text-[#666666]"
+              className="w-full bg-[#212121] border border-[#333333] rounded-[24px] py-4 px-6 text-[14px] focus:outline-none focus:border-[#FFD500] transition-all text-white placeholder:text-[#666666]"
             />
           </div>
           <Button
             type="submit"
             disabled={!input || isLoading}
-            className="!w-14 !h-14 !rounded-full !p-0 shrink-0 shadow-lg"
+            className="!w-14 !h-14 !rounded-full shrink-0 shadow-lg"
           >
             <Send className="w-6 h-6" />
           </Button>
         </form>
-        <p className="text-[10px] text-center text-[#444444] mt-3 uppercase font-bold tracking-tighter">
-          Travel Buddy AI Security Guard Active
-        </p>
       </div>
     </div>
   );
