@@ -13,12 +13,11 @@ const genAI = new GoogleGenerativeAI(apiKey);
 const embedModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
 
 const pool = createClient({ connectionString: process.env.POSTGRES_URL });
-
-const DELAY_MS = 1000; // 1 second delay to stay safe on free tier
+const DELAY_MS = 1000;
 
 async function seedTable(filePath: string, type: string) {
   if (!fs.existsSync(filePath)) return;
-  console.log(`\n--- 🧠 Semantic Syncing ${type.toUpperCase()} ---`);
+  console.log(`\n--- 🧠 Semantic Syncing ${type.toUpperCase()}: ${path.basename(filePath)} ---`);
 
   let records: any[] = [];
   if (filePath.endsWith('.csv')) {
@@ -31,16 +30,15 @@ async function seedTable(filePath: string, type: string) {
 
   let added = 0;
   for (const record of records) {
-    const name = record.Hotel_Name || record.Name || record.Event_Name || "Info";
-    const city = record.City || record.Location || "Pakistan";
-    const content = `${type.toUpperCase()}: ${name} in ${city}. ${record.Description || record.Desc || ""}`;
+    const name = record.Hotel_Name || record.Name || record.Event_Name || record.Route_Segment || "Info";
+    const city = record.City || record.Location || record.district || "Pakistan";
+    const desc = record.Description || record.Desc || record.Notes || "";
+    const content = `${type.toUpperCase()}: ${name} in ${city}. ${desc}`;
 
     try {
-      // 1. Generate Embedding
       const result = await embedModel.embedContent(content);
       const vector = result.embedding.values;
 
-      // 2. Insert with Vector
       await pool.query(
         `INSERT INTO travel_knowledge (content, metadata, embedding, source_type)
          VALUES ($1, $2, $3, $4)
@@ -50,14 +48,9 @@ async function seedTable(filePath: string, type: string) {
 
       added++;
       process.stdout.write(`\rProgress: ${added}/${records.length}`);
-
-      // Delay to avoid rate limits
       await new Promise(r => setTimeout(r, DELAY_MS));
     } catch (err: any) {
-      if (err.message.includes('429')) {
-        console.log("\n⚠️ Rate limit hit. Waiting 10s...");
-        await new Promise(r => setTimeout(r, 10000));
-      }
+      if (err.message.includes('429')) await new Promise(r => setTimeout(r, 10000));
     }
   }
 }
@@ -65,14 +58,24 @@ async function seedTable(filePath: string, type: string) {
 async function main() {
   await pool.connect();
   try {
-    // Sync all files
     const webDataDir = path.join(process.cwd(), 'data/raw');
-    await seedTable(path.join(webDataDir, 'hotels.csv'), 'hotel');
-    await seedTable(path.join(webDataDir, 'pakistan_pois.csv'), 'poi');
+    const ragDir = path.join(process.cwd(), '../rag knowledge');
 
-    console.log(`\n🌟 SEMANTIC SYNC COMPLETE!`);
-  } catch (error: any) {
-    console.error('\n❌ Error:', error.message);
+    const internalFiles = [
+      ['hotels.csv', 'hotel'], ['pakistan_pois.csv', 'poi'], ['pakistan_restaurants.csv', 'restaurant'],
+      ['pakistan_road_safety_advisories.csv', 'safety'], ['pakistan_seasonal_events.csv', 'event']
+    ];
+
+    const externalFiles = [
+      ['pakistan_pois.xlsx', 'poi'], ['pakistan_restaurants.xlsx', 'restaurant'],
+      ['pakistan_road_safety_advisories.xlsx', 'safety'], ['pakistan_seasonal_events.xlsx', 'event'],
+      ['Tourist Destinations.csv', 'poi']
+    ];
+
+    for (const [f, t] of internalFiles) await seedTable(path.join(webDataDir, f), t);
+    for (const [f, t] of externalFiles) await seedTable(path.join(ragDir, f), t);
+
+    console.log(`\n🌟 ALL KNOWLEDGE SOURCES SEMANTICALLY SYNCED!`);
   } finally {
     await pool.end();
   }
