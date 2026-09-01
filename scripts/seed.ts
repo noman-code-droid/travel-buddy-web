@@ -8,16 +8,23 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.local' });
 
-const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || '';
-const genAI = new GoogleGenerativeAI(apiKey);
-const embedModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
+// 1. Load all available API keys
+const apiKeys = Object.keys(process.env)
+  .filter(key => key.startsWith('GOOGLE_GENERATIVE_AI_API_KEY'))
+  .map(key => process.env[key] || '')
+  .filter(Boolean);
 
-const pool = createClient({ connectionString: process.env.POSTGRES_URL });
-const DELAY_MS = 1000;
+if (apiKeys.length === 0) {
+  console.error("❌ No API keys found in .env.local!");
+  process.exit(1);
+}
+
+const dbConfig = { connectionString: process.env.POSTGRES_URL };
+let currentKeyIndex = 0;
 
 async function seedTable(filePath: string, type: string) {
   if (!fs.existsSync(filePath)) return;
-  console.log(`\n--- 🧠 Semantic Syncing ${type.toUpperCase()}: ${path.basename(filePath)} ---`);
+  console.log(`\n--- 🚀 Syncing ${type.toUpperCase()}: ${path.basename(filePath)} ---`);
 
   let records: any[] = [];
   if (filePath.endsWith('.csv')) {
@@ -35,49 +42,74 @@ async function seedTable(filePath: string, type: string) {
     const desc = record.Description || record.Desc || record.Notes || "";
     const content = `${type.toUpperCase()}: ${name} in ${city}. ${desc}`;
 
-    try {
-      const result = await embedModel.embedContent(content);
-      const vector = result.embedding.values;
+    let success = false;
+    while (!success) {
+      try {
+        // Rotate Key for every single record to balance the load
+        const currentKey = apiKeys[currentKeyIndex];
+        const genAI = new GoogleGenerativeAI(currentKey);
+        const embedModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
 
-      await pool.query(
-        `INSERT INTO travel_knowledge (content, metadata, embedding, source_type)
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT (content) DO UPDATE SET embedding = $3`,
-        [content, JSON.stringify(record), `[${vector.join(',')}]`, type]
-      );
+        // 1. Get Embedding
+        const result = await embedModel.embedContent(content);
+        const vector = result.embedding.values;
 
-      added++;
-      process.stdout.write(`\rProgress: ${added}/${records.length}`);
-      await new Promise(r => setTimeout(r, DELAY_MS));
-    } catch (err: any) {
-      if (err.message.includes('429')) await new Promise(r => setTimeout(r, 10000));
+        // 2. Save to DB
+        const client = createClient(dbConfig);
+        await client.connect();
+        await client.query(
+          `INSERT INTO travel_knowledge (content, metadata, embedding, source_type)
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (content) DO NOTHING`,
+          [content, JSON.stringify(record), `[${vector.join(',')}]`, type]
+        );
+        await client.end();
+
+        added++;
+        process.stdout.write(`\r✅ Progress: ${added}/${records.length} (Key ${currentKeyIndex + 1})`);
+
+        // Move to next key for next record
+        currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+        success = true;
+
+      } catch (err: any) {
+        if (err.message.includes('429')) {
+          console.log(`\n🛑 Key ${currentKeyIndex + 1} limited. Switching...`);
+          currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+          // If we cycled through all keys and still hit limits, take a 10s breather
+          if (currentKeyIndex === 0) await new Promise(r => setTimeout(r, 10000));
+        } else {
+          console.error(`\n❌ Error on Key ${currentKeyIndex + 1}: ${err.message}`);
+          success = true; // Skip record on non-rate-limit errors
+        }
+      }
     }
   }
 }
 
 async function main() {
-  await pool.connect();
+  console.log(`🔑 Initialized with ${apiKeys.length} active keys.`);
   try {
     const webDataDir = path.join(process.cwd(), 'data/raw');
     const ragDir = path.join(process.cwd(), '../rag knowledge');
 
-    const internalFiles = [
-      ['hotels.csv', 'hotel'], ['pakistan_pois.csv', 'poi'], ['pakistan_restaurants.csv', 'restaurant'],
-      ['pakistan_road_safety_advisories.csv', 'safety'], ['pakistan_seasonal_events.csv', 'event']
+    const files = [
+      [path.join(webDataDir, 'hotels.csv'), 'hotel'],
+      [path.join(webDataDir, 'pakistan_pois.csv'), 'poi'],
+      [path.join(webDataDir, 'pakistan_restaurants.csv'), 'restaurant'],
+      [path.join(webDataDir, 'pakistan_road_safety_advisories.csv'), 'safety'],
+      [path.join(webDataDir, 'pakistan_seasonal_events.csv'), 'event'],
+      [path.join(ragDir, 'pakistan_pois.xlsx'), 'poi'],
+      [path.join(ragDir, 'pakistan_restaurants.xlsx'), 'restaurant'],
+      [path.join(ragDir, 'pakistan_road_safety_advisories.xlsx'), 'safety'],
+      [path.join(ragDir, 'pakistan_seasonal_events.xlsx'), 'event'],
+      [path.join(ragDir, 'Tourist Destinations.csv'), 'poi']
     ];
 
-    const externalFiles = [
-      ['pakistan_pois.xlsx', 'poi'], ['pakistan_restaurants.xlsx', 'restaurant'],
-      ['pakistan_road_safety_advisories.xlsx', 'safety'], ['pakistan_seasonal_events.xlsx', 'event'],
-      ['Tourist Destinations.csv', 'poi']
-    ];
-
-    for (const [f, t] of internalFiles) await seedTable(path.join(webDataDir, f), t);
-    for (const [f, t] of externalFiles) await seedTable(path.join(ragDir, f), t);
-
-    console.log(`\n🌟 ALL KNOWLEDGE SOURCES SEMANTICALLY SYNCED!`);
-  } finally {
-    await pool.end();
+    for (const [f, t] of files) await seedTable(f, t);
+    console.log(`\n🌟 SYNC COMPLETE! Your RAG system is fully loaded.`);
+  } catch (err: any) {
+    console.error("Main error:", err.message);
   }
 }
 
