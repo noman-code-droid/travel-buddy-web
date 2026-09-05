@@ -37,8 +37,9 @@ async function getTravelContext(userMessage: string, google: any) {
     if (vectorRows.length > 0) {
       return vectorRows.map(r => r.content).join("\n\n");
     }
-  } catch (e) {
-    console.error("Vector search failed, falling back to FTS:", e);
+  } catch (e: any) {
+    console.error("RAG SEARCH CRASHED:", e.message);
+    return ""; // Return empty context instead of crashing the whole API
   }
 
   // 3. Fallback to Full-Text Search
