@@ -15,13 +15,14 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   try {
+    console.log(`📤 Attempting upload for: ${filename}`);
     const blob = await put(filename, request.body, {
       access: 'public',
     });
-
+    console.log(`✅ Upload success: ${blob.url}`);
     return NextResponse.json(blob);
-  } catch (error) {
-    console.error('Blob upload error:', error);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+  } catch (error: any) {
+    console.error('❌ BLOB UPLOAD CRASHED:', error.message);
+    return NextResponse.json({ error: 'Upload failed', details: error.message }, { status: 500 });
   }
 }

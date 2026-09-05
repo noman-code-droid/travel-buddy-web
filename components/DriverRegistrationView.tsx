@@ -86,10 +86,16 @@ export default function DriverRegistrationView({ onClose, status }: DriverRegist
   };
 
   const uploadToBlob = async (file: File) => {
-    const response = await fetch(`/api/upload?filename=${file.name}`, {
+    const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
       method: 'POST',
       body: file,
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.details || 'Upload failed');
+    }
+
     const blob = await response.json();
     return blob.url;
   };

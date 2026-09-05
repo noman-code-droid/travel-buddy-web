@@ -101,26 +101,7 @@ export default function HomeView({
            </Card>
         </div>
 
-        {/* Global Chat CTA - Flattened and cleaned */}
-        <div className="px-1">
-          <Card
-            variant="default"
-            radius="xl"
-            className="p-5 flex items-center justify-between cursor-pointer border border-white/5"
-            onClick={() => onNavigate('global_chat')}
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[#FFD500] rounded-2xl flex items-center justify-center">
-                <Globe className="text-black w-6 h-6" />
-              </div>
-              <div>
-                <p className="text-[16px] font-bold text-white">Global Community</p>
-                <p className="text-[12px] text-[#666666]">Connect with travelers nearby</p>
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-[#333333]" />
-          </Card>
-        </div>
+
 
         {/* Quick Actions - Matches GridLayout columnCount="2" */}
         <div className="px-1">
