@@ -18,6 +18,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     console.log(`📤 Attempting upload for: ${filename}`);
     const blob = await put(filename, request.body, {
       access: 'public',
+      addRandomSuffix: true, // This fixes the "Blob already exists" error
     });
     console.log(`✅ Upload success: ${blob.url}`);
     return NextResponse.json(blob);
