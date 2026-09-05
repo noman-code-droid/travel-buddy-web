@@ -27,7 +27,6 @@ async function getTravelContext(userMessage: string, google: any) {
     const vector = `[${embedding.join(',')}]`;
 
     // 2. Vector Similarity Search
-    // We use a try-catch for the specific SQL query to prevent dimensions crashing the whole API
     const { rows: vectorRows } = await pool.query(
       `SELECT content FROM travel_knowledge
        ORDER BY embedding <=> $1::vector
@@ -42,7 +41,7 @@ async function getTravelContext(userMessage: string, google: any) {
     console.error("RAG VECTOR SEARCH FAILED:", e.message);
   }
 
-  // 3. Fallback to Keyword Search (Very Robust)
+  // 3. Fallback to Keyword Search
   try {
     const { rows: ftsRows } = await pool.query(
       `SELECT content FROM travel_knowledge
@@ -94,41 +93,37 @@ export async function POST(req: Request) {
     for (const key of apiKeys) {
       try {
         const cleanKey = key.trim();
-        console.log(`🔑 Attempting AI with key starting: ${cleanKey.substring(0, 5)}...`);
-
         const google = createGoogleGenerativeAI({ apiKey: cleanKey });
 
         // Fetch context
-        let context = "";
-        try {
-          context = await getTravelContext(lastMsg, google);
-        } catch (ragErr: any) {
-          console.error("⚠️ RAG Context failed:", ragErr.message);
+        const context = await getTravelContext(lastMsg, google);
+
+        for (const modelId of MODEL_PRIORITY) {
+          try {
+            const result = await streamText({
+              model: google(modelId),
+              messages: coreMessages,
+              system: `You are Travel Buddy AI, an expert travel guide for Pakistan.
+
+              KNOWLEDGE BASE CONTEXT:
+              ${context || "No specific matches found. Use general expert knowledge about Pakistani travel, routes (M2, M3), and safety numbers (15, 1122)."}
+
+              STRICT RULES:
+              - Pricing: Small Cars 38 PKR/km, Large Cars 54 PKR/km.
+              - Model: This is a carpooling network, not a taxi service.
+              - Style: Professional, friendly, and helpful. Format with Markdown.`,
+            });
+
+            return isChat ? result.toDataStreamResponse() : result.toTextStreamResponse();
+
+          } catch (modelErr: any) {
+            console.warn(`⚠️ Model ${modelId} failed: ${modelErr.message}`);
+            if (modelErr.message.includes('429')) break; // Try next key
+            continue; // Try next model
+          }
         }
-
-      for (const modelId of MODEL_PRIORITY) {
-        try {
-          const result = await streamText({
-            model: google(modelId),
-            messages: coreMessages,
-            system: `You are Travel Buddy AI, an expert travel guide for Pakistan.
-
-            KNOWLEDGE BASE CONTEXT:
-            ${context || "No specific matches found. Use general expert knowledge about Pakistani travel, routes (M2, M3), and safety numbers (15, 1122)."}
-
-            STRICT RULES:
-            - Pricing: Small Cars 38 PKR/km, Large Cars 54 PKR/km.
-            - Model: This is a carpooling network, not a taxi service.
-            - Style: Professional, friendly, and helpful. Format with Markdown.`,
-          });
-
-          return isChat ? result.toDataStreamResponse() : result.toTextStreamResponse();
-
-        } catch (modelErr: any) {
-          console.warn(`⚠️ Model ${modelId} failed: ${modelErr.message}`);
-          if (modelErr.message.includes('429')) break;
-          continue;
-        }
+      } catch (keyErr: any) {
+        console.error("Key attempt failed, trying next key...");
       }
     }
 
