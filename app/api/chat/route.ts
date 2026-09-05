@@ -79,10 +79,19 @@ export async function POST(req: Request) {
     const lastMsg = isChat ? body.messages[body.messages.length - 1].content : body.prompt;
 
     for (const key of apiKeys) {
-      const google = createGoogleGenerativeAI({ apiKey: key });
+      try {
+        const cleanKey = key.trim();
+        console.log(`🔑 Attempting AI with key starting: ${cleanKey.substring(0, 5)}...`);
 
-      // Fetch context
-      const context = await getTravelContext(lastMsg, google);
+        const google = createGoogleGenerativeAI({ apiKey: cleanKey });
+
+        // Fetch context
+        let context = "";
+        try {
+          context = await getTravelContext(lastMsg, google);
+        } catch (ragErr: any) {
+          console.error("⚠️ RAG Context failed:", ragErr.message);
+        }
 
       for (const modelId of MODEL_PRIORITY) {
         try {
