@@ -8,9 +8,11 @@ export const maxDuration = 30;
 const pool = createPool({ connectionString: process.env.POSTGRES_URL });
 
 const MODEL_PRIORITY = [
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-pro'
+  'gemini-2.0-flash', // Keep for future
+  'gemini-1.5-flash', // Common stable
+  'gemini-2.5-flash', // Your key has this
+  'gemini-3.1-flash-lite-preview', // Your key has this
+  'gemini-flash-latest' // Safe fallback
 ];
 
 async function getTravelContext(userMessage: string, google: any) {
