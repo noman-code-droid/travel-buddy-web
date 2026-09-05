@@ -58,6 +58,8 @@ async function getTravelContext(userMessage: string, google: any) {
 }
 
 export async function POST(req: Request) {
+  console.log("🚀 API CHAT REQUEST RECEIVED!");
+
   const apiKeys = [
     process.env.GOOGLE_GENERATIVE_AI_API_KEY,
     process.env.GOOGLE_GENERATIVE_AI_API_KEY_SECONDARY
