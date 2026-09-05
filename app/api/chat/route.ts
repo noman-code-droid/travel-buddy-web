@@ -8,44 +8,55 @@ export const maxDuration = 30;
 const pool = createPool({ connectionString: process.env.POSTGRES_URL });
 
 async function getTravelContext(userMessage: string, google: any) {
-  if (!userMessage || userMessage.length < 3) return "";
+  console.log("🔍 RAG: Starting context search...");
   try {
     const { embedding } = await embed({
       model: google.textEmbeddingModel('gemini-embedding-001'),
       value: userMessage,
     });
+    console.log("🔍 RAG: Embedding generated, dims:", embedding.length);
+
     const vector = `[${embedding.join(',')}]`;
     const { rows: vectorRows } = await pool.query(
-      `SELECT content FROM travel_knowledge ORDER BY embedding <=> $1::vector LIMIT 5`,
+      `SELECT content FROM travel_knowledge ORDER BY embedding <=> $1::vector LIMIT 3`,
       [vector]
     );
-    if (vectorRows && vectorRows.length > 0) {
-      return vectorRows.map(r => r.content).join("\n\n");
-    }
+    console.log("🔍 RAG: DB query finished, rows found:", vectorRows?.length || 0);
+
+    return vectorRows?.map(r => r.content).join("\n\n") || "";
   } catch (e: any) {
-    console.error("RAG SEARCH FAILED:", e.message);
+    console.error("❌ RAG ERROR:", e.message);
+    return "";
   }
-  return "";
 }
 
 export async function POST(req: Request) {
-  console.log("🚀 CHAT REQUEST STARTED");
+  console.log("🚀 --- NEW REQUEST RECEIVED ---");
 
-  const key = (process.env.GOOGLE_GENERATIVE_AI_API_KEY || "").trim();
-  if (!key) return new Response('Missing API Key', { status: 500 });
+  const rawKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
+  const key = rawKey.trim();
+
+  if (!key) {
+    console.error("❌ ERROR: GOOGLE_GENERATIVE_AI_API_KEY is empty in Vercel!");
+    return new Response('Config Error: Missing Key', { status: 500 });
+  }
 
   try {
     const body = await req.json();
-    const coreMessages: CoreMessage[] = convertToCoreMessages(body.messages || []);
     const lastMsg = body.messages[body.messages.length - 1].content;
+    console.log("💬 User Message:", lastMsg);
 
     const google = createGoogleGenerativeAI({ apiKey: key });
 
-    // Test Trigger
+    // We saw this model in your curl list!
+    const modelId = 'gemini-2.5-flash';
+    console.log("🤖 Attempting model:", modelId);
+
     if (lastMsg === "TEST_API_ONLY") {
+        console.log("🛠️ TEST_API_ONLY mode active");
         const result = await streamText({
-            model: google('gemini-1.5-flash'),
-            prompt: "Say: 'Production API is Online!'"
+            model: google(modelId),
+            prompt: "Say: 'Production AI is LIVE!'"
         });
         return result.toTextStreamResponse();
     }
@@ -53,15 +64,16 @@ export async function POST(req: Request) {
     const context = await getTravelContext(lastMsg, google);
 
     const result = await streamText({
-      model: google('gemini-1.5-flash'),
-      messages: coreMessages,
-      system: `You are Travel Buddy AI. Use this context: ${context || "General knowledge."}. Rules: Small Cars 38 PKR/km, Large Cars 54 PKR/km.`,
+      model: google(modelId),
+      messages: convertToCoreMessages(body.messages),
+      system: `You are Travel Buddy AI. Context: ${context || "None"}. Rules: Small Cars 38, Large 54 PKR/km.`,
     });
 
+    console.log("✅ Stream starting successfully");
     return result.toDataStreamResponse();
 
   } catch (err: any) {
-    console.error("CRITICAL API ERROR:", err.message);
-    return new Response(err.message, { status: 500 });
+    console.error("💥 CRITICAL CRASH:", err.message);
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 }
