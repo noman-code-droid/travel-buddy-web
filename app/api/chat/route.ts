@@ -78,6 +78,19 @@ export async function POST(req: Request) {
 
     const lastMsg = isChat ? body.messages[body.messages.length - 1].content : body.prompt;
 
+    // --- TEST MODE TRIGGER ---
+    if (lastMsg === "TEST_API_ONLY") {
+      console.log("🛠️ TEST MODE ACTIVATED");
+      const key = apiKeys[0].trim();
+      const google = createGoogleGenerativeAI({ apiKey: key });
+      const result = await streamText({
+        model: google('gemini-1.5-flash'),
+        prompt: "Say 'The API Key works perfectly!'"
+      });
+      return result.toTextStreamResponse();
+    }
+    // -------------------------
+
     for (const key of apiKeys) {
       try {
         const cleanKey = key.trim();
