@@ -69,8 +69,8 @@ export default function ChatView() {
           <div className="flex justify-center p-4">
             <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex flex-col items-center gap-3 max-w-[300px] text-center">
               <AlertCircle className="text-red-500 w-6 h-6" />
-              <p className="text-xs text-red-400 font-medium">
-                Connection lost. This is usually due to a missing API Key or database timeout.
+              <p className="text-[10px] text-red-400 font-mono break-all">
+                RAW ERROR: {error.message}
               </p>
               <Button variant="secondary" onClick={() => reload()} className="!h-10 !text-[10px]">
                 Try Again
