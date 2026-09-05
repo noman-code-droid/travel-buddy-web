@@ -8,11 +8,10 @@ export const maxDuration = 30;
 const pool = createPool({ connectionString: process.env.POSTGRES_URL });
 
 const MODEL_PRIORITY = [
-  'gemini-2.0-flash', // Keep for future
-  'gemini-1.5-flash', // Common stable
-  'gemini-2.5-flash', // Your key has this
-  'gemini-3.1-flash-lite-preview', // Your key has this
-  'gemini-flash-latest' // Safe fallback
+  'gemini-1.5-flash',
+  'gemini-2.0-flash',
+  'gemini-2.5-flash',
+  'gemini-flash-latest'
 ];
 
 async function getTravelContext(userMessage: string, google: any) {
@@ -24,9 +23,11 @@ async function getTravelContext(userMessage: string, google: any) {
       model: google.textEmbeddingModel('gemini-embedding-001'),
       value: userMessage,
     });
+
     const vector = `[${embedding.join(',')}]`;
 
     // 2. Vector Similarity Search
+    // We use a try-catch for the specific SQL query to prevent dimensions crashing the whole API
     const { rows: vectorRows } = await pool.query(
       `SELECT content FROM travel_knowledge
        ORDER BY embedding <=> $1::vector
@@ -34,25 +35,24 @@ async function getTravelContext(userMessage: string, google: any) {
       [vector]
     );
 
-    if (vectorRows.length > 0) {
+    if (vectorRows && vectorRows.length > 0) {
       return vectorRows.map(r => r.content).join("\n\n");
     }
   } catch (e: any) {
-    console.error("RAG SEARCH CRASHED:", e.message);
-    return ""; // Return empty context instead of crashing the whole API
+    console.error("RAG VECTOR SEARCH FAILED:", e.message);
   }
 
-  // 3. Fallback to Full-Text Search
+  // 3. Fallback to Keyword Search (Very Robust)
   try {
     const { rows: ftsRows } = await pool.query(
       `SELECT content FROM travel_knowledge
-       WHERE fts_tokens @@ websearch_to_tsquery('english', $1)
-       OR content ILIKE $2
+       WHERE content ILIKE $1
        LIMIT 3`,
-      [userMessage, `%${userMessage.split(' ')[0]}%`]
+      [`%${userMessage.split(' ')[0]}%`]
     );
     return ftsRows.map(r => r.content).join("\n\n");
-  } catch (e) {
+  } catch (e: any) {
+    console.error("RAG KEYWORD SEARCH FAILED:", e.message);
     return "";
   }
 }
@@ -78,17 +78,11 @@ export async function POST(req: Request) {
 
     const lastMsg = isChat ? body.messages[body.messages.length - 1].content : body.prompt;
 
-    // Try each API Key
     for (const key of apiKeys) {
       const google = createGoogleGenerativeAI({ apiKey: key });
 
-      // Fetch context once per key if needed
-      let context = "";
-      try {
-        context = await getTravelContext(lastMsg, google);
-      } catch (ctxErr) {
-        console.warn("Context retrieval failed for key.");
-      }
+      // Fetch context
+      const context = await getTravelContext(lastMsg, google);
 
       for (const modelId of MODEL_PRIORITY) {
         try {
@@ -97,22 +91,20 @@ export async function POST(req: Request) {
             messages: coreMessages,
             system: `You are Travel Buddy AI, an expert travel guide for Pakistan.
 
-            REAL-WORLD DATA FROM DATABASE:
-            ${context || "No specific matches found. Use general expert knowledge."}
+            KNOWLEDGE BASE CONTEXT:
+            ${context || "No specific matches found. Use general expert knowledge about Pakistani travel, routes (M2, M3), and safety numbers (15, 1122)."}
 
             STRICT RULES:
             - Pricing: Small Cars 38 PKR/km, Large Cars 54 PKR/km.
-            - Purpose: Cost-sharing carpool, zero-profit model.
-            - Safety: Recommend 'Trusted Contacts' for location sharing.
-            - Style: Friendly, professional, and detailed using Markdown.`,
+            - Model: This is a carpooling network, not a taxi service.
+            - Style: Professional, friendly, and helpful. Format with Markdown.`,
           });
 
           return isChat ? result.toDataStreamResponse() : result.toTextStreamResponse();
 
         } catch (modelErr: any) {
-          const msg = modelErr.message || "";
-          console.warn(`⚠️ Model ${modelId} failed: ${msg}`);
-          if (msg.includes('429') || msg.includes('limit')) break;
+          console.warn(`⚠️ Model ${modelId} failed: ${modelErr.message}`);
+          if (modelErr.message.includes('429')) break;
           continue;
         }
       }
@@ -121,7 +113,7 @@ export async function POST(req: Request) {
     return new Response("AI Capacity reached. Please try again later.", { status: 503 });
 
   } catch (err: any) {
-    console.error("Global AI Route Error:", err.message);
+    console.error("GLOBAL API ERROR:", err.message);
     return new Response(err.message, { status: 500 });
   }
 }
